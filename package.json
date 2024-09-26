@@ -6,12 +6,10 @@
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rimraf .turbo coverage out node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "husky"
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
-    "husky": "^9.1.4",
     "lint-staged": "^15.2.9",
     "turbo": "^2.0.14",
     "rimraf": "^6.0.1"
