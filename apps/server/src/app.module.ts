@@ -5,18 +5,14 @@ import {TypeOrmModule} from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    publicacionModule,
+    ConfigModule.forRoot({isGlobal: true}),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'publicacion',
+      type: 'postgres',
+      url: process.env.DATABASE_URL,
       autoLoadEntities: true,
       synchronize: true,
     }),
-
+    publicacionModule
   ],
 })
 export class AppModule {}
