@@ -6,7 +6,8 @@
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rimraf .turbo coverage out node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "component:add": "pnpm dlx shadcn@latest add -c ./packages/ui"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
@@ -27,5 +28,5 @@
   "engines": {
     "node": ">=18"
   },
-  "name": "with-tailwind"
+  "name": "cms-villaizan"
 }
