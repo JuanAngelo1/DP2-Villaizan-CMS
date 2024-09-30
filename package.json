@@ -7,7 +7,7 @@
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rimraf .turbo coverage out node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "component:add": "pnpm dlx shadcn@latest add -c ./packages/ui"
+    "ui:add": "pnpm dlx shadcn@latest add -c ./packages/ui"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
