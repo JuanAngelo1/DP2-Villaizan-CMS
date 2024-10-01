@@ -4,7 +4,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Sidebar />
-      <div className="ml-[67px] p-5">{children}</div>
+      <div className="ml-[67px] p-[32px] h-screen bg-primary-foreground">{children}</div>
     </div>
   );
 }
