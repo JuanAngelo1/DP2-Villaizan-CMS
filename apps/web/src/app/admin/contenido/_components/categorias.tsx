@@ -34,8 +34,13 @@ function Categorias() {
           <CardDescription>Categoríza las publicaciones en diferentes áreas y temas.</CardDescription>
         </CardHeader>
 
-        <CardContent className="flex flex-col gap-3">
-          <div className="flex items-center justify-between rounded-md border px-4 py-3 shadow-sm">
+        <CardContent className="grid grid-cols-3 place-items-start">
+          {/* <div className="flex items-center justify-between rounded-md border px-4 py-3 shadow-sm"> */}
+            <p className="text-sm font-semibold underline">Paletas</p>
+            <p className="text-sm font-light">Descripcion 1</p>
+            <Ellipsis />
+          {/* </div> */}
+          {/* <div className="flex items-center justify-between rounded-md border px-4 py-3 shadow-sm">
             <p className="text-sm font-semibold underline">Paletas</p>
             <p className="text-sm font-light">Descripcion 1</p>
             <Ellipsis />
@@ -49,12 +54,7 @@ function Categorias() {
             <p className="text-sm font-semibold underline">Paletas</p>
             <p className="text-sm font-light">Descripcion 1</p>
             <Ellipsis />
-          </div>
-          <div className="flex items-center justify-between rounded-md border px-4 py-3 shadow-sm">
-            <p className="text-sm font-semibold underline">Paletas</p>
-            <p className="text-sm font-light">Descripcion 1</p>
-            <Ellipsis />
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>
