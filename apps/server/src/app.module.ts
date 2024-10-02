@@ -1,21 +1,13 @@
 import { Module } from '@nestjs/common';
-import { publicacionModule } from './publicacion/publicacion.module';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { PrismaModule } from './prisma/prisma.module';
+import { UsuarioController } from './usuario/usuario.controller';
+import { UsuarioModule } from './usuario/usuario.module';
+import { UsuarioService } from './usuario/usuario.service';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      autoLoadEntities: true,
-      synchronize: true,
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [ConfigModule, PrismaModule, UsuarioModule],
+  controllers: [UsuarioController],
+  providers: [UsuarioService],
 })
 export class AppModule {}
