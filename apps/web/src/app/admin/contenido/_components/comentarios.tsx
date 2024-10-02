@@ -1,6 +1,8 @@
 function Comentarios() {
   return (
-    <div>Comentarios</div>
-  )
+    <div className="flex w-full flex-col gap-2">
+      Comentarios
+    </div>
+  );
 }
-export default Comentarios
+export default Comentarios;

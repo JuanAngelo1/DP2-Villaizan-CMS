@@ -35,11 +35,6 @@ const contentSidebarItems: contentSidebarItem[] = [
     hash: "publicaciones",
   },
   {
-    label: "Comentarios",
-    href: "/admin/contenido#comentarios",
-    hash: "comentarios",
-  },
-  {
     label: "Categorías",
     href: "/admin/contenido#categorias",
     hash: "categorias",
@@ -48,6 +43,11 @@ const contentSidebarItems: contentSidebarItem[] = [
     label: "Etiquetas",
     href: "/admin/contenido#etiquetas",
     hash: "etiquetas",
+  },
+  {
+    label: "Comentarios",
+    href: "/admin/contenido#comentarios",
+    hash: "comentarios",
   },
 ];
 
@@ -65,7 +65,7 @@ function Page() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-[24px]">
+    <div className="flex-1 flex flex-col gap-[24px]">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -80,7 +80,7 @@ function Page() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <main className="flex flex-row gap-6">
+      <main className="flex flex-row gap-6 flex-1">
         <section className="flex w-[170px] flex-col gap-4">
           <h1 className="text-2xl font-bold">Contenido</h1>
           <Separator orientation="horizontal" />
@@ -96,6 +96,7 @@ function Page() {
                     selectedSection === item.hash ? "bg-secondary text-primary-background" : ""
                   )}
                   href={item.href}
+                  onClick={() => setSelectedSection(item.hash as contentSections)}
                 >
                   <div className="flex w-full flex-row justify-between">
                     {item.label}
@@ -107,9 +108,9 @@ function Page() {
           </ul>
         </section>
         {selectedSection === "publicaciones" && <Publicaciones />}
-        {selectedSection === "comentarios" && <Comentarios />}
         {selectedSection === "categorias" && <Categorias />}
         {selectedSection === "etiquetas" && <Etiquetas />}
+        {selectedSection === "comentarios" && <Comentarios />}
       </main>
     </div>
   );
