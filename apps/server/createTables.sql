@@ -33,6 +33,8 @@ CREATE TABLE vi_persona (
     usuarioactualizacion VARCHAR(50)
 );
 
+--NUESTRA TABLAS
+
 CREATE TABLE vi_tipopublicacion (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
