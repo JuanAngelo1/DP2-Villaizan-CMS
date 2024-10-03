@@ -18,17 +18,12 @@ CREATE TABLE vi_usuario (
     usuarioactualizacion VARCHAR(50)
 );
 
-CREATE TABLE vi_usuario (
+CREATE TABLE vi_persona (
     id VARCHAR(50) PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    concuenta BOOLEAN NOT NULL,
-    numerotelefono VARCHAR(15),
-    correo VARCHAR(150) NOT NULL UNIQUE,
-    contrasena VARCHAR(255) NOT NULL,
-    fechaultimologin TIMESTAMP,
-	id_persona VARCHAR(50),
-    CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
+    tipodocumento VARCHAR(5),
+    numerodocumento VARCHAR(20),
+    razoneliminacion VARCHAR(255),
+    estado VARCHAR(50) NOT NULL,
     --trazabilidad
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
     desactivadoen TIMESTAMP,

@@ -30,6 +30,7 @@ export class AuthService {
             return {
                 message: 'Usuario logueado',
                 statusCode: 200,
+                user
               };
         }
 
