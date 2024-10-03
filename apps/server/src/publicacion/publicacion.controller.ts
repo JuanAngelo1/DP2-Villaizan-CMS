@@ -1,18 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Put,
-  Delete,
-  Body,
-  Param,
-  NotFoundException,
-  BadRequestException,
-  Req,
-  Res,
-} from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, BadRequestException, Req, Res} from '@nestjs/common';
 import { PublicacionService } from './publicacion.service';
-import { cms_publicacion } from '@prisma/client';
+import { vi_publicacion } from '@prisma/client';
 import { Request, Response } from 'express';
 
 @Controller('publicaciones')
@@ -43,7 +31,7 @@ export class PublicacionController {
   }
 
   @Post()
-  async createPublicacion(@Body() data: cms_publicacion) {
+  async createPublicacion(@Body() data: vi_publicacion) {
     return this.publicacionService.createPublicacion(data);
   }
 
@@ -66,7 +54,7 @@ export class PublicacionController {
   }
 
   @Put(':id')
-  async updateUsuario(@Param('id') id: number, @Body() data: cms_publicacion) {
+  async updateUsuario(@Param('id') id: number, @Body() data: vi_publicacion) {
     try {
       return this.publicacionService.updatePublicacion(id, data);
     } catch (error) {
