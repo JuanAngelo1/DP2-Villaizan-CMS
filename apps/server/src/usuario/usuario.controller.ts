@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { vi_usuario } from "@prisma/client"
 
@@ -19,13 +19,15 @@ export class UsuarioController {
 
     @Get(':id')
     async getUsuarioByID(@Param('id') id: string) {
-        return this.usuarioService.getUsuarioByID(id);
+        const usuarioFound= await this.usuarioService.getUsuarioByID(id);
+        if(!usuarioFound)throw new BadRequestException("Usuario no existe")
+        return usuarioFound;
     }
 
     @Delete(':id')
     async deleteUsuarioByID(@Param('id') id: string) {
         try{
-            return this.usuarioService.deleteUsuario(id);
+            return await this.usuarioService.deleteUsuario(id);
         }catch(error){
             throw new NotFoundException("Usuario no existe")
         }
@@ -34,6 +36,10 @@ export class UsuarioController {
 
     @Put(':id')
     async updateUsuario(@Param('id') id: string, @Body() data: vi_usuario) {
-        return this.usuarioService.updateUsuario(id,data);
+        try{
+            return this.usuarioService.updateUsuario(id,data);
+        }catch(error){
+            throw new NotFoundException("Usuario no existe")
+        }
     }
 }
