@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthPayLoad } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
             throw new NotFoundException('Usuario no encontrado');
         }
 
-        const validatePassword= user.contrasena === password;
+        const validatePassword = await bcrypt.compare(password, user.contrasena);
 
         if(!validatePassword) {
             throw new NotFoundException('Contraseña incorrecta');
