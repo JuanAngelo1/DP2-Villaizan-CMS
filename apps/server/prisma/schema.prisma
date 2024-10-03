@@ -74,22 +74,6 @@ model vi_contenidoeducativo {
   vi_fruta             vi_fruta? @relation(fields: [id_fruta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fruta")
 }
 
-model vi_detallepedido {
-  id                   String       @id @db.VarChar(50)
-  cantidad             Int
-  subtotal             Decimal      @db.Decimal(10, 2)
-  id_producto          String?      @db.VarChar(50)
-  id_pedido            String?      @db.VarChar(50)
-  estaactivo           Boolean      @default(true)
-  desactivadoen        DateTime?    @db.Timestamp(6)
-  creadoen             DateTime     @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime     @default(now()) @db.Timestamp(6)
-  usuariocreacion      String       @db.VarChar(50)
-  usuarioactualizacion String?      @db.VarChar(50)
-  vi_pedido            vi_pedido?   @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
-  vi_producto          vi_producto? @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
-}
-
 model vi_direccion {
   id                   String        @id @db.VarChar(50)
   calle                String        @db.VarChar(255)
@@ -241,6 +225,7 @@ model vi_motorizado {
   id                      String                    @id @db.VarChar(50)
   placa                   String                    @db.VarChar(20)
   id_almacen              String?                   @db.VarChar(50)
+  id_usuario              String?                   @db.VarChar(50)
   estaactivo              Boolean                   @default(true)
   desactivadoen           DateTime?                 @db.Timestamp(6)
   creadoen                DateTime                  @default(now()) @db.Timestamp(6)
@@ -304,10 +289,8 @@ model vi_pedido {
   actualizadoen        DateTime               @default(now()) @db.Timestamp(6)
   usuariocreacion      String                 @db.VarChar(50)
   usuarioactualizacion String?                @db.VarChar(50)
-  vi_detallepedido     vi_detallepedido[]
   vi_direccion         vi_direccion?          @relation(fields: [id_direccion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_direccion")
   vi_motorizado        vi_motorizado?         @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
-  vi_usuario           vi_usuario?            @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
   vi_pedido_metodopago vi_pedido_metodopago[]
   vi_venta             vi_venta[]
 }
@@ -329,8 +312,8 @@ model vi_pedido_metodopago {
 
 model vi_persona {
   id                   String       @id @db.VarChar(50)
-  tipodocumento        String       @db.VarChar(5)
-  numerodocumento      String       @db.VarChar(20)
+  tipodocumento        String?      @db.VarChar(5)
+  numerodocumento      String?      @db.VarChar(20)
   razoneliminacion     String?      @db.VarChar(255)
   estado               String       @db.VarChar(50)
   estaactivo           Boolean      @default(true)
@@ -365,7 +348,6 @@ model vi_producto {
   actualizadoen            DateTime                   @default(now()) @db.Timestamp(6)
   desactivadoen            DateTime?                  @db.Timestamp(6)
   id_tipoproducto          String?                    @db.VarChar(50)
-  vi_detallepedido         vi_detallepedido[]
   vi_inventarioalmacen     vi_inventarioalmacen[]
   vi_inventariomotorizado  vi_inventariomotorizado[]
   vi_tipoproducto          vi_tipoproducto?           @relation(fields: [id_tipoproducto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_producto")
@@ -500,7 +482,7 @@ model vi_usuario {
   apellido             String      @db.VarChar(100)
   concuenta            Boolean
   numerotelefono       String?     @db.VarChar(15)
-  correo               String      @db.VarChar(150)
+  correo               String      @unique @db.VarChar(150)
   contrasena           String      @db.VarChar(255)
   fechaultimologin     DateTime?   @db.Timestamp(6)
   id_persona           String?     @db.VarChar(50)
@@ -510,7 +492,6 @@ model vi_usuario {
   actualizadoen        DateTime    @default(now()) @db.Timestamp(6)
   usuariocreacion      String      @db.VarChar(50)
   usuarioactualizacion String?     @db.VarChar(50)
-  vi_pedido            vi_pedido[]
   vi_persona           vi_persona? @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona")
 }
 
