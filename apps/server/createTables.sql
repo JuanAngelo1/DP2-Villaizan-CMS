@@ -35,7 +35,7 @@ CREATE TABLE vi_persona (
 
 --NUESTRA TABLAS
 
-CREATE TABLE vi_tipopublicacion (
+CREATE TABLE cms_tipo_publicacion (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
@@ -44,7 +44,7 @@ CREATE TABLE vi_tipopublicacion (
 );
 
 
-CREATE TABLE vi_estadopublicacion (
+CREATE TABLE cms_estado_publicacion (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
@@ -53,7 +53,7 @@ CREATE TABLE vi_estadopublicacion (
     estaActivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
-CREATE TABLE vi_categoria (
+CREATE TABLE cms_categoria_publicacion (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
@@ -62,7 +62,7 @@ CREATE TABLE vi_categoria (
     estaActivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
-CREATE TABLE vi_etiqueta (
+CREATE TABLE cms_etiqueta_publicacion (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
@@ -71,7 +71,7 @@ CREATE TABLE vi_etiqueta (
     estaActivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
-CREATE TABLE vi_publicacion (
+CREATE TABLE cms_publicacion (
     idPublicacion SERIAL PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     urlImagen VARCHAR(255),
@@ -83,21 +83,15 @@ CREATE TABLE vi_publicacion (
     idCategoria INT,  -- Relación con la tabla Categoria
     idTipoPublicacion INT, -- Relación con la tabla TipoPublicacion
     idEstadoPublicacion INT, -- Relación con la tabla EstadoPublicacion
-    CONSTRAINT fk_categoria FOREIGN KEY (idCategoria) REFERENCES vi_categoria(id),
-    CONSTRAINT fk_tipo_publicacion FOREIGN KEY (idTipoPublicacion) REFERENCES vi_tipopublicacion(id),
-    CONSTRAINT fk_estado_publicacion FOREIGN KEY (idEstadoPublicacion) REFERENCES vi_estadopublicacion(id)
+    CONSTRAINT fk_categoria FOREIGN KEY (idCategoria) REFERENCES cms_categoria_publicacion(id),
+    CONSTRAINT fk_tipo_publicacion FOREIGN KEY (idTipoPublicacion) REFERENCES cms_tipo_publicacion(id),
+    CONSTRAINT fk_estado_publicacion FOREIGN KEY (idEstadoPublicacion) REFERENCES cms_estado_publicacion(id)
 );
 
-CREATE TABLE vi_publicacion_etiqueta (
+CREATE TABLE cms_publicacion_X_etiqueta (
     idPublicacion INT,  -- Relación con la tabla Publicacion
     idEtiqueta INT,     -- Relación con la tabla Etiqueta
     PRIMARY KEY (idPublicacion, idEtiqueta), -- Clave primaria compuesta
-    CONSTRAINT fk_publicacion FOREIGN KEY (idPublicacion) REFERENCES vi_publicacion(idPublicacion),
-    CONSTRAINT fk_etiqueta FOREIGN KEY (idEtiqueta) REFERENCES vi_etiqueta(id)
+    CONSTRAINT fk_publicacion FOREIGN KEY (idPublicacion) REFERENCES cms_publicacion(idPublicacion),
+    CONSTRAINT fk_etiqueta FOREIGN KEY (idEtiqueta) REFERENCES cms_etiqueta_publicacion(id)
 );
-
-
-
-
-
-
