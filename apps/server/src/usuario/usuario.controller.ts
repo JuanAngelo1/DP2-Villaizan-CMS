@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, BadRequestException,Req,Res } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { vi_usuario } from "@prisma/client"
+import { Request, Response } from 'express';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -8,10 +9,26 @@ export class UsuarioController {
     constructor (private readonly usuarioService: UsuarioService) {}
 
     @Get()
-    async getAllUsuarios() {
-        return this.usuarioService.getAllUsers();
-    }
+    async getAllUsuarios(@Req () request: Request, @Res() response: Response): Promise<any> {
+        try{
+            const result= await this.usuarioService.getAllUsers();
+            return response.status(200).json({
+                status:"Ok!",
+                message: "Usuarios encontrados",
+                result:result
+            })
+        }catch(err){
+            return response.status(500).json({
+                status:"Error!",
+                message: "Internal Server Error",
+                result:[]
+            
+            })
+            
+        }
 
+    }
+       
     @Post()
     async createUsuario(@Body() data: vi_usuario) {
         return this.usuarioService.createUsuario(data);
