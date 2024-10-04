@@ -74,6 +74,22 @@ model vi_contenidoeducativo {
   vi_fruta             vi_fruta? @relation(fields: [id_fruta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fruta")
 }
 
+model vi_detallepedido {
+  id                   String       @id @db.VarChar(50)
+  cantidad             Int
+  subtotal             Decimal      @db.Decimal(10, 2)
+  id_producto          String?      @db.VarChar(50)
+  id_pedido            String?      @db.VarChar(50)
+  estaactivo           Boolean      @default(true)
+  desactivadoen        DateTime?    @db.Timestamp(6)
+  creadoen             DateTime     @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime     @default(now()) @db.Timestamp(6)
+  usuariocreacion      String       @db.VarChar(50)
+  usuarioactualizacion String?      @db.VarChar(50)
+  vi_pedido            vi_pedido?   @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
+  vi_producto          vi_producto? @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+}
+
 model vi_direccion {
   id                   String        @id @db.VarChar(50)
   calle                String        @db.VarChar(255)
@@ -289,6 +305,7 @@ model vi_pedido {
   actualizadoen        DateTime               @default(now()) @db.Timestamp(6)
   usuariocreacion      String                 @db.VarChar(50)
   usuarioactualizacion String?                @db.VarChar(50)
+  vi_detallepedido     vi_detallepedido[]
   vi_direccion         vi_direccion?          @relation(fields: [id_direccion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_direccion")
   vi_motorizado        vi_motorizado?         @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
   vi_pedido_metodopago vi_pedido_metodopago[]
@@ -327,15 +344,13 @@ model vi_persona {
 
 model vi_producto {
   id                       String                     @id @db.VarChar(50)
-  codigo                   String                     @unique @db.VarChar(255)
+  codigo                   String?                    @unique @db.VarChar(255)
   nombre                   String                     @db.VarChar(255)
   precioa                  Decimal?                   @db.Decimal(10, 2)
   preciob                  Decimal?                   @db.Decimal(10, 2)
   precioc                  Decimal?                   @db.Decimal(10, 2)
   precioecommerce          Decimal                    @db.Decimal(10, 2)
   urlimagen                String?                    @db.VarChar(255)
-  cantminped               Int
-  cantmaxped               Int?
   descripcion              String?
   informacionnutricional   String?
   razoneliminacion         String?
@@ -348,6 +363,7 @@ model vi_producto {
   actualizadoen            DateTime                   @default(now()) @db.Timestamp(6)
   desactivadoen            DateTime?                  @db.Timestamp(6)
   id_tipoproducto          String?                    @db.VarChar(50)
+  vi_detallepedido         vi_detallepedido[]
   vi_inventarioalmacen     vi_inventarioalmacen[]
   vi_inventariomotorizado  vi_inventariomotorizado[]
   vi_tipoproducto          vi_tipoproducto?           @relation(fields: [id_tipoproducto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_producto")
@@ -518,206 +534,3 @@ model vi_venta {
   vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
 }
 
-enum PAYMENT_COLLECTION_STATUS_ENUM {
-  not_paid
-  awaiting
-  authorized
-  partially_authorized
-  canceled
-}
-
-enum PAYMENT_COLLECTION_TYPE_ENUM {
-  order_edit
-}
-
-enum cart_type_enum {
-  default
-  swap
-  draft_order
-  payment_link
-  claim
-}
-
-enum claim_item_reason_enum {
-  missing_item
-  wrong_item
-  production_failure
-  other
-}
-
-enum claim_order_fulfillment_status_enum {
-  not_fulfilled
-  partially_fulfilled
-  fulfilled
-  partially_shipped
-  shipped
-  partially_returned
-  returned
-  canceled
-  requires_action
-}
-
-enum claim_order_payment_status_enum {
-  na
-  not_refunded
-  refunded
-}
-
-enum claim_order_type_enum {
-  refund
-  replace
-}
-
-enum discount_condition_operator_enum {
-  in
-  not_in
-}
-
-enum discount_condition_type_enum {
-  products
-  product_types
-  product_collections
-  product_tags
-  customer_groups
-}
-
-enum discount_rule_allocation_enum {
-  total
-  item
-}
-
-enum discount_rule_type_enum {
-  fixed
-  percentage
-  free_shipping
-}
-
-enum draft_order_status_enum {
-  open
-  completed
-}
-
-enum invite_role_enum {
-  admin
-  member
-  developer
-}
-
-enum order_fulfillment_status_enum {
-  not_fulfilled
-  partially_fulfilled
-  fulfilled
-  partially_shipped
-  shipped
-  partially_returned
-  returned
-  canceled
-  requires_action
-}
-
-enum order_item_change_type_enum {
-  item_add
-  item_remove
-  item_update
-}
-
-enum order_payment_status_enum {
-  not_paid
-  awaiting
-  captured
-  partially_refunded
-  refunded
-  canceled
-  requires_action
-}
-
-enum order_status_enum {
-  pending
-  completed
-  archived
-  canceled
-  requires_action
-}
-
-enum payment_session_status_enum {
-  authorized
-  pending
-  requires_more
-  error
-  canceled
-}
-
-enum price_list_status_enum {
-  active
-  draft
-}
-
-enum price_list_type_enum {
-  sale
-  override
-}
-
-enum product_status_enum {
-  draft
-  proposed
-  published
-  rejected
-}
-
-enum refund_reason_enum {
-  discount
-  return
-  swap
-  claim
-  other
-}
-
-enum return_status_enum {
-  requested
-  received
-  requires_action
-  canceled
-}
-
-enum shipping_option_price_type_enum {
-  flat_rate
-  calculated
-}
-
-enum shipping_option_requirement_type_enum {
-  min_subtotal
-  max_subtotal
-}
-
-enum shipping_profile_type_enum {
-  default
-  gift_card
-  custom
-}
-
-enum swap_fulfillment_status_enum {
-  not_fulfilled
-  fulfilled
-  shipped
-  partially_shipped
-  canceled
-  requires_action
-}
-
-enum swap_payment_status_enum {
-  not_paid
-  awaiting
-  captured
-  confirmed
-  canceled
-  difference_refunded
-  partially_refunded
-  refunded
-  requires_action
-}
-
-enum user_role_enum {
-  admin
-  member
-  developer
-}

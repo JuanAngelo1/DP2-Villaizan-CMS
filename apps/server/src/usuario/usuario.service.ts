@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { vi_usuario } from "@prisma/client"
 import { CreateUsuarioDto } from './dto/usuario.dto';
-import { v4 as uuidv4 } from 'uuid'; 
+import { v4 as uuidv4 } from 'uuid';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuarioService {
@@ -24,6 +25,8 @@ export class UsuarioService {
     async createUsuario(data: CreateUsuarioDto): Promise<vi_usuario> {
         const generatedId = `us-${uuidv4().split('-')[0]}`;
         const generatedPersonaId = `per-${uuidv4().split('-')[0]}`;
+        const hashedPassword = await bcrypt.hash(data.contrasena, 10); 
+
         
         await this.prisma.vi_persona.create({
           data: {
@@ -41,7 +44,7 @@ export class UsuarioService {
             concuenta: true,
             numerotelefono: data.numerotelefono,
             correo: data.correo,
-            contrasena: data.contrasena,
+            contrasena: hashedPassword,
             id_persona: generatedPersonaId,
             usuariocreacion: '2A',
           },
