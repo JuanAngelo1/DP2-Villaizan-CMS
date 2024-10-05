@@ -7,9 +7,10 @@ import { UsuarioService } from './usuario/usuario.service';
 import { PersonaModule } from './persona/persona.module';
 import { AuthModule } from './auth/auth.module';
 import { PublicacionModule } from './publicacion/publicacion.module';
+import { ArchivoModule } from './archivo/archivo.module';
 
 @Module({
-  imports: [ConfigModule, PrismaModule, UsuarioModule, PersonaModule, AuthModule, PublicacionModule],
+  imports: [ConfigModule, PrismaModule, UsuarioModule, PersonaModule, AuthModule, PublicacionModule, ArchivoModule],
   controllers: [UsuarioController],
   providers: [UsuarioService],
 })
