@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { cms_publicacion } from '@prisma/client';
+import { vi_publicacion } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 import { CreatePublicacionDto } from './dto/pub.dto';
 import { GoogleDriveHelper } from '../utils/google-drive.helper';
+import * as fs from 'fs';
 
 @Injectable()
 export class PublicacionService {
@@ -12,14 +13,14 @@ export class PublicacionService {
     this.googleDriveHelper = new GoogleDriveHelper();
   }
 
-  async getAllPublicaciones(): Promise<cms_publicacion[]> {
-    return this.prisma.cms_publicacion.findMany();
+  async getAllPublicaciones(): Promise<vi_publicacion[]> {
+    return this.prisma.vi_publicacion.findMany();
   }
 
-  async getPublicacionByID(id: number): Promise<cms_publicacion> {
-    return this.prisma.cms_publicacion.findUnique({
+  async getPublicacionByID(id: number): Promise<vi_publicacion> {
+    return this.prisma.vi_publicacion.findUnique({
       where: {
-        idpublicacion: id,
+        id: id,
       },
     });
   }
@@ -27,24 +28,26 @@ export class PublicacionService {
   async createPublicacion(
     data: CreatePublicacionDto,
     file: Express.Multer.File,
-  ): Promise<cms_publicacion> {
+  ): Promise<vi_publicacion> {
     try {
       const imageUrl = await this.googleDriveHelper.uploadFile(
-        file.path,
+        '.',
         file.originalname,
       );
 
-      const nuevaPublicacion = await this.prisma.cms_publicacion.create({
+      const nuevaPublicacion = this.prisma.vi_publicacion.create({
         data: {
           titulo: data.titulo,
           urlimagen: imageUrl,
           descripcion: data.descripcion,
           fechapublicacion: data.fechapublicacion,
-          idcategoria: data.idcategoria,
-          idtipopublicacion: data.idtipopublicacion,
-          idestadopublicacion: data.idestadopublicacion,
+          id_categoria_publicacion: data.idcategoria,
+          id_tipo_publicacion: data.idtipopublicacion,
+          id_estado_publicacion: data.idestadopublicacion,
         },
       });
+
+      fs.unlinkSync(file.path);
       return nuevaPublicacion;
     } catch (error) {
       console.error(error);
@@ -54,20 +57,20 @@ export class PublicacionService {
 
   async updatePublicacion(
     id: number,
-    data: cms_publicacion,
-  ): Promise<cms_publicacion> {
-    return this.prisma.cms_publicacion.update({
+    data: vi_publicacion,
+  ): Promise<vi_publicacion> {
+    return this.prisma.vi_publicacion.update({
       where: {
-        idpublicacion: id,
+        id: id,
       },
       data,
     });
   }
 
-  async deletePublicacion(id: number): Promise<cms_publicacion> {
-    return this.prisma.cms_publicacion.delete({
+  async deletePublicacion(id: number): Promise<vi_publicacion> {
+    return this.prisma.vi_publicacion.delete({
       where: {
-        idpublicacion: id,
+        id: id,
       },
     });
   }

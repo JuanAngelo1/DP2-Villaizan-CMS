@@ -1,13 +1,14 @@
 import { google } from 'googleapis';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import * as mime from 'mime-types';
 
 export class GoogleDriveHelper {
   private drive;
 
   constructor() {
     const auth = new google.auth.GoogleAuth({
-      keyFile: './villaizan-2a-cms-drive.json', // Ruta al archivo de credenciales
+      keyFile: './src/utils/villaizan-2a-cms-drive.json', // Ruta al archivo de credenciales
       scopes: ['https://www.googleapis.com/auth/drive.file'],
     });
 
@@ -15,13 +16,14 @@ export class GoogleDriveHelper {
   }
 
   async uploadFile(filePath: string, fileName: string): Promise<string> {
+    const mimeType = mime.lookup(fileName) || 'application/octet-stream';
     const fileMetadata = {
       name: `${uuidv4()}-${fileName}`, // Generar un nombre único para la imagen
       parents: [process.env.DRIVE_FOLDER_ID], // ID de la carpeta en Google Drive donde se subirá la imagen
     };
 
     const media = {
-      mimeType: 'image/jpeg', // Cambia esto según el tipo de imagen
+      mimeType: mimeType, // Cambia esto según el tipo de imagen
       body: fs.createReadStream(filePath),
     };
 

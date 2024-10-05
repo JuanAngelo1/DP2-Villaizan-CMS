@@ -10,10 +10,14 @@ import {
   BadRequestException,
   Req,
   Res,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { PublicacionService } from './publicacion.service';
-import { cms_publicacion } from '@prisma/client';
+import { vi_publicacion } from '@prisma/client';
 import { Request, Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreatePublicacionDto } from './dto/pub.dto';
 
 @Controller('publicaciones')
 export class PublicacionController {
@@ -43,8 +47,29 @@ export class PublicacionController {
   }
 
   @Post()
-  async createPublicacion(@Body() data: cms_publicacion) {
-    return this.publicacionService.createPublicacion(data);
+  @UseInterceptors(FileInterceptor('file'))
+  async createPublicacion(
+    @Body() data: CreatePublicacionDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    try {
+      const result = await this.publicacionService.createPublicacion(
+        data,
+        file,
+      );
+      return {
+        status: 'Ok!',
+        message: 'Publicación creada exitosamente',
+        result: result,
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        status: 'Error!',
+        message: 'Internal Server Error',
+        result: [],
+      };
+    }
   }
 
   @Get(':id')
@@ -66,7 +91,7 @@ export class PublicacionController {
   }
 
   @Put(':id')
-  async updateUsuario(@Param('id') id: number, @Body() data: cms_publicacion) {
+  async updateUsuario(@Param('id') id: number, @Body() data: vi_publicacion) {
     try {
       return this.publicacionService.updatePublicacion(id, data);
     } catch (error) {

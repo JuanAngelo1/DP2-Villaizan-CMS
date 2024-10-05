@@ -22,6 +22,24 @@ model vi_persona {
   vi_usuario           vi_usuario[]
 }
 
+model vi_publicacion {
+  id                        Int                         @id @default(autoincrement())
+  titulo                    String                      @db.VarChar(255)
+  urlimagen                 String?                     @db.VarChar(255)
+  descripcion               String
+  fechacreacion             DateTime                    @default(now()) @db.Timestamp(6)
+  fechapublicacion          DateTime?                   @db.Timestamp(6)
+  fechaultimamodificacion   DateTime                    @default(now()) @db.Timestamp(6)
+  estaactivo                Boolean                     @default(true)
+  id_categoria_publicacion  Int?
+  id_tipo_publicacion       Int?
+  id_estado_publicacion     Int?
+  vi_categoria_publicacion  vi_categoria_publicacion?   @relation(fields: [id_categoria_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria")
+  vi_estado_publicacion     vi_estado_publicacion?      @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
+  vi_tipo_publicacion       vi_tipo_publicacion?        @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
+  vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
+}
+
 model vi_usuario {
   id                   String      @id @db.VarChar(50)
   nombre               String      @db.VarChar(100)
@@ -41,68 +59,50 @@ model vi_usuario {
   vi_persona           vi_persona? @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona")
 }
 
-model cms_categoria_publicacion {
-  id              Int               @id @default(autoincrement())
-  nombre          String            @db.VarChar(255)
-  descripcion     String?
-  fechacreacion   DateTime          @default(now()) @db.Timestamp(6)
-  color           String?           @db.VarChar(20)
-  estaactivo      Boolean           @default(true)
-  cms_publicacion cms_publicacion[]
+model vi_categoria_publicacion {
+  id             Int              @id @default(autoincrement())
+  nombre         String           @db.VarChar(255)
+  descripcion    String?
+  fechacreacion  DateTime         @default(now()) @db.Timestamp(6)
+  color          String?          @db.VarChar(20)
+  estaactivo     Boolean          @default(true)
+  vi_publicacion vi_publicacion[]
 }
 
-model cms_estado_publicacion {
-  id              Int               @id
-  nombre          String            @db.VarChar(255)
-  descripcion     String?
-  fechacreacion   DateTime          @default(now()) @db.Timestamp(6)
-  color           String?           @db.VarChar(20)
-  estaactivo      Boolean           @default(true)
-  cms_publicacion cms_publicacion[]
+model vi_estado_publicacion {
+  id             Int              @id
+  nombre         String           @db.VarChar(255)
+  descripcion    String?
+  fechacreacion  DateTime         @default(now()) @db.Timestamp(6)
+  color          String?          @db.VarChar(20)
+  estaactivo     Boolean          @default(true)
+  vi_publicacion vi_publicacion[]
 }
 
-model cms_etiqueta_publicacion {
-  id                         Int                          @id @default(autoincrement())
-  nombre                     String                       @db.VarChar(255)
-  descripcion                String?
-  fechacreacion              DateTime                     @default(now()) @db.Timestamp(6)
-  color                      String?                      @db.VarChar(20)
-  estaactivo                 Boolean                      @default(true)
-  cms_publicacion_x_etiqueta cms_publicacion_x_etiqueta[]
+model vi_etiqueta_publicacion {
+  id                        Int                         @id @default(autoincrement())
+  nombre                    String                      @db.VarChar(255)
+  descripcion               String?
+  fechacreacion             DateTime                    @default(now()) @db.Timestamp(6)
+  color                     String?                     @db.VarChar(20)
+  estaactivo                Boolean                     @default(true)
+  vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
 }
 
-model cms_publicacion {
-  idpublicacion              Int                          @id @default(autoincrement())
-  titulo                     String                       @db.VarChar(255)
-  urlimagen                  String?                      @db.VarChar(255)
-  descripcion                String
-  fechacreacion              DateTime                     @default(now()) @db.Timestamp(6)
-  fechapublicacion           DateTime?                    @db.Timestamp(6)
-  fechaultimamodificacion    DateTime                     @default(now()) @db.Timestamp(6)
-  estaactivo                 Boolean                      @default(true)
-  idcategoria                Int?
-  idtipopublicacion          Int?
-  idestadopublicacion        Int?
-  cms_categoria_publicacion  cms_categoria_publicacion?   @relation(fields: [idcategoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria")
-  cms_estado_publicacion     cms_estado_publicacion?      @relation(fields: [idestadopublicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
-  cms_tipo_publicacion       cms_tipo_publicacion?        @relation(fields: [idtipopublicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
-  cms_publicacion_x_etiqueta cms_publicacion_x_etiqueta[]
+model vi_publicacion_x_etiqueta {
+  id_publicacion          Int
+  id_etiqueta_publicacion Int
+  vi_etiqueta_publicacion vi_etiqueta_publicacion @relation(fields: [id_etiqueta_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_etiqueta")
+  vi_publicacion          vi_publicacion          @relation(fields: [id_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_publicacion")
+
+  @@id([id_publicacion, id_etiqueta_publicacion])
 }
 
-model cms_publicacion_x_etiqueta {
-  idpublicacion            Int
-  idetiqueta               Int
-  cms_etiqueta_publicacion cms_etiqueta_publicacion @relation(fields: [idetiqueta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_etiqueta")
-  cms_publicacion          cms_publicacion          @relation(fields: [idpublicacion], references: [idpublicacion], onDelete: NoAction, onUpdate: NoAction, map: "fk_publicacion")
-
-  @@id([idpublicacion, idetiqueta])
-}
-
-model cms_tipo_publicacion {
-  id              Int               @id
-  nombre          String            @db.VarChar(255)
-  descripcion     String?
-  fechacreacion   DateTime          @default(now()) @db.Timestamp(6)
-  estaactivo      Boolean           @default(true)
-  cms_publicacion cms_publicacion[]
+model vi_tipo_publicacion {
+  id             Int              @id
+  nombre         String           @db.VarChar(255)
+  descripcion    String?
+  fechacreacion  DateTime         @default(now()) @db.Timestamp(6)
+  estaactivo     Boolean          @default(true)
+  vi_publicacion vi_publicacion[]
 }
