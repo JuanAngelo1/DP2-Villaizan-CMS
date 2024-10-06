@@ -69,4 +69,15 @@ export class UsuarioService {
         })
     }
 
+
+    async findByEmail(correo: string): Promise<vi_usuario | null> {
+        return this.prisma.vi_usuario.findUnique({
+            where: {
+                correo,
+            }
+        });
+    }
+
 }
+
+
