@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
@@ -7,30 +7,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       authorize: async (credentials) => {
         console.log("See the credentials: ", credentials);
-        let user = {
-          name: "John Doe",
-          email: "ascascscs",
-        };
 
         try {
-          type AuthResponseType = {
-            message: string;
-            statusCode: number;
-          };
-
-          const response: AuthResponseType = await axios.post("http://localhost:5000/auth", {
-            email: "lalalla@asc.com",
-            password: "asca",
+          const response = await axios.post("http://localhost:5000/auth", {
+            email: "dibujitos@gmail.com",
+            password: "password123",
           });
 
-          console.log("See API response: ", response);
+          const data = response.data;
+          console.log("See API response: ", data);
 
-          if (response.statusCode !== 200) {
+          if (data.statusCode !== 200) {
             console.log("Invalid credentials");
             return null;
           }
 
-          return user;
+          return data.user;
         } catch (error) {
           console.log("See the error: ", error);
           return null;
