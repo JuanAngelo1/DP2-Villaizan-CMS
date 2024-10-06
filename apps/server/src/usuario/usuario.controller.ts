@@ -30,8 +30,21 @@ export class UsuarioController {
     }
        
     @Post()
-    async createUsuario(@Body() data: vi_usuario) {
-        return this.usuarioService.createUsuario(data);
+    async createUsuario(@Body() data: vi_usuario, @Res() response: Response): Promise<any> {
+        try {
+            const result = await this.usuarioService.createUsuario(data);
+            return response.status(201).json({
+                status: "Ok!",
+                message: "Usuario creado exitosamente",
+                result: result,
+            });
+        } catch (err) {
+            return response.status(500).json({
+                status: "Error!",
+                message: "Error al crear el usuario",
+                result: [],
+            });
+        }
     }
 
     @Get(':id')
