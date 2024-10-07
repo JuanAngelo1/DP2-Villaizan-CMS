@@ -18,7 +18,7 @@ import { CategoriaDto } from './dto/categoria.dto';
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
   @Get()
-  async getAllPubs(@Res() response: Response): Promise<any> {
+  async getAllCategorias(@Res() response: Response): Promise<any> {
     try {
       const result = await this.categoriaService.getAllCategorias();
       return response.status(200).json({
@@ -60,16 +60,26 @@ export class CategoriaController {
     @Body() data: CategoriaDto,
   ) {
     try {
-      return this.categoriaService.updateCategoria(id, data);
+      const result = this.categoriaService.updateCategoria(id, data);
+      return {
+        status: 'Success',
+        message: 'Categoria actualizada exitosamente',
+        result: result,
+      };
     } catch (error) {
-      throw new NotFoundException('Usuario no existe');
+      throw new NotFoundException('Categoria no existe');
     }
   }
 
   @Delete(':id')
   async deleteCategoriaByID(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.categoriaService.deleteCategoria(id);
+      const result = await this.categoriaService.deleteCategoria(id);
+      return {
+        status: 'Success',
+        message: 'Categoria eliminada exitosamente',
+        result: result,
+      };
     } catch (error) {
       throw new NotFoundException('Categoria no existe');
     }
