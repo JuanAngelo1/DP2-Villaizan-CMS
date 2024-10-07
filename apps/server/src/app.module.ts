@@ -11,6 +11,7 @@ import { ArchivoModule } from './archivo/archivo.module';
 import { ArchivoController } from './archivo/archivo.controller';
 import { ArchivoService } from './archivo/archivo.service';
 import { CategoriaModule } from './categoria/categoria.module';
+import { EtiquetaModule } from './etiqueta/etiqueta.module';
 
 @Module({
   imports: [
@@ -22,8 +23,7 @@ import { CategoriaModule } from './categoria/categoria.module';
     PublicacionModule,
     ArchivoModule,
     CategoriaModule,
+    EtiquetaModule,
   ],
-  controllers: [UsuarioController, ArchivoController],
-  providers: [UsuarioService, ArchivoService],
 })
 export class AppModule {}
