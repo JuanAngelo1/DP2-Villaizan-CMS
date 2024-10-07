@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Separator } from "@repo/ui/components/separator";
+import LogoBackHome from "../_components/LogoBackHome";
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,7 +24,7 @@ function LoginPage() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <img src="VillaizanLogo2png.png" className="w-[200px]" />
+      <LogoBackHome/>
       <p className="text-muted-foreground mt-3 text-sm">
         Ingresa tus credenciales para acceder en el sistema
       </p>

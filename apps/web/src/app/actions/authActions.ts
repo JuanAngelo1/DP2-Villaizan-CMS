@@ -1,7 +1,7 @@
 "use client";
 
-import { signIn, signOut } from "next-auth/react";
 import { AuthError } from "next-auth";
+import { signIn, signOut } from "next-auth/react";
 
 export async function handleCredentialsSignIn({ email, password }: { email: string; password: string }) {
   try {
@@ -26,3 +26,4 @@ export async function handleCredentialsSignIn({ email, password }: { email: stri
 export async function handleSignOut() {
   await signOut();
 }
+
