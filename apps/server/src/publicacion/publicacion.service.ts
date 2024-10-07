@@ -25,6 +25,18 @@ export class PublicacionService {
     });
   }
 
+  async getFirstsEditedPublicacion(numero: number): Promise<vi_publicacion[]> {
+    return this.prisma.vi_publicacion.findMany({
+      where: {
+        estaactivo: true,
+      },
+      take: numero,
+      orderBy: {
+        fechaultimamodificacion: 'desc',
+      },
+    });
+  }
+
   async createPublicacion(
     data: CreatePublicacionDto,
     file: Express.Multer.File,

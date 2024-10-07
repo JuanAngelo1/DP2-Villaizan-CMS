@@ -8,9 +8,10 @@ import { PersonaModule } from './persona/persona.module';
 import { AuthModule } from './auth/auth.module';
 import { PublicacionModule } from './publicacion/publicacion.module';
 import { ArchivoModule } from './archivo/archivo.module';
+import { CategoriaModule } from './categoria/categoria.module';
 
 @Module({
-  imports: [ConfigModule, PrismaModule, UsuarioModule, PersonaModule, AuthModule, PublicacionModule, ArchivoModule],
+  imports: [ConfigModule, PrismaModule, UsuarioModule, PersonaModule, AuthModule, PublicacionModule, ArchivoModule, CategoriaModule],
   controllers: [UsuarioController],
   providers: [UsuarioService],
 })

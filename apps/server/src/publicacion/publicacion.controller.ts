@@ -81,6 +81,21 @@ export class PublicacionController {
     return publicacionFound;
   }
 
+  @Get('recien_editados/:numero')
+  async getFirstsEdited(@Param('numero') numero: string) {
+    const numeroParsed = parseInt(numero);
+    if (isNaN(numeroParsed) || numeroParsed <= 0) {
+      throw new BadRequestException(
+        'El parámetro debe ser un número entero positivo',
+      );
+    }
+    const publicaciones =
+      await this.publicacionService.getFirstsEditedPublicacion(numeroParsed);
+    if (!publicaciones || publicaciones.length === 0)
+      throw new BadRequestException('Publicación no existe');
+    return publicaciones;
+  }
+
   @Delete(':id')
   async deleteUsuarioByID(@Param('id') id: number) {
     try {
