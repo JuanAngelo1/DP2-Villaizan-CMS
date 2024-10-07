@@ -35,65 +35,63 @@ CREATE TABLE vi_persona (
 
 --NUESTRA TABLAS
 
-CREATE TABLE vi_tipopublicacion (
+CREATE TABLE vi_tipo_publicacion (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    estaActivo BOOLEAN DEFAULT TRUE NOT NULL
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
 
-CREATE TABLE vi_estadopublicacion (
+CREATE TABLE vi_estado_publicacion (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     color VARCHAR(20),
-    estaActivo BOOLEAN DEFAULT TRUE NOT NULL
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
-CREATE TABLE vi_categoria (
+CREATE TABLE vi_categoria_publicacion (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     color VARCHAR(20),
-    estaActivo BOOLEAN DEFAULT TRUE NOT NULL
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
-CREATE TABLE vi_etiqueta (
+CREATE TABLE vi_etiqueta_publicacion (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     color VARCHAR(20),
-    estaActivo BOOLEAN DEFAULT TRUE NOT NULL
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
 CREATE TABLE vi_publicacion (
-    idPublicacion SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
     urlImagen VARCHAR(255),
     descripcion TEXT NOT NULL,
-    fechaCreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    fechaPublicacion TIMESTAMP,
-    fechaUltimaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    estaActivo BOOLEAN DEFAULT TRUE NOT NULL,
-    idCategoria INT,  -- Relación con la tabla Categoria
-    idTipoPublicacion INT, -- Relación con la tabla TipoPublicacion
-    idEstadoPublicacion INT, -- Relación con la tabla EstadoPublicacion
-    CONSTRAINT fk_categoria FOREIGN KEY (idCategoria) REFERENCES vi_categoria(id),
-    CONSTRAINT fk_tipo_publicacion FOREIGN KEY (idTipoPublicacion) REFERENCES vi_tipopublicacion(id),
-    CONSTRAINT fk_estado_publicacion FOREIGN KEY (idEstadoPublicacion) REFERENCES vi_estadopublicacion(id)
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechapublicacion TIMESTAMP,
+    fechaultimaModificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
+    id_categoria_publicacion INT,  -- Relación con la tabla Categoria
+    id_tipo_publicacion INT, -- Relación con la tabla TipoPublicacion
+    id_estado_publicacion INT, -- Relación con la tabla EstadoPublicacion
+    CONSTRAINT fk_categoria FOREIGN KEY (id_categoria_publicacion) REFERENCES vi_categoria_publicacion(id),
+    CONSTRAINT fk_tipo_publicacion FOREIGN KEY (id_tipo_publicacion) REFERENCES vi_tipo_publicacion(id),
+    CONSTRAINT fk_estado_publicacion FOREIGN KEY (id_estado_publicacion) REFERENCES vi_estado_publicacion(id)
 );
 
-CREATE TABLE vi_publicacion_etiqueta (
-    idPublicacion INT,  -- Relación con la tabla Publicacion
-    idEtiqueta INT,     -- Relación con la tabla Etiqueta
-    PRIMARY KEY (idPublicacion, idEtiqueta), -- Clave primaria compuesta
-    CONSTRAINT fk_publicacion FOREIGN KEY (idPublicacion) REFERENCES vi_publicacion(idPublicacion),
-    CONSTRAINT fk_etiqueta FOREIGN KEY (idEtiqueta) REFERENCES vi_etiqueta(id)
+CREATE TABLE vi_publicacion_x_etiqueta (
+    id_publicacion INT,  -- Relación con la tabla Publicacion
+    id_etiqueta_publicacion INT,     -- Relación con la tabla Etiqueta
+    PRIMARY KEY (id_publicacion, id_etiqueta_publicacion), -- Clave primaria compuesta
+    CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
+    CONSTRAINT fk_etiqueta FOREIGN KEY (id_etiqueta_publicacion) REFERENCES vi_etiqueta_publicacion(id)
 );
-
-

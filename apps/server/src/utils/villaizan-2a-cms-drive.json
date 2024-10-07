@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "villaizan-2a-cms",
+  "private_key_id": "aafa3cbd491dec26d5fe8fa4af1624a15941350c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/7nYMI9SjIJRB\nD2Em5wQ4qkT8R7IkR6yFOmtlQMtVLHfpoYTgwYVMwv/DZ8cKENxr0TMjMXekBcvy\nnJD5NXA+bcRIeH1Ay0MdKqPWUzCfEvAt327XyNgFHwgV3LNW+EQz6YIWdEq9203+\nR6n59reLwojstXt20Gt0yclWS84cjWXHNpRvxZgmWtAUs4utAyq5xX5bjYdX8bbP\nXpdCeueHiJG34gh7NlSQnJ6P1vF5QcY62nKxaHmTBF5UPqIxSyuuai2+DFDa1yD9\nkgC71Lm0EJXJwlFR92ui9L9CkUczj+gCa7Yh3IVFUUvj8UyoE4Cix9Us9Qf9jIR5\nZrqJDrudAgMBAAECggEASq9iJCs1LR0aU47GgTrX+6zWF01W1qNFULqA2++wr74U\nE0eUy1jCpDIlEEarvxD8lL/dJE61fY/74rZl+3N97+0KuiCYrMPro8fZ5SaN/viB\nmXgeS72NwcBnhwpQhwEomQK+ajpqcyKJYO9GB0yn86yJV4LvPjav+cwjmn74/0ah\nzen2hipXLJ8moTocrq6wfX0R+WFY0kJweIb47alMfoNM5o0GNh1V3CwV0Gpg4ZFu\ngVWoALtYtTS9ygp5hiFMIPWveNBs2r0sKjMTt4iWmmj09FPYnCsiHQROBRZF1fJf\n27iXFDmQPn9uW9K/TwDQFxvSesD4GvXoQzhLfNrpiQKBgQDiSqdnop/0TUw8Ul5P\nGq42ta1fL1LvwqpnlHSdecwsOgqDYM/k04FNOg2xmRs0lKvlqbkiokiA+b0aW+l5\nrKe9h0WkhBb7tNkhZ1sv+uxZKKiQXRZi1gK2U0QqzDY4Vbil6g7TjoeaWxY6wvrw\nnmr1E33BVTlreiqCQ6HumQV5EwKBgQDZIQLafCX3x5EVkoCfpJaIUmsf+KiCyZYQ\nTLAE8LapEyav+vqkRq4kfqHbtnckbgdKZ4d9kcWCqWfXGwCzBbRK0KdK0pBE390L\nDpUeBfLvqZYVeRx5GDyZw6to5tLEYRTGj7H2dqfPbduc6UxWW8WBTR3uwUW7RYvG\nuydd7My+jwKBgEq04rdwFOaOblCr0L7EzCb7q5T1Bqho1+ECPc2PXDxtnPLqjze4\nK8PXGpY7OaQOQQG9GoW4lb8es7N0DIxC183WTsOVaBEJD3XbrVsVt9lndt7SHIXc\nqWCP9L08VdobUq5TqzlkoJfw4lHb9QRjCGSIXsfo3uAAoPAIa/ldQ1VJAoGBAIB4\nmNCfrnNqYHzsHzDWWL82TO4w2bvw/NqOFYQGzX1CuJxdmxnCPF2Zk7mFv/8NH0E1\n+qQgsUW7aJaNAp/qWx/9T07lQbmO36IgMbj++hw2MnhoHaHE5m5wqSY7lS/e5UUL\nVtgmouoH7W5tV96tFDKKZ5CSSOkioC6pJATeDNMfAoGAbL7XksHsIRCQIeGz7QQn\n7GPZLNIE3BfQgD+Sii4eEwWeBtVXZKFRDV7Uq0hwSN6+Vj0qFmncf6GVHfppUI4n\nDMw3RhdjdqmNeirUCJUQJQHHxc+xiUrHbnplbVRxyGDZSiD/3wX5VMh7Wtn0+3Cf\niTl0S73WTebYBiFqtq8Chmo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "villaizan-bucket@villaizan-2a-cms.iam.gserviceaccount.com",
+  "client_id": "109640055895889243735",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/villaizan-bucket%40villaizan-2a-cms.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
