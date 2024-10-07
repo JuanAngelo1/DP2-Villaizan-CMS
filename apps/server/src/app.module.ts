@@ -8,10 +8,22 @@ import { PersonaModule } from './persona/persona.module';
 import { AuthModule } from './auth/auth.module';
 import { PublicacionModule } from './publicacion/publicacion.module';
 import { ArchivoModule } from './archivo/archivo.module';
+import { ArchivoController } from './archivo/archivo.controller';
+import { ArchivoService } from './archivo/archivo.service';
+import { CategoriaModule } from './categoria/categoria.module';
 
 @Module({
-  imports: [ConfigModule, PrismaModule, UsuarioModule, PersonaModule, AuthModule, PublicacionModule, ArchivoModule],
-  controllers: [UsuarioController],
-  providers: [UsuarioService],
+  imports: [
+    ConfigModule,
+    PrismaModule,
+    UsuarioModule,
+    PersonaModule,
+    AuthModule,
+    PublicacionModule,
+    ArchivoModule,
+    CategoriaModule,
+  ],
+  controllers: [UsuarioController, ArchivoController],
+  providers: [UsuarioService, ArchivoService],
 })
 export class AppModule {}
