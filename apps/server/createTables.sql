@@ -7,15 +7,60 @@ CREATE TABLE vi_usuario (
     correo VARCHAR(150) NOT NULL UNIQUE,
     contrasena VARCHAR(255) NOT NULL,
     fechaultimologin TIMESTAMP,
-	id_persona VARCHAR(50),
-    CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
-    --trazabilidad
+	id_persona VARCHAR(50),  -- Relación con Persona
+    -- Nuevas relaciones
+    idRol VARCHAR(50),  -- Relación con la tabla Rol
+    idPermiso VARCHAR(50),  -- Relación con la tabla Permiso
+    -- Trazabilidad
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
     desactivadoen TIMESTAMP,
     creadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     actualizadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     usuariocreacion VARCHAR(50) NOT NULL,
-    usuarioactualizacion VARCHAR(50)
+    usuarioactualizacion VARCHAR(50),
+    CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
+    CONSTRAINT fk_rol FOREIGN KEY (idRol) REFERENCES vi_rol(id),
+    CONSTRAINT fk_permiso FOREIGN KEY (idPermiso) REFERENCES vi_permiso(id)
+);
+
+
+CREATE TABLE vi_rol (
+    id VARCHAR(50) PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    estaActivo BOOLEAN DEFAULT TRUE NOT NULL,
+    eliminadoEn TIMESTAMP,
+    creadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    actualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    usuarioCreacion VARCHAR(50) NOT NULL,
+    usuarioActualizacion VARCHAR(50)
+);
+
+
+CREATE TABLE vi_permiso (
+    id VARCHAR(50) PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    estaActivo BOOLEAN DEFAULT TRUE NOT NULL,
+    eliminadoEn TIMESTAMP,
+    creadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    actualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    usuarioCreacion VARCHAR(50) NOT NULL,
+    usuarioActualizacion VARCHAR(50)
+);
+
+CREATE TABLE vi_notificacion (
+    idNotificacion VARCHAR(50) PRIMARY KEY,
+    asunto VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    tipoNotificacion VARCHAR(100),
+    leido BOOLEAN DEFAULT FALSE NOT NULL,
+    estaActivo BOOLEAN DEFAULT TRUE NOT NULL,
+    eliminadoEn TIMESTAMP,
+    creadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    actualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    usuarioCreacion VARCHAR(50) NOT NULL,
+    usuarioActualizacion VARCHAR(50),
+    idUsuario VARCHAR(50),  -- Relación con la tabla Usuario
+    CONSTRAINT fk_usuario FOREIGN KEY (idUsuario) REFERENCES vi_usuario(id)
 );
 
 CREATE TABLE vi_persona (

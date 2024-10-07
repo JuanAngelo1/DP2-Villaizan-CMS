@@ -47,6 +47,8 @@ export class UsuarioService {
             contrasena: hashedPassword,
             id_persona: generatedPersonaId,
             usuariocreacion: '2A',
+            idpermiso: data.idpermiso,
+            idrol: data.idRol,
           },
         });
       }
