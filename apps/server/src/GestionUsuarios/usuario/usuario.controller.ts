@@ -2,6 +2,7 @@ import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, Bad
 import { UsuarioService } from './usuario.service';
 import { vi_usuario } from "@prisma/client"
 import { Request, Response } from 'express';
+import { CreateUsuarioDto } from './dto/usuario.dto';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -28,7 +29,7 @@ export class UsuarioController {
     }
        
     @Post()
-    async createUsuario(@Body() data: vi_usuario, @Res() response: Response): Promise<any> {
+    async createUsuario(@Body() data: CreateUsuarioDto, @Res() response: Response): Promise<any> {
         try {
             const existingUser = await this.usuarioService.findByEmail(data.correo);
             if (existingUser) {

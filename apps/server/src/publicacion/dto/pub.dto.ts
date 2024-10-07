@@ -8,4 +8,5 @@ export class CreatePublicacionDto {
   id_categoriapublicacion: number;
   id_tipopublicacion: number;
   id_estadopublicacion: number;
+  id_usuario: string;
 }

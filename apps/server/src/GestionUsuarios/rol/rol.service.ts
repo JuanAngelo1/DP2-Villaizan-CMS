@@ -20,6 +20,14 @@ export class RolService {
         })
     }
 
+    async getRolByName(nombre: string): Promise<vi_rol> {
+        return this.prisma.vi_rol.findFirst({
+            where: {
+                nombre
+            }
+        })
+    }
+
     async createRol(name: string): Promise<any> {
         const generatedId = `rol-${uuidv4().split('-')[0]}`;
 

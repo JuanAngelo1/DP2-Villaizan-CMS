@@ -46,7 +46,7 @@ export class PublicacionController {
     }
   }
 
-  @Post()
+  @Post('crearPublicacion')
   async createPublicacion(@Body() data: CreatePublicacionDto) {
     try {
       const result = await this.publicacionService.createPublicacion(data);

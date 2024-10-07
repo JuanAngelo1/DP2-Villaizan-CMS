@@ -14,6 +14,11 @@ import { CategoriaModule } from './categoria/categoria.module';
 import { EtiquetaModule } from './etiqueta/etiqueta.module';
 import { RolModule } from './GestionUsuarios/rol/rol.module';
 import { RolController } from './GestionUsuarios/rol/rol.controller';
+import { RolService } from './GestionUsuarios/rol/rol.service';
+import { PermisoModule } from './GestionUsuarios/permiso/permiso.module';
+import { PermisoController } from './GestionUsuarios/permiso/permiso.controller';
+import { PermisoService } from './GestionUsuarios/permiso/permiso.service';
+
 @Module({
   imports: [
     ConfigModule,
@@ -26,8 +31,9 @@ import { RolController } from './GestionUsuarios/rol/rol.controller';
     CategoriaModule,
     EtiquetaModule,
     RolModule,
+    PermisoModule,
   ],
-  controllers: [UsuarioController, ArchivoController, RolController],
-  providers: [UsuarioService, ArchivoService],
+  controllers: [UsuarioController, ArchivoController, RolController,PermisoController],
+  providers: [UsuarioService, ArchivoService,RolService,PermisoService],
 })
 export class AppModule {}

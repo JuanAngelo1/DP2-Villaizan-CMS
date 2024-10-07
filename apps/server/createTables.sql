@@ -9,8 +9,7 @@ CREATE TABLE vi_usuario (
     fechaultimologin TIMESTAMP,
 	id_persona VARCHAR(50),  -- Relación con Persona
     -- Nuevas relaciones
-    idRol VARCHAR(50),  -- Relación con la tabla Rol
-    idPermiso VARCHAR(50),  -- Relación con la tabla Permiso
+    id_rol VARCHAR(50),  -- Relación con la tabla Rol
     -- Trazabilidad
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
     desactivadoen TIMESTAMP,
@@ -20,7 +19,6 @@ CREATE TABLE vi_usuario (
     usuarioactualizacion VARCHAR(50),
     CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
     CONSTRAINT fk_rol FOREIGN KEY (idRol) REFERENCES vi_rol(id),
-    CONSTRAINT fk_permiso FOREIGN KEY (idPermiso) REFERENCES vi_permiso(id)
 );
 
 
@@ -128,9 +126,11 @@ CREATE TABLE vi_publicacion (
     id_categoria_publicacion INT,  -- Relación con la tabla Categoria
     id_tipo_publicacion INT, -- Relación con la tabla TipoPublicacion
     id_estado_publicacion INT, -- Relación con la tabla EstadoPublicacion
+    id_usuario VARCHAR(50),  -- Relación con la tabla Usuario
     CONSTRAINT fk_categoria FOREIGN KEY (id_categoria_publicacion) REFERENCES vi_categoria_publicacion(id),
     CONSTRAINT fk_tipo_publicacion FOREIGN KEY (id_tipo_publicacion) REFERENCES vi_tipo_publicacion(id),
-    CONSTRAINT fk_estado_publicacion FOREIGN KEY (id_estado_publicacion) REFERENCES vi_estado_publicacion(id)
+    CONSTRAINT fk_estado_publicacion FOREIGN KEY (id_estado_publicacion) REFERENCES vi_estado_publicacion(id),
+    CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES vi_usuario(id) -- Nueva relación con Usuario
 );
 
 CREATE TABLE vi_publicacion_x_etiqueta (
@@ -139,4 +139,14 @@ CREATE TABLE vi_publicacion_x_etiqueta (
     PRIMARY KEY (id_publicacion, id_etiqueta_publicacion), -- Clave primaria compuesta
     CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
     CONSTRAINT fk_etiqueta FOREIGN KEY (id_etiqueta_publicacion) REFERENCES vi_etiqueta_publicacion(id)
+);
+
+CREATE TABLE vi_rol_permiso (
+    id_rol VARCHAR(50),  -- Clave foránea hacia la tabla Rol
+    id_permiso VARCHAR(50),  -- Clave foránea hacia la tabla Permiso
+    creadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    actualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id),
+    CONSTRAINT fk_permiso FOREIGN KEY (id_permiso) REFERENCES vi_permiso(id),
+    PRIMARY KEY (id_rol, id_permiso)  -- La clave primaria es la combinación de ambas claves foráneas
 );

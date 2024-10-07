@@ -72,6 +72,24 @@ export class RolController {
         });
     }
 
+    
+    @Get('rolxNombre/:nombre')
+    async getrolByName(@Param('nombre') nombre: string, @Res() response: Response): Promise<any> {
+        const rolfound = await this.rolService.getRolByName(nombre);
+        if (!rolfound) {
+            return response.status(400).json({
+                status: "Error",
+                message: "Rol no existe",
+                result: []
+            });
+        }
+        return response.status(200).json({
+            status: "Success",
+            message: "Rol encontrado",
+            result: rolfound
+        });
+    }
+
     @Delete('eliminarRol/:id')
     async deleteRolByID(@Param('id') id: string, @Res() response: Response): Promise<any> {
         try {

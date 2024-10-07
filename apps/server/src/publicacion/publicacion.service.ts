@@ -45,6 +45,7 @@ export class PublicacionService {
           id_categoria_publicacion: data.id_categoriapublicacion,
           id_tipo_publicacion: data.id_tipopublicacion,
           id_estado_publicacion: data.id_estadopublicacion,
+          id_usuario: data.id_usuario
         },
       });
       return nuevaPublicacion;
