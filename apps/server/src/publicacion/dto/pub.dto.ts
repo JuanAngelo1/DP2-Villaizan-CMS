@@ -5,7 +5,7 @@ export class CreatePublicacionDto {
   urlimagen?: string;
   descripcion: string;
   fechapublicacion?: Date;
-  idcategoria: number;
-  idtipopublicacion: number;
-  idestadopublicacion: number;
+  id_categoriapublicacion: number;
+  id_tipopublicacion: number;
+  id_estadopublicacion: number;
 }

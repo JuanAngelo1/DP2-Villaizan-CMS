@@ -33,7 +33,7 @@ export class PublicacionController {
     try {
       const result = await this.publicacionService.getAllPublicaciones();
       return response.status(200).json({
-        status: 'Ok!',
+        status: 'Success',
         message: 'Publicaciones Encontradas',
         result: result,
       });
@@ -47,18 +47,11 @@ export class PublicacionController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  async createPublicacion(
-    @Body() data: CreatePublicacionDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  async createPublicacion(@Body() data: CreatePublicacionDto) {
     try {
-      const result = await this.publicacionService.createPublicacion(
-        data,
-        file,
-      );
+      const result = await this.publicacionService.createPublicacion(data);
       return {
-        status: 'Ok!',
+        status: 'Success',
         message: 'Publicación creada exitosamente',
         result: result,
       };
@@ -73,7 +66,7 @@ export class PublicacionController {
   }
 
   @Get(':id')
-  async getUsuarioByID(@Param('id') id: number) {
+  async getPublicacionByID(@Param('id') id: number) {
     const publicacionFound =
       await this.publicacionService.getPublicacionByID(id);
     if (!publicacionFound)
@@ -97,20 +90,23 @@ export class PublicacionController {
   }
 
   @Delete(':id')
-  async deleteUsuarioByID(@Param('id') id: number) {
+  async deletePublicacionByID(@Param('id') id: number) {
     try {
       return await this.publicacionService.deletePublicacion(id);
     } catch (error) {
-      throw new NotFoundException('Usuario no existe');
+      throw new NotFoundException('Publicacion no existe');
     }
   }
 
   @Put(':id')
-  async updateUsuario(@Param('id') id: number, @Body() data: vi_publicacion) {
+  async updatePublicacion(
+    @Param('id') id: number,
+    @Body() data: vi_publicacion,
+  ) {
     try {
       return this.publicacionService.updatePublicacion(id, data);
     } catch (error) {
-      throw new NotFoundException('Usuario no existe');
+      throw new NotFoundException('Publicacion no existe');
     }
   }
 }

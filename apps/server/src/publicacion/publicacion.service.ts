@@ -8,10 +8,7 @@ import * as fs from 'fs';
 
 @Injectable()
 export class PublicacionService {
-  private googleDriveHelper: GoogleDriveHelper;
-  constructor(private prisma: PrismaService) {
-    this.googleDriveHelper = new GoogleDriveHelper();
-  }
+  constructor(private prisma: PrismaService) {}
 
   async getAllPublicaciones(): Promise<vi_publicacion[]> {
     return this.prisma.vi_publicacion.findMany();
@@ -37,29 +34,19 @@ export class PublicacionService {
     });
   }
 
-  async createPublicacion(
-    data: CreatePublicacionDto,
-    file: Express.Multer.File,
-  ): Promise<vi_publicacion> {
+  async createPublicacion(data: CreatePublicacionDto): Promise<vi_publicacion> {
     try {
-      const imageUrl = await this.googleDriveHelper.uploadFile(
-        '.',
-        file.originalname,
-      );
-
       const nuevaPublicacion = this.prisma.vi_publicacion.create({
         data: {
           titulo: data.titulo,
-          urlimagen: imageUrl,
+          urlimagen: data.urlimagen,
           descripcion: data.descripcion,
           fechapublicacion: data.fechapublicacion,
-          id_categoria_publicacion: data.idcategoria,
-          id_tipo_publicacion: data.idtipopublicacion,
-          id_estado_publicacion: data.idestadopublicacion,
+          id_categoria_publicacion: data.id_categoriapublicacion,
+          id_tipo_publicacion: data.id_tipopublicacion,
+          id_estado_publicacion: data.id_estadopublicacion,
         },
       });
-
-      fs.unlinkSync(file.path);
       return nuevaPublicacion;
     } catch (error) {
       console.error(error);
