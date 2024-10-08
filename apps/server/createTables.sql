@@ -92,7 +92,8 @@ CREATE TABLE vi_estado_publicacion (
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    color VARCHAR(20),
+    colorfondo VARCHAR(20),
+    colortexto VARCHAR(20),
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 
@@ -101,7 +102,8 @@ CREATE TABLE vi_categoria_publicacion (
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    color VARCHAR(20),
+    colorfondo VARCHAR(20),
+    colortexto VARCHAR(20),
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
 

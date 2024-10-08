@@ -64,7 +64,6 @@ export class CategoriaController {
       return {
         status: 'Success',
         message: 'Categoria actualizada exitosamente',
-        result: result,
       };
     } catch (error) {
       throw new NotFoundException('Categoria no existe');
