@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Separator } from "@repo/ui/components/separator";
+import LogoBackHome from "../_components/LogoBackHome";
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -23,15 +24,19 @@ function LoginPage() {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <img src="VillaizanLogo2png.png" className="w-[200px]" />
+      <LogoBackHome/>
       <p className="text-muted-foreground mt-3 text-sm">
         Ingresa tus credenciales para acceder en el sistema
       </p>
       <Separator orientation="horizontal" className="mt-7 w-[460px]" />
       <div className="mt-7 flex w-[400px] flex-col gap-2">
-        <Input placeholder="Correo electrónico" />
-        <Input placeholder="Contraseña" />
-        <Button onClick={() => handleCredentialsSignIn({ email: email, password: password })}>
+        <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} />
+        <Input placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} />
+        <Button
+          isLoading={isLoading}
+          disabled={isLoading}
+          onClick={() => onLogin({ email: email, password: password })}
+        >
           Ingresar
         </Button>
         <section className="flex flex-row items-center justify-between">

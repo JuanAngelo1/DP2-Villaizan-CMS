@@ -27,7 +27,6 @@ export class UsuarioService {
         const generatedPersonaId = `per-${uuidv4().split('-')[0]}`;
         const hashedPassword = await bcrypt.hash(data.contrasena, 10); 
 
-        
         await this.prisma.vi_persona.create({
           data: {
             id: generatedPersonaId,
@@ -35,6 +34,21 @@ export class UsuarioService {
             usuariocreacion: '2A',
           },
         });
+
+        let rol;
+        if (data.nombreRol) {
+          rol = await this.prisma.vi_rol.findFirst({
+            where: {
+              nombre: data.nombreRol,
+            },
+          });
+        } else {
+          rol = await this.prisma.vi_rol.findFirst({
+            where: {
+              nombre: "Cliente",
+            },
+          });
+        }
 
         return this.prisma.vi_usuario.create({
           data: {
@@ -47,6 +61,7 @@ export class UsuarioService {
             contrasena: hashedPassword,
             id_persona: generatedPersonaId,
             usuariocreacion: '2A',
+            id_rol: rol.id,
           },
         });
       }
@@ -69,4 +84,15 @@ export class UsuarioService {
         })
     }
 
+
+    async findByEmail(correo: string): Promise<vi_usuario | null> {
+        return this.prisma.vi_usuario.findUnique({
+            where: {
+                correo,
+            }
+        });
+    }
+
 }
+
+
