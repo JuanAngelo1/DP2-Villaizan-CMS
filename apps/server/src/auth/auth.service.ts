@@ -20,20 +20,33 @@ export class AuthService {
         });
 
        if(!user) {
-            throw new NotFoundException('Usuario no encontrado');
+            return {
+                status:"Error",
+                message: "Usuario no encontrado",
+                result:[]
+            }
         }
 
         const validatePassword = await bcrypt.compare(password, user.contrasena);
 
-        if(!validatePassword) {
-            throw new NotFoundException('Contraseña incorrecta');
-        }else{
+        if(!validatePassword){
             return {
-                message: 'Usuario logueado',
-                statusCode: 200,
+                status:"Error",
+                message: "Contraseña incorrecta",
+                result:[]
+            }
+        }
+        
+        const payload = { id: user.id, email: user.correo };
+        const token = this.jwtService.sign(payload);
+
+        return {
+                status: 'Success',
+                message: "Usuario correctamente autenticado",
+                token: token,
                 user
               };
-        }
+        
 
     }
 }

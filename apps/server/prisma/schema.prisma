@@ -7,56 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model vi_persona {
-  id                   String       @id @db.VarChar(50)
-  tipodocumento        String?      @db.VarChar(5)
-  numerodocumento      String?      @db.VarChar(20)
-  razoneliminacion     String?      @db.VarChar(255)
-  estado               String       @db.VarChar(50)
-  estaactivo           Boolean      @default(true)
-  desactivadoen        DateTime?    @db.Timestamp(6)
-  creadoen             DateTime     @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime     @default(now()) @db.Timestamp(6)
-  usuariocreacion      String       @db.VarChar(50)
-  usuarioactualizacion String?      @db.VarChar(50)
-  vi_usuario           vi_usuario[]
+model vi_almacen {
+  id                   String                 @id @db.VarChar(50)
+  nombre               String                 @db.VarChar(255)
+  id_ubicacion         String?                @db.VarChar(50)
+  estaactivo           Boolean                @default(true)
+  desactivadoen        DateTime?              @db.Timestamp(6)
+  creadoen             DateTime               @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime               @default(now()) @db.Timestamp(6)
+  usuariocreacion      String                 @db.VarChar(50)
+  usuarioactualizacion String?                @db.VarChar(50)
+  vi_ubicacion         vi_ubicacion?          @relation(fields: [id_ubicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ubicacion")
+  vi_inventarioalmacen vi_inventarioalmacen[]
+  vi_motorizado        vi_motorizado[]
 }
 
-model vi_publicacion {
-  id                        Int                         @id @default(autoincrement())
-  titulo                    String                      @db.VarChar(255)
-  urlimagen                 String?                     @db.VarChar(255)
-  descripcion               String
-  fechacreacion             DateTime                    @default(now()) @db.Timestamp(6)
-  fechapublicacion          DateTime?                   @db.Timestamp(6)
-  fechaultimamodificacion   DateTime                    @default(now()) @db.Timestamp(6)
-  estaactivo                Boolean                     @default(true)
-  id_categoria_publicacion  Int?
-  id_tipo_publicacion       Int?
-  id_estado_publicacion     Int?
-  vi_categoria_publicacion  vi_categoria_publicacion?   @relation(fields: [id_categoria_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria")
-  vi_estado_publicacion     vi_estado_publicacion?      @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
-  vi_tipo_publicacion       vi_tipo_publicacion?        @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
-  vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
-}
-
-model vi_usuario {
-  id                   String      @id @db.VarChar(50)
-  nombre               String      @db.VarChar(100)
-  apellido             String      @db.VarChar(100)
-  concuenta            Boolean
-  numerotelefono       String?     @db.VarChar(15)
-  correo               String      @unique @db.VarChar(150)
-  contrasena           String      @db.VarChar(255)
-  fechaultimologin     DateTime?   @db.Timestamp(6)
-  id_persona           String?     @db.VarChar(50)
-  estaactivo           Boolean     @default(true)
-  desactivadoen        DateTime?   @db.Timestamp(6)
-  creadoen             DateTime    @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime    @default(now()) @db.Timestamp(6)
-  usuariocreacion      String      @db.VarChar(50)
-  usuarioactualizacion String?     @db.VarChar(50)
-  vi_persona           vi_persona? @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona")
+model vi_banco {
+  id                   String    @id @db.VarChar(50)
+  nombre               String    @db.VarChar(100)
+  estaactivo           Boolean   @default(true)
+  desactivadoen        DateTime? @db.Timestamp(6)
+  creadoen             DateTime  @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime  @default(now()) @db.Timestamp(6)
+  usuariocreacion      String    @db.VarChar(50)
+  usuarioactualizacion String?   @db.VarChar(50)
+  vi_pago              vi_pago[]
 }
 
 model vi_categoria_publicacion {
@@ -67,6 +42,76 @@ model vi_categoria_publicacion {
   color          String?          @db.VarChar(20)
   estaactivo     Boolean          @default(true)
   vi_publicacion vi_publicacion[]
+}
+
+model vi_ciudad {
+  id                   String         @id @db.VarChar(50)
+  nombre               String         @db.VarChar(100)
+  region               String?        @db.VarChar(100)
+  estaactivo           Boolean        @default(true)
+  desactivadoen        DateTime?      @db.Timestamp(6)
+  creadoen             DateTime       @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
+  usuariocreacion      String         @db.VarChar(50)
+  usuarioactualizacion String?        @db.VarChar(50)
+  vi_direccion         vi_direccion[]
+}
+
+model vi_contenidoeducativo {
+  id                   String    @id @db.VarChar(50)
+  id_fruta             String?   @db.VarChar(50)
+  titulo               String    @db.VarChar(200)
+  descripcion          String?
+  tipocontenido        String    @db.VarChar(100)
+  urlcontenido         String    @db.VarChar(255)
+  fechapublicacion     DateTime  @db.Timestamp(6)
+  estaactivo           Boolean   @default(true)
+  desactivadoen        DateTime? @db.Timestamp(6)
+  creadoen             DateTime  @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime  @default(now()) @db.Timestamp(6)
+  usuariocreacion      String    @db.VarChar(50)
+  usuarioactualizacion String?   @db.VarChar(50)
+  vi_fruta             vi_fruta? @relation(fields: [id_fruta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fruta")
+}
+
+model vi_detallepedido {
+  id                   String       @id @db.VarChar(50)
+  cantidad             Int
+  subtotal             Decimal      @db.Decimal(10, 2)
+  id_producto          String?      @db.VarChar(50)
+  id_pedido            String?      @db.VarChar(50)
+  estaactivo           Boolean      @default(true)
+  desactivadoen        DateTime?    @db.Timestamp(6)
+  creadoen             DateTime     @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime     @default(now()) @db.Timestamp(6)
+  usuariocreacion      String       @db.VarChar(50)
+  usuarioactualizacion String?      @db.VarChar(50)
+  id_igv               String?      @db.VarChar(50)
+  precio               Decimal?     @db.Decimal(10, 2)
+  vi_igv               vi_igv?      @relation(fields: [id_igv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_igb")
+  vi_pedido            vi_pedido?   @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
+  vi_producto          vi_producto? @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+}
+
+model vi_direccion {
+  id                   String        @id @db.VarChar(50)
+  calle                String        @db.VarChar(255)
+  numeroexterior       String        @db.VarChar(20)
+  numerointerior       String?       @db.VarChar(20)
+  distrito             String        @db.VarChar(100)
+  codigopostal         String?       @db.VarChar(10)
+  referencia           String?       @db.VarChar(255)
+  id_ciudad            String?       @db.VarChar(50)
+  id_ubicacion         String?       @db.VarChar(50)
+  estaactivo           Boolean       @default(true)
+  desactivadoen        DateTime?     @db.Timestamp(6)
+  creadoen             DateTime      @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime      @default(now()) @db.Timestamp(6)
+  usuariocreacion      String        @db.VarChar(50)
+  usuarioactualizacion String?       @db.VarChar(50)
+  vi_ciudad            vi_ciudad?    @relation(fields: [id_ciudad], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ciudad")
+  vi_ubicacion         vi_ubicacion? @relation(fields: [id_ubicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ubicacion")
+  vi_pedido            vi_pedido[]
 }
 
 model vi_estado_publicacion {
@@ -89,6 +134,328 @@ model vi_etiqueta_publicacion {
   vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
 }
 
+model vi_fruta {
+  id                    String                  @id @db.VarChar(50)
+  nombre                String                  @db.VarChar(255)
+  urlimagen             String                  @db.VarChar(255)
+  descripcion           String?
+  informacioneducativa  String?
+  estaactivo            Boolean                 @default(true)
+  desactivadoen         DateTime?               @db.Timestamp(6)
+  creadoen              DateTime                @default(now()) @db.Timestamp(6)
+  actualizadoen         DateTime                @default(now()) @db.Timestamp(6)
+  usuariocreacion       String                  @db.VarChar(50)
+  usuarioactualizacion  String?                 @db.VarChar(50)
+  vi_contenidoeducativo vi_contenidoeducativo[]
+  vi_producto_fruta     vi_producto_fruta[]
+}
+
+model vi_igv {
+  id                   String             @id @db.VarChar(50)
+  porcentaje           Decimal            @db.Decimal(5, 2)
+  estaactivo           Boolean            @default(true)
+  desactivadoen        DateTime?          @db.Timestamp(6)
+  creadoen             DateTime           @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime           @default(now()) @db.Timestamp(6)
+  usuariocreacion      String             @db.VarChar(50)
+  usuarioactualizacion String?            @db.VarChar(50)
+  vi_detallepedido     vi_detallepedido[]
+  vi_producto          vi_producto[]
+}
+
+model vi_inventarioalmacen {
+  id                   String       @id @db.VarChar(50)
+  stock                Int?
+  estaactivo           Boolean?     @default(true)
+  desactivadoen        DateTime?    @db.Timestamp(6)
+  creadoen             DateTime?    @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime?    @default(now()) @db.Timestamp(6)
+  usuariocreacion      String?      @db.VarChar(50)
+  usuarioactualizacion String?      @db.VarChar(50)
+  id_producto          String?      @db.VarChar(50)
+  id_almacen           String?      @db.VarChar(50)
+  vi_almacen           vi_almacen?  @relation(fields: [id_almacen], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_almacen")
+  vi_producto          vi_producto? @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+}
+
+model vi_inventariomotorizado {
+  id                   String         @id @db.VarChar(50)
+  stock                Int
+  stockminimo          Int
+  esmerma              Boolean        @default(false)
+  motivomerma          String?        @db.VarChar(255)
+  urlimagenmerma       String?        @db.VarChar(255)
+  id_motorizado        String?        @db.VarChar(50)
+  id_producto          String?        @db.VarChar(50)
+  estaactivo           Boolean        @default(true)
+  desactivadoen        DateTime?      @db.Timestamp(6)
+  creadoen             DateTime       @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
+  usuariocreacion      String         @db.VarChar(50)
+  usuarioactualizacion String?        @db.VarChar(50)
+  vi_motorizado        vi_motorizado? @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
+  vi_producto          vi_producto?   @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+}
+
+model vi_libroreclamaciones {
+  id                   String    @id @db.VarChar(50)
+  fechaincidente       DateTime  @db.Timestamp(6)
+  nombres              String    @db.VarChar(100)
+  apellidos            String    @db.VarChar(100)
+  correo               String    @db.VarChar(100)
+  telefono             String?   @db.VarChar(20)
+  tipodoc              String    @db.VarChar(3)
+  nrdocumento          String    @db.VarChar(20)
+  menor                Boolean   @default(false)
+  departamento         String    @db.VarChar(50)
+  provincia            String    @db.VarChar(50)
+  distrito             String    @db.VarChar(50)
+  direccion            String    @db.VarChar(200)
+  tipo                 String    @db.VarChar(10)
+  montoreclamado       Decimal   @db.Decimal(10, 2)
+  descripcion          String
+  reclamacion          String    @db.VarChar(7)
+  nrpedido             String?   @db.VarChar(50)
+  fechapedido          DateTime? @db.Timestamp(6)
+  detalle              String?
+  pedidoconcreto       String?
+  urlcomprobante       String?   @db.VarChar(200)
+  accionesproveedor    String?
+  estaactivo           Boolean   @default(true)
+  desactivadoen        DateTime? @db.Timestamp(6)
+  creadoen             DateTime  @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime  @default(now()) @db.Timestamp(6)
+  usuariocreacion      String    @db.VarChar(50)
+  usuarioactualizacion String?   @db.VarChar(50)
+}
+
+model vi_metodopago {
+  id                   String                 @id @db.VarChar(50)
+  nombre               String                 @db.VarChar(50)
+  estaactivo           Boolean                @default(true)
+  desactivadoen        DateTime?              @db.Timestamp(6)
+  creadoen             DateTime               @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime               @default(now()) @db.Timestamp(6)
+  usuariocreacion      String                 @db.VarChar(50)
+  usuarioactualizacion String?                @db.VarChar(50)
+  vi_pago              vi_pago[]
+  vi_pedido_metodopago vi_pedido_metodopago[]
+}
+
+model vi_motorizado {
+  id                      String                    @id @db.VarChar(50)
+  placa                   String                    @db.VarChar(20)
+  id_almacen              String?                   @db.VarChar(50)
+  id_usuario              String?                   @db.VarChar(50)
+  estaactivo              Boolean                   @default(true)
+  desactivadoen           DateTime?                 @db.Timestamp(6)
+  creadoen                DateTime                  @default(now()) @db.Timestamp(6)
+  actualizadoen           DateTime                  @default(now()) @db.Timestamp(6)
+  usuariocreacion         String                    @db.VarChar(50)
+  usuarioactualizacion    String?                   @db.VarChar(50)
+  vi_inventariomotorizado vi_inventariomotorizado[]
+  vi_almacen              vi_almacen?               @relation(fields: [id_almacen], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_almacen")
+  vi_pedido               vi_pedido[]
+}
+
+model vi_notificacion {
+  idnotificacion       String      @id @db.VarChar(50)
+  asunto               String      @db.VarChar(255)
+  descripcion          String?
+  tiponotificacion     String?     @db.VarChar(100)
+  leido                Boolean     @default(false)
+  estaactivo           Boolean     @default(true)
+  eliminadoen          DateTime?   @db.Timestamp(6)
+  creadoen             DateTime    @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime    @default(now()) @db.Timestamp(6)
+  usuariocreacion      String      @db.VarChar(50)
+  usuarioactualizacion String?     @db.VarChar(50)
+  idusuario            String?     @db.VarChar(50)
+  vi_usuario           vi_usuario? @relation(fields: [idusuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
+model vi_ordenserie {
+  id                   String     @id @db.VarChar(50)
+  nombre               String     @db.VarChar(10)
+  descripcion          String?
+  estaactivo           Boolean    @default(true)
+  desactivadoen        DateTime?  @db.Timestamp(6)
+  creadoen             DateTime   @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime   @default(now()) @db.Timestamp(6)
+  usuariocreacion      String     @db.VarChar(50)
+  usuarioactualizacion String?    @db.VarChar(50)
+  vi_venta             vi_venta[]
+}
+
+model vi_pago {
+  id                   String         @id @db.VarChar(50)
+  estransferencia      Boolean
+  montocobrado         Decimal        @db.Decimal(10, 2)
+  numerooperacion      String?        @db.VarChar(50)
+  urlevidencia         String?        @db.VarChar(200)
+  codigotransaccion    String?        @db.VarChar(100)
+  id_venta             String?        @db.VarChar(50)
+  id_metodopago        String?        @db.VarChar(50)
+  id_banco             String?        @db.VarChar(50)
+  estaactivo           Boolean        @default(true)
+  desactivadoen        DateTime?      @db.Timestamp(6)
+  creadoen             DateTime       @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
+  usuariocreacion      String         @db.VarChar(50)
+  usuarioactualizacion String?        @db.VarChar(50)
+  vi_banco             vi_banco?      @relation(fields: [id_banco], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_banco")
+  vi_metodopago        vi_metodopago? @relation(fields: [id_metodopago], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_metodopago")
+  vi_venta             vi_venta?      @relation(fields: [id_venta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_venta")
+}
+
+model vi_pedido {
+  id                   String                 @id @db.VarChar(50)
+  estado               String                 @db.VarChar(50)
+  prioridadentrega     String?                @db.VarChar(20)
+  total                Decimal                @default(0) @db.Decimal(10, 2)
+  puntosotorgados      Int?                   @default(0)
+  motivocancelacion    String?
+  codigoseguimiento    String?                @db.VarChar(100)
+  montoefectivopagar   Decimal?               @db.Decimal(10, 2)
+  id_motorizado        String?                @db.VarChar(50)
+  id_direccion         String?                @db.VarChar(50)
+  id_usuario           String?                @db.VarChar(50)
+  estaactivo           Boolean                @default(true)
+  desactivadoen        DateTime?              @db.Timestamp(6)
+  creadoen             DateTime               @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime               @default(now()) @db.Timestamp(6)
+  usuariocreacion      String                 @db.VarChar(50)
+  usuarioactualizacion String?                @db.VarChar(50)
+  vi_detallepedido     vi_detallepedido[]
+  vi_direccion         vi_direccion?          @relation(fields: [id_direccion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_direccion")
+  vi_motorizado        vi_motorizado?         @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
+  vi_pedido_metodopago vi_pedido_metodopago[]
+  vi_venta             vi_venta[]
+}
+
+model vi_pedido_metodopago {
+  id_pedido            String        @db.VarChar(50)
+  id_metodopago        String        @db.VarChar(50)
+  estaactivo           Boolean       @default(true)
+  desactivadoen        DateTime?     @db.Timestamp(6)
+  creadoen             DateTime      @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime      @default(now()) @db.Timestamp(6)
+  usuariocreacion      String        @default("admin") @db.VarChar(50)
+  usuarioactualizacion String?       @db.VarChar(50)
+  vi_metodopago        vi_metodopago @relation(fields: [id_metodopago], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_metodopago")
+  vi_pedido            vi_pedido     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
+
+  @@id([id_pedido, id_metodopago])
+}
+
+model vi_permiso {
+  id                   String           @id @db.VarChar(50)
+  nombre               String           @db.VarChar(255)
+  estaactivo           Boolean          @default(true)
+  eliminadoen          DateTime?        @db.Timestamp(6)
+  creadoen             DateTime         @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime         @default(now()) @db.Timestamp(6)
+  usuariocreacion      String           @db.VarChar(50)
+  usuarioactualizacion String?          @db.VarChar(50)
+  vi_rol_permiso       vi_rol_permiso[]
+}
+
+model vi_persona {
+  id                   String       @id @db.VarChar(50)
+  tipodocumento        String?      @db.VarChar(5)
+  numerodocumento      String?      @db.VarChar(20)
+  razoneliminacion     String?      @db.VarChar(255)
+  estado               String       @db.VarChar(50)
+  estaactivo           Boolean      @default(true)
+  desactivadoen        DateTime?    @db.Timestamp(6)
+  creadoen             DateTime     @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime     @default(now()) @db.Timestamp(6)
+  usuariocreacion      String       @db.VarChar(50)
+  usuarioactualizacion String?      @db.VarChar(50)
+  vi_usuario           vi_usuario[]
+}
+
+model vi_producto {
+  id                       String                     @id @db.VarChar(50)
+  codigo                   String?                    @unique @db.VarChar(255)
+  nombre                   String                     @db.VarChar(255)
+  precioa                  Decimal?                   @db.Decimal(10, 2)
+  preciob                  Decimal?                   @db.Decimal(10, 2)
+  precioc                  Decimal?                   @db.Decimal(10, 2)
+  precioecommerce          Decimal                    @db.Decimal(10, 2)
+  urlimagen                String?                    @db.VarChar(255)
+  descripcion              String?
+  informacionnutricional   String?
+  razoneliminacion         String?
+  estado                   Boolean                    @default(true)
+  sevendeecommerce         Boolean                    @default(false)
+  estaactivo               Boolean                    @default(true)
+  usuariocreacion          String                     @db.VarChar(255)
+  usuarioactualizacion     String?                    @db.VarChar(255)
+  creadoen                 DateTime                   @default(now()) @db.Timestamp(6)
+  actualizadoen            DateTime                   @default(now()) @db.Timestamp(6)
+  desactivadoen            DateTime?                  @db.Timestamp(6)
+  id_tipoproducto          String?                    @db.VarChar(50)
+  id_igv                   String?                    @db.VarChar(50)
+  vi_detallepedido         vi_detallepedido[]
+  vi_inventarioalmacen     vi_inventarioalmacen[]
+  vi_inventariomotorizado  vi_inventariomotorizado[]
+  vi_igv                   vi_igv?                    @relation(fields: [id_igv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_igb")
+  vi_tipoproducto          vi_tipoproducto?           @relation(fields: [id_tipoproducto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_producto")
+  vi_producto_fruta        vi_producto_fruta[]
+  vi_producto_subcategoria vi_producto_subcategoria[]
+}
+
+model vi_producto_fruta {
+  id_producto          String      @db.VarChar(50)
+  id_fruta             String      @db.VarChar(50)
+  estaactivo           Boolean     @default(true)
+  desactivadoen        DateTime?   @db.Timestamp(6)
+  creadoen             DateTime    @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime    @default(now()) @db.Timestamp(6)
+  usuariocreacion      String      @default("admin") @db.VarChar(50)
+  usuarioactualizacion String?     @db.VarChar(50)
+  vi_fruta             vi_fruta    @relation(fields: [id_fruta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fruta")
+  vi_producto          vi_producto @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+
+  @@id([id_producto, id_fruta])
+}
+
+model vi_producto_subcategoria {
+  id_producto          String          @db.VarChar(50)
+  id_subcategoria      String          @db.VarChar(50)
+  estaactivo           Boolean         @default(true)
+  desactivadoen        DateTime?       @db.Timestamp(6)
+  creadoen             DateTime        @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime        @default(now()) @db.Timestamp(6)
+  usuariocreacion      String          @default("admin") @db.VarChar(50)
+  usuarioactualizacion String?         @db.VarChar(50)
+  vi_producto          vi_producto     @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+  vi_subcategoria      vi_subcategoria @relation(fields: [id_subcategoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_subcategoria")
+
+  @@id([id_producto, id_subcategoria])
+}
+
+model vi_publicacion {
+  id                        Int                         @id @default(autoincrement())
+  titulo                    String                      @db.VarChar(255)
+  urlimagen                 String?                     @db.VarChar(255)
+  descripcion               String
+  fechacreacion             DateTime                    @default(now()) @db.Timestamp(6)
+  fechapublicacion          DateTime?                   @db.Timestamp(6)
+  fechaultimamodificacion   DateTime                    @default(now()) @db.Timestamp(6)
+  estaactivo                Boolean                     @default(true)
+  id_categoria_publicacion  Int?
+  id_tipo_publicacion       Int?
+  id_estado_publicacion     Int?
+  id_usuario                String?                     @db.VarChar(50)
+  vi_categoria_publicacion  vi_categoria_publicacion?   @relation(fields: [id_categoria_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria")
+  vi_estado_publicacion     vi_estado_publicacion?      @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
+  vi_tipo_publicacion       vi_tipo_publicacion?        @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
+  vi_usuario                vi_usuario?                 @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
+}
+
 model vi_publicacion_x_etiqueta {
   id_publicacion          Int
   id_etiqueta_publicacion Int
@@ -98,6 +465,43 @@ model vi_publicacion_x_etiqueta {
   @@id([id_publicacion, id_etiqueta_publicacion])
 }
 
+model vi_rol {
+  id                   String           @id @db.VarChar(50)
+  nombre               String           @db.VarChar(255)
+  estaactivo           Boolean          @default(true)
+  eliminadoen          DateTime?        @db.Timestamp(6)
+  creadoen             DateTime         @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime         @default(now()) @db.Timestamp(6)
+  usuariocreacion      String           @db.VarChar(50)
+  usuarioactualizacion String?          @db.VarChar(50)
+  vi_rol_permiso       vi_rol_permiso[]
+  vi_usuario           vi_usuario[]
+}
+
+model vi_rol_permiso {
+  id_rol        String     @db.VarChar(50)
+  id_permiso    String     @db.VarChar(50)
+  creadoen      DateTime   @default(now()) @db.Timestamp(6)
+  actualizadoen DateTime   @default(now()) @db.Timestamp(6)
+  vi_permiso    vi_permiso @relation(fields: [id_permiso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_permiso")
+  vi_rol        vi_rol     @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rol")
+
+  @@id([id_rol, id_permiso])
+}
+
+model vi_subcategoria {
+  id                           String                         @id @db.VarChar(50)
+  nombre                       String                         @db.VarChar(255)
+  estaactivo                   Boolean                        @default(true)
+  desactivadoen                DateTime?                      @db.Timestamp(6)
+  creadoen                     DateTime                       @default(now()) @db.Timestamp(6)
+  actualizadoen                DateTime                       @default(now()) @db.Timestamp(6)
+  usuariocreacion              String                         @default("admin") @db.VarChar(50)
+  usuarioactualizacion         String?                        @db.VarChar(50)
+  vi_producto_subcategoria     vi_producto_subcategoria[]
+  vi_tipoproducto_subcategoria vi_tipoproducto_subcategoria[]
+}
+
 model vi_tipo_publicacion {
   id             Int              @id
   nombre         String           @db.VarChar(255)
@@ -105,4 +509,92 @@ model vi_tipo_publicacion {
   fechacreacion  DateTime         @default(now()) @db.Timestamp(6)
   estaactivo     Boolean          @default(true)
   vi_publicacion vi_publicacion[]
+}
+
+model vi_tipoproducto {
+  id                           String                         @id @db.VarChar(50)
+  nombre                       String                         @db.VarChar(255)
+  estaactivo                   Boolean                        @default(true)
+  desactivadoen                DateTime?                      @db.Timestamp(6)
+  creadoen                     DateTime                       @default(now()) @db.Timestamp(6)
+  actualizadoen                DateTime                       @default(now()) @db.Timestamp(6)
+  usuariocreacion              String                         @db.VarChar(50)
+  usuarioactualizacion         String?                        @db.VarChar(50)
+  vi_producto                  vi_producto[]
+  vi_tipoproducto_subcategoria vi_tipoproducto_subcategoria[]
+}
+
+model vi_tipoproducto_subcategoria {
+  id_tipoproducto      String          @db.VarChar(50)
+  id_subcategoria      String          @db.VarChar(50)
+  estaactivo           Boolean         @default(true)
+  desactivadoen        DateTime?       @db.Timestamp(6)
+  creadoen             DateTime        @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime        @default(now()) @db.Timestamp(6)
+  usuariocreacion      String          @default("admin") @db.VarChar(50)
+  usuarioactualizacion String?         @db.VarChar(50)
+  vi_tipoproducto      vi_tipoproducto @relation(fields: [id_tipoproducto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+  vi_subcategoria      vi_subcategoria @relation(fields: [id_subcategoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_subcategoria")
+
+  @@id([id_tipoproducto, id_subcategoria])
+}
+
+model vi_ubicacion {
+  id                   String         @id @db.VarChar(50)
+  latitud              Decimal        @db.Decimal(10, 7)
+  longitud             Decimal        @db.Decimal(10, 7)
+  estaactivo           Boolean        @default(true)
+  desactivadoen        DateTime?      @db.Timestamp(6)
+  creadoen             DateTime       @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
+  usuariocreacion      String         @db.VarChar(50)
+  usuarioactualizacion String?        @db.VarChar(50)
+  vi_almacen           vi_almacen[]
+  vi_direccion         vi_direccion[]
+}
+
+model vi_usuario {
+  id                   String            @id @db.VarChar(50)
+  nombre               String            @db.VarChar(100)
+  apellido             String            @db.VarChar(100)
+  concuenta            Boolean
+  numerotelefono       String?           @db.VarChar(15)
+  correo               String            @unique @db.VarChar(150)
+  contrasena           String            @db.VarChar(255)
+  fechaultimologin     DateTime?         @db.Timestamp(6)
+  id_persona           String?           @db.VarChar(50)
+  estaactivo           Boolean           @default(true)
+  desactivadoen        DateTime?         @db.Timestamp(6)
+  creadoen             DateTime          @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime          @default(now()) @db.Timestamp(6)
+  usuariocreacion      String            @db.VarChar(50)
+  usuarioactualizacion String?           @db.VarChar(50)
+  id_rol               String?           @db.VarChar(50)
+  vi_notificacion      vi_notificacion[]
+  vi_publicacion       vi_publicacion[]
+  vi_persona           vi_persona?       @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona")
+  vi_rol               vi_rol?           @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rol")
+}
+
+model vi_venta {
+  id                   String         @id @db.VarChar(50)
+  tipocomprobante      String         @db.VarChar(10)
+  fechaventa           DateTime       @db.Timestamp(6)
+  numerocomprobante    String         @db.VarChar(50)
+  montototal           Decimal        @db.Decimal(10, 2)
+  totalpaletas         Int
+  totalmafeletas       Int
+  estado               String         @db.VarChar(50)
+  totaligv             Decimal        @db.Decimal(10, 2)
+  id_pedido            String?        @db.VarChar(50)
+  id_ordenserie        String?        @db.VarChar(50)
+  estaactivo           Boolean        @default(true)
+  desactivadoen        DateTime?      @db.Timestamp(6)
+  creadoen             DateTime       @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
+  usuariocreacion      String         @db.VarChar(50)
+  usuarioactualizacion String?        @db.VarChar(50)
+  vi_pago              vi_pago[]
+  vi_ordenserie        vi_ordenserie? @relation(fields: [id_ordenserie], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ordenserie")
+  vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
 }

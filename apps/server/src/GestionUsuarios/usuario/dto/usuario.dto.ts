@@ -5,4 +5,5 @@ export class CreateUsuarioDto {
     numerotelefono?: string;
     correo: string;
     contrasena: string;
+    nombreRol?: string;
   }

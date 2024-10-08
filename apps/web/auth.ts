@@ -6,18 +6,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       authorize: async (credentials) => {
-        console.log("See the credentials: ", credentials);
+        const { email, password } = credentials;
 
         try {
-          const response = await axios.post("http://localhost:5000/auth", {
-            email: "dibujitos@gmail.com",
-            password: "password123",
+          const response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth`, {
+            email: email,
+            password: password,
           });
 
           const data = response.data;
           console.log("See API response: ", data);
 
-          if (data.statusCode !== 200) {
+          if (data.status !== "Success") {
             console.log("Invalid credentials");
             return null;
           }
