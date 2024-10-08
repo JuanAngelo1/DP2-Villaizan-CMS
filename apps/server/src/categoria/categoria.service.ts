@@ -21,7 +21,8 @@ export class CategoriaService {
         data: {
           nombre: data.nombre,
           descripcion: data.descripcion,
-          color: data.color,
+          colortexto: data.colortexto,
+          colorfondo: data.colorfondo,
         },
       });
       return nuevaCategoria;
@@ -42,7 +43,8 @@ export class CategoriaService {
       data: {
         nombre: data.nombre,
         descripcion: data.descripcion,
-        color: data.color,
+        colortexto: data.colortexto,
+        colorfondo: data.colorfondo,
       },
     });
   }

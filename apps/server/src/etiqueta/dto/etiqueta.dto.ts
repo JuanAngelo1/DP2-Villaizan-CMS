@@ -1,5 +1,6 @@
 export class EtiquetaDto {
   nombre: string;
   descripcion: string;
-  color: string;
+  colorfondo: string;
+  colortexto: string;
 }

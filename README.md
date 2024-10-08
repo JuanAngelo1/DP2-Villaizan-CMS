@@ -46,3 +46,13 @@ This Turborepo has some additional tools already setup for you:
 - [Prettier](https://prettier.io) for code formatting
 - [Prisma](https://www.prisma.io) for ORM database
 - [Shadcn](https://ui.shadcn.com/) for UI components
+
+### Using prisma
+
+Para puller los cambios de prisma:
+
+`pnpm prisma db pull`
+
+Para generar el schema:
+
+`pnpm prisma generate`

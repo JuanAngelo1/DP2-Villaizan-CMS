@@ -61,7 +61,11 @@ export class EtiquetaController {
     @Body() data: EtiquetaDto,
   ) {
     try {
-      return this.etiquetaService.updateEtiqueta(id, data);
+      const result = this.etiquetaService.updateEtiqueta(id, data);
+      return {
+        status: 'Success',
+        message: 'Etiqueta actualizada exitosamente',
+      };
     } catch (error) {
       console.error(error);
       throw new NotFoundException('Etiqueta no existe');

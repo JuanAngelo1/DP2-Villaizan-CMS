@@ -21,7 +21,8 @@ export class EtiquetaService {
         data: {
           nombre: data.nombre,
           descripcion: data.descripcion,
-          color: data.color,
+          colorfondo: data.colorfondo,
+          colortexto: data.colortexto,
         },
       });
       return nuevaEtiqueta;
@@ -42,7 +43,8 @@ export class EtiquetaService {
       data: {
         nombre: data.nombre,
         descripcion: data.descripcion,
-        color: data.color,
+        colorfondo: data.colorfondo,
+        colortexto: data.colortexto,
       },
     });
   }
