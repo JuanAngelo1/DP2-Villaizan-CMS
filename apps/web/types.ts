@@ -13,3 +13,11 @@ export type Etiqueta = {
   colorfondo: string;
   colortexto: string;
 };
+
+export type Categoria = {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  colorfondo: string;
+  colortexto: string;
+}

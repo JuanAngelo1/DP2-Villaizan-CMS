@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import { LayoutDashboard, LogOut, Newspaper, Sun, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,10 +32,10 @@ function Sidebar() {
   const buttonStyle = [buttonVariants({ variant: "ghost" }), "w-10 h-10 hover:bg-red-900"];
 
   return (
-    <div className="h-screen fixed flex flex-col items-center justify-between rounded-br-xl rounded-tr-xl border bg-red-700 py-4 w-[67px]">
-      <div className="flex flex-col items-center">
-        <img src={"VillaizanLogoV.png"} alt="Logo" className="mb-4 w-[35px]" />
-        <div className="flex flex-col items-center gap-1">
+    <div className="fixed flex w-full items-center justify-between border bg-red-700 px-2 py-2 lg:h-screen lg:w-[67px] lg:flex-col lg:rounded-br-xl lg:rounded-tr-xl lg:py-3">
+      <div className="flex items-center gap-4 lg:flex-col">
+        <img src={"VillaizanLogoV.png"} alt="Logo" className="w-[35px]" />
+        <div className="flex items-center gap-1 lg:flex-col">
           {sidebarItems.map((item, idx) => {
             const ItemIcon = item.icon;
             return (
@@ -50,7 +51,7 @@ function Sidebar() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-1">
+      <div className="flex items-center gap-1 lg:flex-col">
         <Button variant="ghost" className={buttonStyle[1]}>
           <Sun className={iconStyle} />
         </Button>

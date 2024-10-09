@@ -9,7 +9,7 @@ function usePagination<T>({ items, startingEntriesPerPage }: PaginationProps<T>)
   const [page, setPage] = useState<number>(1);
   const [entriesPerPage, setEntriesPerPage] = useState<number>(startingEntriesPerPage);
   const totalPages = items.length !== 0 ? Math.ceil(items.length / entriesPerPage) : 0;
-  const currentPageItems = items.slice((page - 1) * entriesPerPage, page * entriesPerPage);
+  const currentPageItems: T[] = items.slice((page - 1) * entriesPerPage, page * entriesPerPage);
 
   const nextPage = () => {
     setPage((prev) => (prev < totalPages ? prev + 1 : prev));

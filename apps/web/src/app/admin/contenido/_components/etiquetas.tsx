@@ -1,31 +1,20 @@
 "use client";
 
 import usePagination from "@web/hooks/usePagination";
-import InputWithLabel from "@web/src/app/(auth)/_components/InputWithLabel";
 import { Etiqueta, Response } from "@web/types";
 import axios from "axios";
 import { Delete, Ellipsis, FilePenLine, ListFilter, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
-import { ColorPicker } from "@repo/ui/components/color-picker";
 import { Input } from "@repo/ui/components/input";
-import { Label } from "@repo/ui/components/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from "@repo/ui/components/sheet";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
 import { cn } from "@repo/ui/lib/utils";
 import ChipEtiqueta from "./etiquetas_components/ChipEtiqueta";
-import DialogDelete from "./etiquetas_components/DialogDelete";
 import SheetEtiqueta from "./etiquetas_components/SheetEtiqueta";
+import DialogDelete from "./general_components/DialogDelete";
 
 const initEtiqueta: Etiqueta = {
   id: "000-init",
@@ -109,6 +98,8 @@ function Etiquetas() {
 
     const newEtiquetas = etiquetas.filter((_etiqueta) => _etiqueta.id !== etiqueta.id);
     setEtiquetas(newEtiquetas);
+
+    setDelEtiqueta(null);
   };
 
   useEffect(() => {
@@ -134,42 +125,34 @@ function Etiquetas() {
 
   return (
     <>
-      <div className="flex w-full flex-col gap-2 overflow-y-hidden">
-        <section className="flex flex-row justify-between">
-          <Tabs defaultValue="account" className="">
-            <TabsList>
-              <TabsTrigger value="account">Activos</TabsTrigger>
-              <TabsTrigger value="password">Archivados</TabsTrigger>
-            </TabsList>
-          </Tabs>
-          <div className="flex flex-row justify-end gap-2">
-            <Input placeholder="Buscar..." />
-            <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
-              <p>Mostrando</p>
-              <Input
-                className="h-[30px] w-[40px] px-0 text-center"
-                value={entriesPerPage}
-                onChange={(e) => {
-                  if (e.target.value === "") {
-                    setEntriesPerPage(0);
-                    return;
-                  }
-                  if (isNaN(parseInt(e.target.value))) return;
-                  if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
+      <div className="flex h-full w-full flex-col gap-2 overflow-y-hidden p-1">
+        <div className="flex flex-row justify-end gap-2">
+          <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+          <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
+            <p>Mostrando</p>
+            <Input
+              className="h-[30px] w-[40px] px-0 text-center"
+              value={entriesPerPage}
+              onChange={(e) => {
+                if (e.target.value === "") {
+                  setEntriesPerPage(0);
+                  return;
+                }
+                if (isNaN(parseInt(e.target.value))) return;
+                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
 
-                  setEntriesPerPage(parseInt(e.target.value));
-                }}
-              />
-              <p>por página</p>
-            </div>
-            <Button className="gap-2" onClick={openNewSheet}>
-              <Plus className="h-4 w-4" />
-              <p>Agregar</p>
-            </Button>
+                setEntriesPerPage(parseInt(e.target.value));
+              }}
+            />
+            <p>por página</p>
           </div>
-        </section>
+          <Button className="w-10 gap-2 sm:w-auto" onClick={openNewSheet}>
+            <Plus className="h-4 w-4 shrink-0" />
+            <p className="hidden sm:block">Agregar</p>
+          </Button>
+        </div>
 
-        <Card className="flex h-auto min-h-[100px] flex-1 flex-col overflow-y-hidden">
+        <Card className="flex h-auto flex-1 flex-col overflow-y-hidden">
           <CardHeader className="pb-4">
             <CardTitle className="text-xl">Etiquetas</CardTitle>
             <CardDescription>
@@ -246,7 +229,11 @@ function Etiquetas() {
                     <Button variant={"secondary"} onClick={prevPage} disabled={page === 1}>
                       Anterior
                     </Button>
-                    <Button variant={"secondary"} onClick={nextPage} disabled={page === totalPages}>
+                    <Button
+                      variant={"secondary"}
+                      onClick={nextPage}
+                      disabled={page === totalPages || totalPages === 0}
+                    >
                       Siguiente
                     </Button>
                   </div>
@@ -279,6 +266,8 @@ function Etiquetas() {
         open={deleteModalOpen}
         onOpenChange={setDeleteModalOpen}
         onAction={() => deleteEtiqueta(delEtiqueta)}
+        title="¿Estás absolutamente seguro?"
+        description="Esta acción no se puede deshacer. Esto eliminará permanentemente la etiqueta."
       />
     </>
   );

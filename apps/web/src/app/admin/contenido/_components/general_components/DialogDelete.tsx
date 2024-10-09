@@ -14,10 +14,14 @@ function DialogDelete({
   open,
   onOpenChange,
   onAction,
+  title,
+  description,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onAction: () => Promise<void>;
+  title: string;
+  description: string;
 }) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,10 +41,8 @@ function DialogDelete({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-start">¿Estás absolutamente seguro?</DialogTitle>
-          <DialogDescription className="text-start">
-            Esta acción no se puede deshacer. Esto eliminará permanentemente la etiqueta.
-          </DialogDescription>
+          <DialogTitle className="text-start">{title}</DialogTitle>
+          <DialogDescription className="text-start">{description}</DialogDescription>
           <DialogFooter>
             <Button variant={"outline"} onClick={(e) => onOpenChange(false)} disabled={isLoading}>
               Cancelar

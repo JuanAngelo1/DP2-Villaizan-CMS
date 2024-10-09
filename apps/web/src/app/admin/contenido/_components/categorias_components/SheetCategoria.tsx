@@ -1,7 +1,7 @@
 "use client";
 
 import InputWithLabel from "@web/src/app/(auth)/_components/InputWithLabel";
-import { Etiqueta } from "@web/types";
+import { Categoria } from "@web/types";
 import { useState } from "react";
 import { Button } from "@repo/ui/components/button";
 import { ColorPicker } from "@repo/ui/components/color-picker";
@@ -15,9 +15,8 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@repo/ui/components/sheet";
-import ChipEtiqueta from "./ChipEtiqueta";
 
-const initEtiqueta: Etiqueta = {
+const initCategoria: Categoria = {
   id: "000-init",
   nombre: "",
   descripcion: "",
@@ -25,18 +24,18 @@ const initEtiqueta: Etiqueta = {
   colortexto: "#000000",
 };
 
-function SheetEtiqueta({
+function SheetCategoria({
   open,
   onOpenChange,
-  etiqueta,
-  setEtiqueta,
+  categoria,
+  setCategoria,
   title,
   onAction,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  etiqueta: Etiqueta;
-  setEtiqueta: (etiqueta: Etiqueta) => void;
+  categoria: Categoria;
+  setCategoria: (categoria: Categoria) => void;
   title: string;
   onAction: () => Promise<void>;
 }) {
@@ -63,45 +62,18 @@ function SheetEtiqueta({
         </SheetHeader>
         <div className="mt-2 flex flex-col gap-2">
           <InputWithLabel
-            label="Nombre de etiqueta"
+            label="Nombre de categoría"
             placeholder="Ej. Popular"
-            value={etiqueta.nombre}
-            onChange={(e) => setEtiqueta({ ...etiqueta, nombre: e.target.value })}
+            value={categoria.nombre}
+            onChange={(e) => setCategoria({ ...categoria, nombre: e.target.value })}
           />
           <InputWithLabel
             label="Descripción breve"
             placeholder="Ej. Articulos de paletas"
-            value={etiqueta.descripcion}
-            onChange={(e) => setEtiqueta({ ...etiqueta, descripcion: e.target.value })}
+            value={categoria.descripcion}
+            onChange={(e) => setCategoria({ ...categoria, descripcion: e.target.value })}
           />
-          <div className="flex flex-col gap-0">
-            <Label>Color principal</Label>
-            <div className="flex items-center gap-2">
-              <ColorPicker
-                value={etiqueta?.colorfondo}
-                onChange={(val) => setEtiqueta({ ...etiqueta, colorfondo: val })}
-              />
-              <p className="text-sm">{etiqueta?.colorfondo}</p>
-            </div>
-          </div>
 
-          <div className="flex flex-col gap-0">
-            <Label>Color de texto</Label>
-            <div className="flex items-center gap-2">
-              <ColorPicker
-                value={etiqueta?.colortexto}
-                onChange={(val) => setEtiqueta({ ...etiqueta, colortexto: val })}
-              />
-              <p className="text-sm">{etiqueta?.colortexto}</p>
-            </div>
-          </div>
-
-          {etiqueta.nombre !== "" && (
-            <div className="mt-2 flex flex-col gap-0">
-              <Label>Prevista</Label>
-              <ChipEtiqueta className="text-md" etiqueta={etiqueta} />
-            </div>
-          )}
           <SheetFooter className="mt-1">
             <SheetClose asChild disabled={isLoading}>
               <Button variant={"outline"} disabled={isLoading || open === false}>
@@ -117,4 +89,4 @@ function SheetEtiqueta({
     </Sheet>
   );
 }
-export default SheetEtiqueta;
+export default SheetCategoria;
