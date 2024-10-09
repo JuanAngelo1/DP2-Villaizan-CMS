@@ -56,7 +56,6 @@ function Page() {
   const [selectedSection, setSelectedSection] = useState<contentSections>("publicaciones");
 
   useEffect(() => {
-    console.log("trigger");
     const currentHash = window.location.href.split("#")[1];
     if (!["publicaciones", "comentarios", "categorias", "etiquetas"].includes(currentHash as string)) {
       router.push("/admin/contenido#publicaciones");
@@ -65,7 +64,7 @@ function Page() {
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col gap-[24px]">
+    <div className="flex h-screen w-full flex-col gap-[24px] p-[32px] min-h-[600px]">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -80,7 +79,7 @@ function Page() {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <main className="flex flex-row gap-6 flex-1">
+      <main className="flex h-full flex-row gap-6 overflow-y-hidden">
         <section className="flex w-[170px] flex-col gap-4">
           <h1 className="text-2xl font-bold">Contenido</h1>
           <Separator orientation="horizontal" />
