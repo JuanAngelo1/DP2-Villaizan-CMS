@@ -78,6 +78,20 @@ CREATE TABLE vi_persona (
 
 --NUESTRA TABLAS
 
+CREATE TABLE vi_comentario (
+    id SERIAL PRIMARY KEY,
+    comentario TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	estadoaprobacion BOOLEAN DEFAULT FALSE NOT NULL,
+	nombreautor VARCHAR(255) NOT NULL,
+	estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
+ 	id_usuario VARCHAR(50),  -- Relación con la tabla Usuario
+    id_publicacion INT,  -- Relación con la tabla Publicacion
+    CONSTRAINT fk_usuario_comentario FOREIGN KEY (id_usuario) REFERENCES vi_usuario(id),
+    CONSTRAINT fk_publicacion_comentario FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id)  -- Relación con Publicacion
+);
+
+
 CREATE TABLE vi_tipo_publicacion (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,

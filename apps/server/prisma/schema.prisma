@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model vi_almacen {
   id                   String                 @id @db.VarChar(50)
   nombre               String                 @db.VarChar(255)
@@ -57,6 +58,19 @@ model vi_ciudad {
   usuarioactualizacion String?         @db.VarChar(50)
   vi_direccion         vi_direccion[]
   vi_motorizado        vi_motorizado[]
+}
+
+model vi_comentario {
+  id               Int             @id @default(autoincrement())
+  comentario       String
+  fecha            DateTime        @default(now()) @db.Timestamp(6)
+  estadoaprobacion Boolean         @default(false)
+  nombreautor      String          @db.VarChar(255)
+  estaactivo       Boolean         @default(true)
+  id_usuario       String?         @db.VarChar(50)
+  id_publicacion   Int?
+  vi_publicacion   vi_publicacion? @relation(fields: [id_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_publicacion_comentario")
+  vi_usuario       vi_usuario?     @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_comentario")
 }
 
 model vi_contenidoeducativo {
@@ -153,6 +167,24 @@ model vi_fruta {
   vi_producto_fruta     vi_producto_fruta[]
 }
 
+model vi_historialrepartidor {
+  id                   String         @id @db.VarChar(50)
+  estado               String?        @db.VarChar(50)
+  razonderechazo       String?        @db.VarChar(255)
+  id_motorizado        String?        @db.VarChar(50)
+  id_usuario           String?        @db.VarChar(50)
+  id_pedido            String?        @db.VarChar(50)
+  estaactivo           Boolean        @default(true)
+  desactivadoen        DateTime?      @db.Timestamp(6)
+  creadoen             DateTime       @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
+  usuariocreacion      String         @db.VarChar(50)
+  usuarioactualizacion String?        @db.VarChar(50)
+  vi_motorizado        vi_motorizado? @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
+  vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
+  vi_usuario           vi_usuario?    @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
 model vi_igv {
   id                   String             @id @db.VarChar(50)
   porcentaje           Decimal            @db.Decimal(5, 2)
@@ -247,7 +279,7 @@ model vi_metodopago {
 
 model vi_motorizado {
   id                      String                    @id @db.VarChar(50)
-  placa                   String                    @db.VarChar(20)
+  placa                   String                    @unique(map: "unique_placa") @db.VarChar(20)
   id_almacen              String?                   @db.VarChar(50)
   id_usuario              String?                   @db.VarChar(50)
   estaactivo              Boolean                   @default(true)
@@ -258,6 +290,7 @@ model vi_motorizado {
   usuarioactualizacion    String?                   @db.VarChar(50)
   id_ciudad               String?                   @db.VarChar(50)
   disponible              Boolean?
+  urlimagen               String?                   @db.VarChar(255)
   vi_historialrepartidor  vi_historialrepartidor[]
   vi_inventariomotorizado vi_inventariomotorizado[]
   vi_almacen              vi_almacen?               @relation(fields: [id_almacen], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_almacen")
@@ -338,6 +371,7 @@ model vi_pedido {
   vi_historialrepartidor vi_historialrepartidor[]
   vi_direccion           vi_direccion?            @relation(fields: [id_direccion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_direccion")
   vi_motorizado          vi_motorizado?           @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
+  vi_usuario             vi_usuario?              @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
   vi_pedido_metodopago   vi_pedido_metodopago[]
   vi_venta               vi_venta[]
 }
@@ -458,6 +492,7 @@ model vi_publicacion {
   id_tipo_publicacion       Int?
   id_estado_publicacion     Int?
   id_usuario                String?                     @db.VarChar(50)
+  vi_comentario             vi_comentario[]
   vi_categoria_publicacion  vi_categoria_publicacion?   @relation(fields: [id_categoria_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria")
   vi_estado_publicacion     vi_estado_publicacion?      @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
   vi_tipo_publicacion       vi_tipo_publicacion?        @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
@@ -579,9 +614,11 @@ model vi_usuario {
   usuariocreacion        String                   @db.VarChar(50)
   usuarioactualizacion   String?                  @db.VarChar(50)
   id_rol                 String?                  @db.VarChar(50)
+  vi_comentario          vi_comentario[]
   vi_historialrepartidor vi_historialrepartidor[]
   vi_motorizado          vi_motorizado[]
   vi_notificacion        vi_notificacion[]
+  vi_pedido              vi_pedido[]
   vi_publicacion         vi_publicacion[]
   vi_persona             vi_persona?              @relation(fields: [id_persona], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_persona")
   vi_rol                 vi_rol?                  @relation(fields: [id_rol], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_rol")
@@ -608,22 +645,4 @@ model vi_venta {
   vi_pago              vi_pago[]
   vi_ordenserie        vi_ordenserie? @relation(fields: [id_ordenserie], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ordenserie")
   vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
-}
-
-model vi_historialrepartidor {
-  id                   String         @id @db.VarChar(50)
-  estado               String?        @db.VarChar(50)
-  razonderechazo       String?        @db.VarChar(255)
-  id_motorizado        String?        @db.VarChar(50)
-  id_usuario           String?        @db.VarChar(50)
-  id_pedido            String?        @db.VarChar(50)
-  estaactivo           Boolean        @default(true)
-  desactivadoen        DateTime?      @db.Timestamp(6)
-  creadoen             DateTime       @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime       @default(now()) @db.Timestamp(6)
-  usuariocreacion      String         @db.VarChar(50)
-  usuarioactualizacion String?        @db.VarChar(50)
-  vi_motorizado        vi_motorizado? @relation(fields: [id_motorizado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_motorizado")
-  vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
-  vi_usuario           vi_usuario?    @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }

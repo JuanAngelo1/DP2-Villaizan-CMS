@@ -12,6 +12,7 @@ import {
   Res,
   UseInterceptors,
   UploadedFile,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PublicacionService } from './publicacion.service';
 import { vi_publicacion } from '@prisma/client';
@@ -66,7 +67,7 @@ export class PublicacionController {
   }
 
   @Get(':id')
-  async getPublicacionByID(@Param('id') id: number) {
+  async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
     const publicacionFound =
       await this.publicacionService.getPublicacionByID(id);
     if (!publicacionFound)
@@ -90,7 +91,7 @@ export class PublicacionController {
   }
 
   @Delete(':id')
-  async deletePublicacionByID(@Param('id') id: number) {
+  async deletePublicacionByID(@Param('id',ParseIntPipe) id: number) {
     try {
       return await this.publicacionService.deletePublicacion(id);
     } catch (error) {
@@ -100,7 +101,7 @@ export class PublicacionController {
 
   @Put(':id')
   async updatePublicacion(
-    @Param('id') id: number,
+    @Param('id',ParseIntPipe) id: number,
     @Body() data: vi_publicacion,
   ) {
     try {
