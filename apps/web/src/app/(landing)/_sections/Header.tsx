@@ -15,15 +15,15 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed z-50 w-full border-b-2 border-b-rose-800 bg-red-600 shadow-xl">
-      <MaxWidthWrapper className="flex h-20 items-center justify-between">
+    <header className="fixed z-50 h-20 w-full border-b-2 border-b-rose-800 bg-red-600 shadow-xl">
+      <MaxWidthWrapper className="flex h-full items-center justify-between">
         {/* Logo */}
         <Link id="logo" href="/">
           <Image src="/VIllaizanLogoV.png" alt="Logo" width={36} height={36} />
         </Link>
 
         {/* Menú de navegación (oculto en móviles) */}
-        <nav className="hidden flex-1 items-center justify-center space-x-6 md:flex">
+        <nav className="hidden flex-1 items-center justify-center space-x-8 md:flex">
           <Link href="#sabores" className="text-xl text-white hover:underline">
             Sabores
           </Link>
@@ -83,7 +83,7 @@ const Header: React.FC = () => {
       {/* Menú móvil desplegable */}
       {isMobileMenuOpen && (
         <div className="md:hidden">
-          <nav className="flex flex-col items-center space-y-4 bg-red-600 py-4">
+          <nav className="flex flex-col items-center space-y-8 bg-red-600 py-4">
             <Link
               href="#sabores"
               className="text-xl text-white hover:underline"

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { AspectRatio } from "@repo/ui/components/aspect-ratio";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Nosotros: React.FC = () => {
@@ -15,25 +16,22 @@ const Nosotros: React.FC = () => {
             </p>
           </div>
           {/* Imagen de misión */}
-          <div className="order-1 md:order-2">
-            <Image
-              src="/images/mision.jpg"
-              alt="Misión"
-              width={500}
-              height={500}
-              className="h-auto w-full rounded-lg"
-            />
+          <div className="order-1 lg:w-[500px] w-[200px] md:order-2">
+            <AspectRatio ratio={16 / 9}>
+              <Image src="/images/mision.jpg" alt="Misión" className="h-auto w-full rounded-lg" fill />
+            </AspectRatio>
           </div>
 
           {/* Imagen de visión */}
-          <div>
-            <Image
-              src="/images/vision.jpg"
-              alt="Visión"
-              width={500}
-              height={500}
-              className="h-auto w-full rounded-lg"
-            />
+          <div className="lg:w-[500px] w-[200px]">
+            <AspectRatio ratio={16 / 9}>
+              <Image
+                src="/images/vision.jpg"
+                alt="Visión"
+                fill
+                className="h-auto w-full rounded-lg"
+              />
+            </AspectRatio>
           </div>
           {/* Visión */}
           <div className="flex flex-col items-start text-right md:items-end">

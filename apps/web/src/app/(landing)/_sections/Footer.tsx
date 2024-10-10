@@ -1,11 +1,12 @@
 import Link from "next/link";
 import React from "react";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
+import { Separator } from "@repo/ui/components/separator";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-red-600 p-24 py-8 text-white">
-      <MaxWidthWrapper>
+    <footer className="bg-red-600 px-4 py-8 text-white">
+      <MaxWidthWrapper className="flex flex-col gap-4">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {/* Información de la Empresa */}
           <div>
@@ -16,13 +17,10 @@ const Footer: React.FC = () => {
             </p>
           </div>
         </div>
-
-        {/* Línea Divisoria */}
-        <div className="mt-8 border-t border-gray-700 pt-4">
+        <Separator />
           <p className="text-center text-sm text-gray-300">
             &copy; {new Date().getFullYear()} Heladería Villaizan. Todos los derechos reservados.
           </p>
-        </div>
       </MaxWidthWrapper>
     </footer>
   );

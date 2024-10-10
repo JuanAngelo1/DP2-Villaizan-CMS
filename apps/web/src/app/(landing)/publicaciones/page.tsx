@@ -1,3 +1,4 @@
+// src/app/(landing)/_components/PublicacionesPage.tsx
 "use client";
 
 import { publicaciones } from "@web/src/app/data/publicaciones";
@@ -5,37 +6,24 @@ import React, { useMemo, useState } from "react";
 import { Button } from "@repo/ui/components/button";
 import MaxWidthWrapper from "./../_components/MaxWidthWrapper";
 import CardPublication from "./../_components/card-publication";
-import Filters from "./../_components/filters";
 import SearchPub from "./../_components/search-pub";
+import CategoriasDropdown from "./../_components/categorias-dropdown"; // Nuevo componente
 
 const PublicacionesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategorias, setSelectedCategorias] = useState<string[]>([]);
-  const [selectedEtiquetas, setSelectedEtiquetas] = useState<string[]>([]);
 
-  // Obtener todas las categorías y etiquetas únicas
+  // Obtener todas las categorías únicas
   const allCategorias = useMemo(() => {
     const categoriasSet = new Set<string>();
     publicaciones.forEach((pub) => pub.categorias.forEach((cat) => categoriasSet.add(cat)));
     return Array.from(categoriasSet);
   }, []);
 
-  const allEtiquetas = useMemo(() => {
-    const etiquetasSet = new Set<string>();
-    publicaciones.forEach((pub) => pub.etiquetas.forEach((et) => etiquetasSet.add(et)));
-    return Array.from(etiquetasSet);
-  }, []);
-
-  // Funciones para manejar la selección de filtros
+  // Función para manejar la selección de categorías
   const toggleCategoria = (categoria: string) => {
     setSelectedCategorias((prev) =>
       prev.includes(categoria) ? prev.filter((c) => c !== categoria) : [...prev, categoria]
-    );
-  };
-
-  const toggleEtiqueta = (etiqueta: string) => {
-    setSelectedEtiquetas((prev) =>
-      prev.includes(etiqueta) ? prev.filter((e) => e !== etiqueta) : [...prev, etiqueta]
     );
   };
 
@@ -44,43 +32,47 @@ const PublicacionesPage: React.FC = () => {
     return publicaciones.filter((pub) => {
       const matchesSearch =
         pub.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pub.slug.toLowerCase().includes(searchTerm.toLowerCase());
+        pub.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        pub.etiquetas.some((et) => et.toLowerCase().includes(searchTerm.toLowerCase())); // Incluye etiquetas en la búsqueda
 
       const matchesCategorias =
         selectedCategorias.length === 0 || selectedCategorias.every((cat) => pub.categorias.includes(cat));
 
-      const matchesEtiquetas =
-        selectedEtiquetas.length === 0 || selectedEtiquetas.every((et) => pub.etiquetas.includes(et));
-
-      return matchesSearch && matchesCategorias && matchesEtiquetas;
+      return matchesSearch && matchesCategorias;
     });
-  }, [searchTerm, selectedCategorias, selectedEtiquetas]);
+  }, [searchTerm, selectedCategorias]);
 
   return (
-    <section className="bg-gray-100 py-12">
+    <section className="py-12">
       <MaxWidthWrapper className="flex flex-col gap-8">
-        <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Filtros */}
-          <aside className="w-full lg:w-1/4">
-            <Filters
-              categorias={allCategorias}
-              etiquetas={allEtiquetas}
-              selectedCategorias={selectedCategorias}
-              selectedEtiquetas={selectedEtiquetas}
-              toggleCategoria={toggleCategoria}
-              toggleEtiqueta={toggleEtiqueta}
-            />
-          </aside>
-
+        <div className="flex flex-col gap-8 lg:flex-row w-full">
           {/* Contenido Principal */}
-          <div className="flex w-full flex-col gap-8 lg:w-3/4">
+          <div className="flex w-full flex-col gap-8">
             <div className="flex flex-col gap-4">
-              <h1 className="Publicaciones text-5xl font-bold">Publicaciones</h1>
-              {/* Barra de Búsqueda */}
-              <SearchPub searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+              <h1 className="text-5xl font-bold">Publicaciones</h1>
+              {/* Barra de Búsqueda, Dropdown de Categorías y Botón de Buscar */}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <SearchPub searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+                  <CategoriasDropdown
+                    categorias={allCategorias}
+                    selectedCategorias={selectedCategorias}
+                    toggleCategoria={toggleCategoria}
+                  />
+                  <Button
+                    className="w-full sm:w-auto text-lg"
+                    onClick={() => {
+                      // Placeholder para futura integración de API
+                      console.log("Buscar publicaciones");
+                    }}
+                  >
+                    Buscar
+                  </Button>
+                </div>
+              </div>
             </div>
             {/* Listado de Publicaciones */}
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="mt-6 flex flex-col gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {filteredPublicaciones.length > 0 ? (
                 filteredPublicaciones.map((pub) => <CardPublication key={pub.id} publication={pub} />)
               ) : (

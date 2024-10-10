@@ -14,7 +14,7 @@ import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Sabores: React.FC = () => {
   return (
-    <section id="sabores" className="flex min-h-[56rem] flex-col items-center justify-start gap-12 py-24 px-16">
+    <section id="sabores" className="flex h-fit flex-col items-center justify-start gap-12 py-16 px-16">
       <MaxWidthWrapper className="flex flex-col items-center justify-center gap-y-20">
         <h2 className="text-7xl">Nuestros sabores</h2>
         <Carousel
