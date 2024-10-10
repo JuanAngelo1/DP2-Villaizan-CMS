@@ -14,6 +14,27 @@ export class PublicacionService {
     return this.prisma.vi_publicacion.findMany();
   }
 
+  async getPublicacionesCantidadComentarios(): Promise<any[]> {
+    const publicaciones = await this.prisma.vi_publicacion.findMany();
+
+    const publicacionesConCantidadComentarios = await Promise.all(
+        publicaciones.map(async (publicacion) => {
+            const cantidadComentarios = await this.prisma.vi_comentario.count({
+                where: {
+                    id_publicacion: publicacion.id,
+                },
+            });
+
+            return {
+                ...publicacion,
+                cantidadComentarios, // Agregamos la cantidad de comentarios
+            };
+        })
+    );
+
+    return publicacionesConCantidadComentarios;
+  }
+
   async getPublicacionByID(id: number): Promise<vi_publicacion> {
     return this.prisma.vi_publicacion.findUnique({
       where: {

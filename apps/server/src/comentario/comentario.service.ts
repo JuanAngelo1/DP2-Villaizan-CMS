@@ -8,9 +8,35 @@ export class ComentarioService {
 
     constructor (private prisma: PrismaService) {}
 
-    async getAllComentarios(): Promise<vi_comentario[]> {
-        return this.prisma.vi_comentario.findMany();
-    }
+    async getAllComentarios(): Promise<any[]> {
+      const comentarios = await this.prisma.vi_comentario.findMany();
+  
+      // Iterar sobre los comentarios y agregar el usuario y la publicación a partir de los ids
+      const comentariosConUsuariosYPublicaciones = await Promise.all(
+          comentarios.map(async (comentario) => {
+              const usuario = await this.prisma.vi_usuario.findUnique({
+                  where: { id: comentario.id_usuario }
+              });
+  
+              const publicacion = await this.prisma.vi_publicacion.findUnique({
+                  where: { id: comentario.id_publicacion }
+              });
+  
+              return {
+                id: comentario.id,
+                comentario: comentario.comentario,
+                fecha: comentario.fecha,
+                estadoaprobacion: comentario.estadoaprobacion,
+                nombreautor: comentario.nombreautor,
+                estaactivo: comentario.estaactivo,
+                usuario, 
+                publicacion 
+              };
+          })
+      );
+  
+      return comentariosConUsuariosYPublicaciones;
+  }
 
     async getComentarioById(id: number): Promise<vi_comentario> {
         return this.prisma.vi_comentario.findUnique({

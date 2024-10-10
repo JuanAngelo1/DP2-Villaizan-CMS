@@ -47,6 +47,24 @@ export class PublicacionController {
     }
   }
 
+  @Get('cantidadComentarios')
+  async getPublicacionesCantidadComentarios(@Req() request: Request, @Res() response: Response,): Promise<any> {
+    try {
+      const result = await this.publicacionService.getPublicacionesCantidadComentarios();
+      return response.status(200).json({
+        status: 'Success',
+        message: 'Publicaciones Encontradas',
+        result: result,
+      });
+    } catch (err) {
+      return response.status(500).json({
+        status: 'Error!',
+        message: 'Internal Server Error',
+        result: [],
+      });
+    }
+  }
+
   @Post('crearPublicacion')
   async createPublicacion(@Body() data: CreatePublicacionDto) {
     try {
