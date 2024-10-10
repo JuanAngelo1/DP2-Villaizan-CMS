@@ -29,7 +29,7 @@ export class ComentarioController {
     }
 
     @Post("crear")
-    async createUsuario(@Body() data: CreateComentarioDto, @Res() response: Response): Promise<any> {
+    async createComentario(@Body() data: CreateComentarioDto, @Res() response: Response): Promise<any> {
         try {
             const result = await this.comentarioService.createComentario(data);
             return response.status(200).json({
@@ -48,7 +48,7 @@ export class ComentarioController {
     }
 
     @Get('obtenerxId/:id')
-    async getUsuarioByID(@Param('id',ParseIntPipe) id: number, @Res() response: Response): Promise<any> {
+    async getComentarioByID(@Param('id',ParseIntPipe) id: number, @Res() response: Response): Promise<any> {
         const comentariFound = await this.comentarioService.getComentarioById(id);
         if (!comentariFound) {
             return response.status(400).json({
@@ -67,7 +67,7 @@ export class ComentarioController {
 
 
     @Put('actualizar/:id')
-    async updateUsuario(@Param('id',ParseIntPipe) id: number, @Body() data: vi_comentario, @Res() response: Response): Promise<any> {
+    async updateComentarioo(@Param('id',ParseIntPipe) id: number, @Body() data: vi_comentario, @Res() response: Response): Promise<any> {
         try {
             const comentarioUpdate = await this.comentarioService.updateComentario(id, data);
             return response.status(200).json({

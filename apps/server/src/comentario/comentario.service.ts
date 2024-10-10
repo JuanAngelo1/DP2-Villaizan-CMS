@@ -38,12 +38,26 @@ export class ComentarioService {
       return comentariosConUsuariosYPublicaciones;
   }
 
-    async getComentarioById(id: number): Promise<vi_comentario> {
-        return this.prisma.vi_comentario.findUnique({
-            where: {
-                id
-            }
-        })
+    async getComentarioById(id: number): Promise<any> {
+      const comentario = await this.prisma.vi_comentario.findUnique({
+          where: { id },
+          include: {
+              vi_usuario: true,  // Incluir el objeto usuario relacionado
+              vi_publicacion: true,  // Incluir el objeto publicacion relacionado
+          },
+      });
+
+      // Construir la respuesta personalizada
+      return {
+          id: comentario.id,
+          comentario: comentario.comentario,
+          fecha: comentario.fecha,
+          estadoaprobacion: comentario.estadoaprobacion,
+          nombreautor: comentario.nombreautor,
+          estaactivo: comentario.estaactivo,
+          usuario: comentario.vi_usuario,  // Cambiar el nombre a "usuario"
+          publicacion: comentario.vi_publicacion,  // Cambiar el nombre a "publicacion"
+      };
     }
 
     async createComentario(data: CreateComentarioDto): Promise<vi_comentario> {
@@ -88,14 +102,14 @@ export class ComentarioService {
     async getComentariosByPublicacion(id: number): Promise<vi_comentario[]> {
         return this.prisma.vi_comentario.findMany({
           where: {
-            id_publicacion: id,  // Filtramos los comentarios por el id_publicacion
-            estaactivo: true,    // Opcional: solo comentarios activos
+            id_publicacion: id,  
+            estaactivo: true,   
           },
           include: {
             vi_usuario: {
               select: {
-                nombre: true,   // Opcional: puedes incluir el nombre del autor
-                apellido: true, // Opcional: puedes incluir el apellido del autor
+                nombre: true,   
+                apellido: true, 
               },
             },
           },
