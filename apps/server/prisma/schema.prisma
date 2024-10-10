@@ -64,7 +64,7 @@ model vi_comentario {
   id               Int             @id @default(autoincrement())
   comentario       String
   fecha            DateTime        @default(now()) @db.Timestamp(6)
-  estadoaprobacion Boolean         @default(false)
+  estadoaprobacion Boolean?
   nombreautor      String          @db.VarChar(255)
   estaactivo       Boolean         @default(true)
   id_usuario       String?         @db.VarChar(50)
