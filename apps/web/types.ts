@@ -21,3 +21,28 @@ export type Categoria = {
   colorfondo: string;
   colortexto: string;
 }
+
+export type Publicacion = {
+  id: number;
+  titulo: string;
+  descripcion: string;
+  urlImagen: string;
+  //!TODO -> Añadir los campos faltantes
+}
+
+export type Usuario = {
+  id: string;
+  nombre: string;
+  apellido: string;
+  correo: string;
+  //!TODO -> Añadir los campos faltantes
+}
+
+export type Comentario = {
+  comentario: string;
+  estadoaprobacion: boolean | null;
+  fecha: string;
+  id: number;
+  publicacion: Publicacion;
+  usuario: Usuario;
+}
