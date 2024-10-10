@@ -18,6 +18,7 @@ import { RolService } from './GestionUsuarios/rol/rol.service';
 import { PermisoModule } from './GestionUsuarios/permiso/permiso.module';
 import { PermisoController } from './GestionUsuarios/permiso/permiso.controller';
 import { PermisoService } from './GestionUsuarios/permiso/permiso.service';
+import { ComentarioModule } from './comentario/comentario.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PermisoService } from './GestionUsuarios/permiso/permiso.service';
     EtiquetaModule,
     RolModule,
     PermisoModule,
+    ComentarioModule,
   ],
   controllers: [UsuarioController, ArchivoController, RolController,PermisoController],
   providers: [UsuarioService, ArchivoService,RolService,PermisoService],
