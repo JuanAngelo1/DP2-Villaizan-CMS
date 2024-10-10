@@ -1,8 +1,9 @@
 import { Comentario, Response } from "@web/types";
+import { formatDate } from "@web/utils/date";
 import axios from "axios";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "@repo/ui/components/badge";
 import { Button, buttonVariants } from "@repo/ui/components/button";
@@ -10,30 +11,43 @@ import { Card, CardContent, CardHeader, CardTitle } from "@repo/ui/components/ca
 import { Input } from "@repo/ui/components/input";
 import { Label } from "@repo/ui/components/label";
 import { Separator } from "@repo/ui/components/separator";
+import { Skeleton } from "@repo/ui/components/skeleton";
 import { Textarea } from "@repo/ui/components/textarea";
 import { cn } from "@repo/ui/lib/utils";
 import ChipEstadoAprobacion from "./ChipEstadoAprobacion";
 
-function formatDate(isoString: string | undefined): string {
-  if (!isoString) return "--";
-  const date = new Date(isoString);
-
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const year = date.getUTCFullYear();
-
-  const hours = String(date.getUTCHours()).padStart(2, "0");
-  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-
-  return `${day}/${month}/${year}, ${hours}:${minutes}`;
-}
-
 function ComentarioDetailView({ id }: { id: string }) {
   const router = useRouter();
-  if (!id) router.push('/admin/contenido?content=comentarios');
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  if (!id) router.push("/admin/contenido?content=comentarios");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [comentario, setComentario] = useState<Comentario | null>(null);
+
+  const handleBackButton = () => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+    nextSearchParams.delete("id_comentario");
+    router.replace(`${pathname}?${nextSearchParams}`);
+  };
+
+  const handleSetEstadoAprobacion = async (_comentario: Comentario, estado: boolean | null) => {
+    try {
+      setIsUpdating(true);
+      const response: Response<Comentario> = await axios.put(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/actualizar/${id}`,
+        { comentario: _comentario.comentario, estadoaprobacion: estado }
+      );
+      if (response.data.status === "Error") throw new Error(response.data.message);
+
+      setComentario({ ..._comentario, estadoaprobacion: estado });
+    } catch (error) {
+      console.error("Ups! Algo salio mal -> ", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -44,7 +58,6 @@ function ComentarioDetailView({ id }: { id: string }) {
         );
         if (response.data.status === "Error") throw new Error(response.data.message);
 
-        console.log("Mira el comentario ", response);
         setComentario(response.data.result);
       } catch (error) {
         console.error("Ups! Algo salio mal -> ", error);
@@ -60,12 +73,9 @@ function ComentarioDetailView({ id }: { id: string }) {
     <Card className="flex h-auto flex-1 flex-col overflow-y-hidden">
       <CardHeader>
         <div className="flex flex-row items-center gap-1">
-          <Link
-            className={cn(buttonVariants({ variant: "ghost" }), "h-7 w-6")}
-            href={{ query: { content: "comentarios" } }}
-          >
+          <Button variant={"ghost"} className={"h-7 w-6"} onClick={handleBackButton}>
             <ChevronLeft className="h-5 w-5 shrink-0" />
-          </Link>
+          </Button>
           <CardTitle className="text-xl">[Contenido del comentario]</CardTitle>
         </div>
       </CardHeader>
@@ -77,20 +87,43 @@ function ComentarioDetailView({ id }: { id: string }) {
 
             <div>
               <Label className="font-semibold">Publicación relacionada</Label>
-              <div className="flex flex-row items-center gap-1">
-                <Input defaultValue={comentario?.publicacion.titulo} readOnly />
-                <Button>Ver publicación</Button>
-              </div>
+              {isLoading ? (
+                <div className="flex flex-row rounded-md border px-2 py-2">
+                  <Skeleton className="w-[60%] text-sm text-transparent">.</Skeleton>
+                </div>
+              ) : (
+                <div className="flex flex-row items-center gap-1">
+                  <Input defaultValue={comentario?.publicacion.titulo} readOnly disabled={isUpdating} />
+                  <Button disabled={isUpdating}>Ver publicación</Button>
+                </div>
+              )}
             </div>
 
             <div>
               <Label className="font-semibold">Comentario</Label>
-              <Textarea defaultValue={comentario?.comentario} readOnly className="min-h-[100px]" />
+              {isLoading ? (
+                <div className="flex min-h-[100px] w-full flex-col rounded-md border p-2">
+                  <Skeleton className="w-fit text-sm text-transparent">Este es un texto de carga</Skeleton>
+                </div>
+              ) : (
+                <Textarea
+                  defaultValue={comentario?.comentario}
+                  readOnly
+                  className="min-h-[100px]"
+                  disabled={isUpdating}
+                />
+              )}
             </div>
 
             <div>
               <Label className="font-semibold">Fecha de publicación de comentario</Label>
-              <Input defaultValue={formatDate(comentario?.fecha)} readOnly />
+              {isLoading ? (
+                <div className="flex flex-row rounded-md border p-2">
+                  <Skeleton className="w-40 text-sm text-transparent">.</Skeleton>
+                </div>
+              ) : (
+                <Input defaultValue={formatDate(comentario?.fecha)} readOnly disabled={isUpdating} />
+              )}
             </div>
           </section>
 
@@ -100,21 +133,89 @@ function ComentarioDetailView({ id }: { id: string }) {
             <div className="flex flex-col gap-4">
               <div className="flex w-fit flex-col gap-1">
                 <Label>Estado</Label>
-                <ChipEstadoAprobacion comentario={comentario} />
+                {isLoading ? (
+                  <div className="rounded-xs">
+                    <Skeleton className="text-sm text-transparent">Estado en carga</Skeleton>
+                  </div>
+                ) : (
+                  <ChipEstadoAprobacion comentario={comentario} disabled={isUpdating} />
+                )}
               </div>
 
               <div>
                 <Label>Usuario relacionado</Label>
-                <Input
-                  defaultValue={`${comentario?.usuario.nombre} ${comentario?.usuario.apellido} (${comentario?.usuario.correo})`}
-                  readOnly
-                />
+                {isLoading ? (
+                  <div className="flex flex-row rounded-md border p-2">
+                    <Skeleton className="w-40 text-sm text-transparent">.</Skeleton>
+                  </div>
+                ) : (
+                  <Input
+                    defaultValue={`${comentario?.usuario.nombre} ${comentario?.usuario.apellido} (${comentario?.usuario.correo})`}
+                    readOnly
+                    disabled={isUpdating}
+                  />
+                )}
               </div>
             </div>
 
             <div className="flex justify-end gap-2">
-              <Button variant={"outline"}>Reestablecer a revisión</Button>
-              <Button>Desaprobar comentario</Button>
+              {isLoading || comentario === null ? (
+                <>
+                  <Skeleton className="h-9 w-40 text-transparent"></Skeleton>
+                  <Skeleton className="h-9 w-40 text-transparent"></Skeleton>
+                </>
+              ) : comentario?.estadoaprobacion === null ? (
+                <>
+                  <Button
+                    variant={"destructive"}
+                    onClick={() => handleSetEstadoAprobacion(comentario, false)}
+                    disabled={isUpdating}
+                  >
+                    Desaprobar comentario
+                  </Button>
+                  <Button
+                    variant={"default"}
+                    onClick={() => handleSetEstadoAprobacion(comentario, true)}
+                    disabled={isUpdating}
+                  >
+                    Aprobar comentario
+                  </Button>
+                </>
+              ) : comentario?.estadoaprobacion === true ? (
+                <>
+                  <Button
+                    variant={"outline"}
+                    onClick={() => handleSetEstadoAprobacion(comentario, null)}
+                    disabled={isUpdating}
+                  >
+                    Reestablecer a revisión
+                  </Button>
+                  <Button
+                    variant={"destructive"}
+                    onClick={() => handleSetEstadoAprobacion(comentario, false)}
+                    disabled={isUpdating}
+                  >
+                    Desaprobar comentario
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant={"outline"}
+                    onClick={() => handleSetEstadoAprobacion(comentario, null)}
+                    disabled={isUpdating}
+                  >
+                    Reestablecer a revisión
+                  </Button>
+                  <Button
+                    variant={"default"}
+                    onClick={() => handleSetEstadoAprobacion(comentario, true)}
+                    disabled={isUpdating}
+                  >
+                    Aprobar comentario
+                  </Button>
+                </>
+              )}
             </div>
           </section>
         </main>
