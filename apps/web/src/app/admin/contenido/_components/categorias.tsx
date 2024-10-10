@@ -6,13 +6,15 @@ import axios from "axios";
 import { Delete, Ellipsis, FilePenLine, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
 import { Input } from "@repo/ui/components/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { cn } from "@repo/ui/lib/utils";
 import SheetCategoria from "./categorias_components/SheetCategoria";
 import DialogDelete from "./general_components/DialogDelete";
+import MainContent from "./general_components/MainContent";
+import SectionWrapper from "./general_components/SectionWrapper";
+import TopHeader from "./general_components/TopHeader";
 
 const initCategoria: Categoria = {
   id: "000-init",
@@ -112,7 +114,7 @@ function Categorias() {
       try {
         setIsLoading(true);
         const response: Response<Categoria[]> = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/etiqueta`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/categoria`
         );
         if (response.data.status === "Error") throw new Error(response.data.message);
 
@@ -130,8 +132,8 @@ function Categorias() {
 
   return (
     <>
-      <div className="flex h-full w-full flex-col gap-2 overflow-y-hidden p-1">
-        <div className="flex flex-row justify-end gap-2">
+      <SectionWrapper>
+        <TopHeader>
           <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
           <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
             <p>Mostrando</p>
@@ -155,92 +157,88 @@ function Categorias() {
             <Plus className="h-4 w-4 shrink-0" />
             <p className="hidden sm:block">Agregar</p>
           </Button>
-        </div>
+        </TopHeader>
 
-        <Card className="flex h-auto flex-1 flex-col overflow-y-hidden">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xl">Categorías</CardTitle>
-            <CardDescription>Categoriza las publicaciones en diferentes áreas y temas.</CardDescription>
-          </CardHeader>
-
-          <CardContent className="flex flex-1 flex-col gap-2 overflow-y-hidden pt-0">
-            {isLoading ? (
-              <section className="flex items-center rounded-md border px-4 py-3">
-                <div className="flex-1">
-                  <Skeleton className="w-[300px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
-                    .
-                  </Skeleton>
+        <MainContent
+          title="Categorías"
+          description="Categoriza las publicaciones en diferentes áreas y temas."
+        >
+          {isLoading ? (
+            <section className="flex items-center rounded-md border px-4 py-3">
+              <div className="flex-1">
+                <Skeleton className="w-[300px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+                  .
+                </Skeleton>
+              </div>
+              <div className="flex-1">
+                <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+                  .
+                </Skeleton>
+              </div>
+            </section>
+          ) : (
+            <>
+              <section className="h-full space-y-2 overflow-y-auto">
+                {currentPageItems.map((categoria) => {
+                  return (
+                    <section key={categoria.id} className="flex items-center rounded-md border px-4 py-3">
+                      <div className="flex-1">
+                        <p>{categoria.nombre}</p>
+                      </div>
+                      <div className="flex-1 text-sm font-light">{categoria.descripcion}</div>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Ellipsis />
+                        </PopoverTrigger>
+                        <PopoverContent className="flex w-fit flex-col gap-0 p-1" side="left" align="start">
+                          <Button
+                            variant={"ghost"}
+                            className="justify-start"
+                            onClick={() => openEditSheet(categoria)}
+                          >
+                            <FilePenLine className="h-4 w-4" />
+                            <p>Editar</p>
+                          </Button>
+                          <Button
+                            variant={"ghost"}
+                            className="justify-start hover:bg-red-100/50"
+                            onClick={() => {
+                              setDelCategoria(categoria);
+                              setDeleteModalOpen(true);
+                            }}
+                          >
+                            <Delete className="h-4 w-4 stroke-red-500" />
+                            <p className="text-red-500">Eliminar</p>
+                          </Button>
+                        </PopoverContent>
+                      </Popover>
+                    </section>
+                  );
+                })}
+              </section>
+              <section className="flex flex-row items-center justify-between">
+                <div className="flex items-center gap-1 text-sm">
+                  <span className="hidden sm:flex">Mostrando </span>
+                  <span className="font-bold">{`${(page - 1) * entriesPerPage + 1}-${page * entriesPerPage > categorias.length ? categorias.length : page * entriesPerPage}`}</span>{" "}
+                  de <span className="font-bold">{categorias.length}</span> categorías
                 </div>
-                <div className="flex-1">
-                  <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
-                    .
-                  </Skeleton>
+                <div className="space-x-2">
+                  <Button variant={"secondary"} onClick={prevPage} disabled={page === 1}>
+                    Anterior
+                  </Button>
+                  <Button
+                    variant={"secondary"}
+                    onClick={nextPage}
+                    disabled={page === totalPages || totalPages === 0}
+                  >
+                    Siguiente
+                  </Button>
                 </div>
               </section>
-            ) : (
-              <>
-                <section className="h-full space-y-2 overflow-y-auto">
-                  {currentPageItems.map((categoria) => {
-                    return (
-                      <section key={categoria.id} className="flex items-center rounded-md border px-4 py-3">
-                        <div className="flex-1">
-                          <p>{categoria.nombre}</p>
-                        </div>
-                        <div className="flex-1 text-sm font-light">{categoria.descripcion}</div>
-                        <Popover>
-                          <PopoverTrigger>
-                            <Ellipsis />
-                          </PopoverTrigger>
-                          <PopoverContent className="flex w-fit flex-col gap-0 p-1" side="left" align="start">
-                            <Button
-                              variant={"ghost"}
-                              className="justify-start"
-                              onClick={() => openEditSheet(categoria)}
-                            >
-                              <FilePenLine className="h-4 w-4" />
-                              <p>Editar</p>
-                            </Button>
-                            <Button
-                              variant={"ghost"}
-                              className="justify-start hover:bg-red-100/50"
-                              onClick={() => {
-                                setDelCategoria(categoria);
-                                setDeleteModalOpen(true);
-                              }}
-                            >
-                              <Delete className="h-4 w-4 stroke-red-500" />
-                              <p className="text-red-500">Eliminar</p>
-                            </Button>
-                          </PopoverContent>
-                        </Popover>
-                      </section>
-                    );
-                  })}
-                </section>
-                <section className="flex flex-row items-center justify-between">
-                  <div className="flex items-center gap-1 text-sm">
-                    <span className="hidden sm:flex">Mostrando </span>
-                    <span className="font-bold">{`${(page - 1) * entriesPerPage + 1}-${page * entriesPerPage > categorias.length ? categorias.length : page * entriesPerPage}`}</span>{" "}
-                    de <span className="font-bold">{categorias.length}</span> categorías
-                  </div>
-                  <div className="space-x-2">
-                    <Button variant={"secondary"} onClick={prevPage} disabled={page === 1}>
-                      Anterior
-                    </Button>
-                    <Button
-                      variant={"secondary"}
-                      onClick={nextPage}
-                      disabled={page === totalPages || totalPages === 0}
-                    >
-                      Siguiente
-                    </Button>
-                  </div>
-                </section>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </>
+          )}
+        </MainContent>
+      </SectionWrapper>
 
       <SheetCategoria
         open={isNewSheetOpen}

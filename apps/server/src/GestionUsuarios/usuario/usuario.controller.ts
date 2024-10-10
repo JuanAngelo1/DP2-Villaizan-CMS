@@ -21,7 +21,7 @@ export class UsuarioController {
         }catch(err){
             return response.status(500).json({
                 status:"Error",
-                message: "Internal Server Error",
+                message: "Error al obtener los usuarios",
                 result:[]
             
             })   
