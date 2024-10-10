@@ -23,7 +23,7 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Menú de navegación (oculto en móviles) */}
-        <nav className="hidden flex-1 items-center justify-center space-x-8 md:flex">
+        {/* <nav className="hidden flex-1 items-center justify-center space-x-8 md:flex">
           <Link href="#sabores" className="text-xl text-white hover:underline">
             Sabores
           </Link>
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
           <Link href="#publicaciones" className="text-xl text-white hover:underline">
             Publicaciones
           </Link>
-        </nav>
+        </nav> */}
 
         {/* Acciones de usuario (oculto en móviles) */}
         <div className="hidden items-center space-x-2 md:flex">

@@ -4,10 +4,19 @@
 import { publicaciones } from "@web/src/app/data/publicaciones";
 import React, { useMemo, useState } from "react";
 import { Button } from "@repo/ui/components/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@repo/ui/components/pagination";
 import MaxWidthWrapper from "./../_components/MaxWidthWrapper";
 import CardPublication from "./../_components/card-publication";
+import CategoriasDropdown from "./../_components/categorias-dropdown";
 import SearchPub from "./../_components/search-pub";
-import CategoriasDropdown from "./../_components/categorias-dropdown"; // Nuevo componente
 
 const PublicacionesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,7 +54,7 @@ const PublicacionesPage: React.FC = () => {
   return (
     <section className="py-12">
       <MaxWidthWrapper className="flex flex-col gap-8">
-        <div className="flex flex-col gap-8 lg:flex-row w-full">
+        <div className="flex w-full flex-col gap-8 lg:flex-row">
           {/* Contenido Principal */}
           <div className="flex w-full flex-col gap-8">
             <div className="flex flex-col gap-4">
@@ -60,7 +69,7 @@ const PublicacionesPage: React.FC = () => {
                     toggleCategoria={toggleCategoria}
                   />
                   <Button
-                    className="w-full sm:w-auto text-lg"
+                    className="w-full text-lg sm:w-auto"
                     onClick={() => {
                       // Placeholder para futura integración de API
                       console.log("Buscar publicaciones");
@@ -78,6 +87,35 @@ const PublicacionesPage: React.FC = () => {
               ) : (
                 <p className="col-span-full text-center text-gray-500">No se encontraron publicaciones.</p>
               )}
+            </div>
+            {/* Paginación */}
+            <div className="flex w-full flex-row justify-between">
+              <p className="text-sm text-gray-500">
+                Mostrando 1-10 de {filteredPublicaciones.length} publicaciones
+              </p>
+              <Pagination className="flex flex-row justify-end">
+                <PaginationPrevious>
+                  <PaginationLink href="#">Anterior</PaginationLink>
+                </PaginationPrevious>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationLink href="#">1</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">2</PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink href="#">3</PaginationLink>
+                  </PaginationItem>
+                  <PaginationEllipsis />
+                  <PaginationItem>
+                    <PaginationLink href="#">10</PaginationLink>
+                  </PaginationItem>
+                </PaginationContent>
+                <PaginationNext>
+                  <PaginationLink href="#">Siguiente</PaginationLink>
+                </PaginationNext>
+              </Pagination>
             </div>
           </div>
         </div>
