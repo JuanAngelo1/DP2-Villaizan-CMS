@@ -1,12 +1,13 @@
-'use client';
+"use client";
+
 import { Publicacion } from "@web/src/app/data/publicaciones";
+import useCardLayout from "@web/src/app/hooks/useCardLayout";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
 import { AspectRatio } from "@repo/ui/components/aspect-ratio";
+import { Card, CardContent, CardHeader } from "@repo/ui/components/card";
 import { cn } from "@repo/ui/lib/utils";
-import useCardLayout from "@web/src/app/hooks/useCardLayout";
 
 interface CardPublicationProps {
   publication: Publicacion;
