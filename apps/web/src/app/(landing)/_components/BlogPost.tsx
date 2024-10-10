@@ -8,7 +8,14 @@ import { Separator } from "@repo/ui/components/separator"
 export default function BlogPost() {
   return (
     <div className="bg-[#fff1f2] min-h-screen">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">    
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <nav className="text-sm mb-4">
+          <ul className="flex">
+            <li className="after:content-['>'] after:mx-2"><a href="/publicaciones" className="text-gray-600 hover:underline">Inicio</a></li>
+            <li className="after:content-['>'] after:mx-2"><a href="/publicaciones" className="text-gray-600 hover:underline">Publicaciones</a></li>
+            <li className="text-gray-900">La influencia de nuestros sabores en los niños</li>
+          </ul>
+        </nav>
         <div className="flex flex-col md:flex-row gap-8">
           <aside className="md:w-1/4">
             <Card className="bg-white">
