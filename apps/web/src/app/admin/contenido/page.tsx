@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Breadcrumb,
@@ -25,47 +25,38 @@ type contentSections = "publicaciones" | "comentarios" | "categorias" | "etiquet
 
 type contentSidebarItem = {
   label: string;
-  href: string;
-  hash: string;
+  param: string;
 };
 
 const contentSidebarItems: contentSidebarItem[] = [
   {
     label: "Publicaciones",
-    href: "/admin/contenido#publicaciones",
-    hash: "publicaciones",
+    param: "publicaciones",
   },
   {
     label: "Categorías",
-    href: "/admin/contenido#categorias",
-    hash: "categorias",
+    param: "categorias",
   },
   {
     label: "Etiquetas",
-    href: "/admin/contenido#etiquetas",
-    hash: "etiquetas",
+    param: "etiquetas",
   },
   {
     label: "Comentarios",
-    href: "/admin/contenido#comentarios",
-    hash: "comentarios",
+    param: "comentarios",
   },
 ];
 
 function Page() {
-  const router = useRouter();
-  const [selectedSection, setSelectedSection] = useState<contentSections>("publicaciones");
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const prev_content = searchParams.get("content");
+  const content =
+    prev_content === null ||
+    !["publicaciones", "comentarios", "categorias", "etiquetas"].includes(prev_content)
+      ? "publicaciones"
+      : prev_content;
 
-  useEffect(() => {
-    const currentHash = window.location.href.split("#")[1];
-    console.log("See current hash -> ", currentHash);
-    if (currentHash === undefined) return;
-    if (!["publicaciones", "comentarios", "categorias", "etiquetas"].includes(currentHash as string)) {
-      router.push("/admin/contenido#publicaciones");
-    }
-    setSelectedSection(currentHash as contentSections);
-  }, []);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
     <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[24px] lg:p-[32px]">
@@ -96,14 +87,16 @@ function Page() {
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
                     "w-full justify-start",
-                    selectedSection === item.hash ? "bg-secondary text-primary-background" : ""
+                    content === item.param ? "bg-secondary text-primary-background" : ""
                   )}
-                  href={item.href}
-                  onClick={() => setSelectedSection(item.hash as contentSections)}
+                  href={{
+                    pathname: "/admin/contenido",
+                    query: { content: item.param },
+                  }}
                 >
-                  <div className="flex w-full flex-row justify-between items-center">
+                  <div className="flex w-full flex-row items-center justify-between">
                     {item.label}
-                    {selectedSection === item.hash && <ChevronRight className="h-4 w-4" />}
+                    {content === item.param && <ChevronRight className="h-4 w-4" />}
                   </div>
                 </Link>
               );
@@ -111,11 +104,11 @@ function Page() {
           </ul>
         </section>
 
-        <div className="flex items-center gap-2 lg:hidden px-1">
+        <div className="flex items-center gap-2 px-1 lg:hidden">
           <h1 className="text-2xl font-bold">Contenido</h1>
           <ChevronRight className="h-4 w-4" />
           <h1 className="text-2xl font-bold">
-            {contentSidebarItems.find((item) => item.hash === selectedSection)?.label}
+            {contentSidebarItems.find((item) => item.param === content)?.label}
           </h1>
           <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
@@ -131,19 +124,17 @@ function Page() {
                     className={cn(
                       buttonVariants({ variant: "ghost" }),
                       "w-full justify-start",
-                      selectedSection === item.hash ? "bg-secondary text-primary-background" : ""
+                      content === item.param ? "bg-secondary text-primary-background" : ""
                     )}
-                    href={item.href}
-                    onClick={() => {
-                      setIsPopoverOpen(false);
-                      setTimeout(() => {
-                        setSelectedSection(item.hash as contentSections);
-                      }, 100);
+                    href={{
+                      pathname: "/admin/contenido",
+                      query: { content: item.param },
                     }}
+                    onClick={() => setIsPopoverOpen(false)}
                   >
-                    <div className="flex w-full flex-row justify-between items-center">
+                    <div className="flex w-full flex-row items-center justify-between">
                       {item.label}
-                      {selectedSection === item.hash && <ChevronRight className="h-4 w-4" />}
+                      {content === item.param && <ChevronRight className="h-4 w-4" />}
                     </div>
                   </Link>
                 );
@@ -152,10 +143,10 @@ function Page() {
           </Popover>
         </div>
 
-        {selectedSection === "publicaciones" && <Publicaciones />}
-        {selectedSection === "categorias" && <Categorias />}
-        {selectedSection === "etiquetas" && <Etiquetas />}
-        {selectedSection === "comentarios" && <Comentarios />}
+        {content === "publicaciones" && <Publicaciones />}
+        {content === "categorias" && <Categorias />}
+        {content === "etiquetas" && <Etiquetas />}
+        {content === "comentarios" && <Comentarios />}
       </main>
     </div>
   );
