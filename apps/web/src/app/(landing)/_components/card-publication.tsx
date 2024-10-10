@@ -25,13 +25,13 @@ const CardPublication: React.FC<CardPublicationProps> = ({ publication }) => {
           isRow ? "flex-row" : "flex-col"
         )}
       >
-        <CardHeader className="w-full md:w-1/2">
+        <CardHeader className={cn("w-full", isRow ? "w-1/2" : "h-1/2")}>
           <AspectRatio ratio={16 / 9} className="w-full">
             <Image
               src={publication.imagen}
               alt={publication.titulo}
               fill
-              className="object-cover"
+              className="rounded-md object-cover"
               priority={false}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
