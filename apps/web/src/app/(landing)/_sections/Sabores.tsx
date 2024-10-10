@@ -10,11 +10,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@repo/ui/components/carousel";
-import MaxWidthWrapper from "./MaxWidthWrapper";
+import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Sabores: React.FC = () => {
   return (
-    <section id="sabores" className="flex min-h-dvh flex-col items-center justify-start gap-12 p-24">
+    <section id="sabores" className="flex min-h-[56rem] flex-col items-center justify-start gap-12 py-24 px-16">
       <MaxWidthWrapper className="flex flex-col items-center justify-center gap-y-20">
         <h2 className="text-7xl">Nuestros sabores</h2>
         <Carousel
