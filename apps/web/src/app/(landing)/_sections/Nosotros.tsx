@@ -5,12 +5,12 @@ import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Nosotros: React.FC = () => {
   return (
-    <section id="nosotros" className="bg-red-600 px-4 py-16 text-white">
+    <section id="nosotros" className="bg-red-600 px-4 py-16 text-white font-['Abhaya_Libre']">
       <MaxWidthWrapper>
         <div className="grid gap-12 md:grid-cols-2">
           {/* Misión */}
           <div className="order-2 flex flex-col items-start md:order-1">
-            <h2 className="mb-4 text-3xl md:text-6xl">Misión</h2>
+            <h1 className="mb-4 md:text-7xl sm:text-5xl text-4xl">Misión</h1>
             <p className="text-lg md:text-2xl">
               Nuestra misión es ofrecer los mejores helados artesanales...
             </p>
@@ -35,7 +35,7 @@ const Nosotros: React.FC = () => {
           </div>
           {/* Visión */}
           <div className="flex flex-col items-start text-right md:items-end">
-            <h2 className="mb-4 text-3xl md:text-6xl">Visión</h2>
+            <h1 className="mb-4 md:text-7xl sm:text-5xl text-4xl">Visión</h1>
             <p className="text-lg md:text-2xl">Ser reconocidos como la heladería líder en innovación...</p>
           </div>
         </div>
