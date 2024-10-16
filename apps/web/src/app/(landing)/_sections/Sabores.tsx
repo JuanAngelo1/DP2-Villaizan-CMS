@@ -46,7 +46,7 @@ const Sabores: React.FC = () => {
                       <CardContent className="flex flex-col items-center justify-center p-4">
                         <div className="relative w-32 h-32 sm:w-40 sm:h-40">
                           <Image
-                            src={sabor.image}
+                            src="https://drive.google.com/uc?export=view&id=1BQwyPb5lcxrMWi0qHI-h3-k3r7LLkSJe"
                             alt={sabor.name}
                             fill
                             className="object-contain rounded-full"
