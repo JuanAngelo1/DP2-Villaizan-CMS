@@ -58,7 +58,7 @@ const PublicacionesPage: React.FC = () => {
           {/* Contenido Principal */}
           <div className="flex w-full flex-col gap-8">
             <div className="flex flex-col gap-4">
-              <h1 className="text-5xl font-bold">Publicaciones</h1>
+              <h1 className="font-bold md:text-7xl sm:text-5xl text-4xl font-['Abhaya_Libre']">Publicaciones</h1>
               {/* Barra de Búsqueda, Dropdown de Categorías y Botón de Buscar */}
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <SearchPub searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -69,7 +69,7 @@ const PublicacionesPage: React.FC = () => {
                     toggleCategoria={toggleCategoria}
                   />
                   <Button
-                    className="w-full text-lg sm:w-auto"
+                    className="w-full text-md sm:w-auto"
                     onClick={() => {
                       // Placeholder para futura integración de API
                       console.log("Buscar publicaciones");

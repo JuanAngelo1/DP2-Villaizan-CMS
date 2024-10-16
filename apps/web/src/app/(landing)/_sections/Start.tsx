@@ -9,9 +9,9 @@ const Start: React.FC = () => {
   return (
     <section className="flex h-full justify-center bg-gradient-to-b from-[#ae9c5280] to-transparent py-16 *:items-center">
       <MaxWidthWrapper className="flex flex-col items-center justify-center gap-8 px-4 md:gap-16 lg:flex-row">
-        <div className="flex flex-col items-center text-center text-red-800 md:text-left">
-          <h1 className="text-4xl font-medium md:text-6xl">EL PAPÁ DE LAS</h1>
-          <h1 className="text-5xl font-semibold md:text-8xl">PALETAS</h1>
+        <div className="flex flex-col items-center text-center text-red-800 md:text-left font-['Abhaya_Libre']">
+          <h1 className="md:text-7xl sm:text-5xl text-4xl font-semibold">EL PAPÁ DE LAS</h1>
+          <h1 className="md:text-7xl sm:text-5xl text-4xl font-extrabold">PALETAS</h1>
           <Button className="mt-4 bg-red-800 text-lg hover:bg-red-900" size={"lg"}>
             Compra ahora
           </Button>

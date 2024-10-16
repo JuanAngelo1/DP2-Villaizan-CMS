@@ -21,7 +21,7 @@ const CardPublication: React.FC<CardPublicationProps> = ({ publication }) => {
       <Card
         ref={ref}
         className={cn(
-          "flex h-full overflow-hidden rounded-lg bg-white shadow-md",
+          "flex min-h-fit h-full overflow-hidden rounded-lg bg-white shadow-md",
           isRow ? "flex-row" : "flex-col"
         )}
       >
@@ -38,7 +38,7 @@ const CardPublication: React.FC<CardPublicationProps> = ({ publication }) => {
           </AspectRatio>
         </CardHeader>
         <CardContent className="flex flex-1 flex-col p-4">
-          <h2 className="text-primary mb-2 text-xl font-bold md:text-2xl">{publication.titulo}</h2>
+          <h3 className="text-primary mb-2 text-xl font-bold md:text-2xl">{publication.titulo}</h3>
           <p className="flex-1 text-gray-600">{publication.descripcion}</p>
           <div className="mt-4 flex justify-between text-sm text-gray-500">
             <span>Autor: {publication.autor}</span>

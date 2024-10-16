@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed z-50 h-20 w-full border-b-2 border-b-rose-800 bg-red-600 shadow-xl">
+    <header className="fixed z-50 h-20 w-full border-b-2 border-b-rose-800 bg-red-600 shadow-xl font-['Abhaya_Libre']">
       <MaxWidthWrapper className="flex h-full items-center justify-between">
         {/* Logo */}
         <Link id="logo" href="/">
@@ -23,31 +23,31 @@ const Header: React.FC = () => {
         </Link>
 
         {/* Menú de navegación (oculto en móviles) */}
-        {/* <nav className="hidden flex-1 items-center justify-center space-x-8 md:flex">
-          <Link href="#sabores" className="text-xl text-white hover:underline">
+        <nav className="hidden flex-1 items-center justify-center space-x-8 md:flex">
+          <Link href="#sabores" className="text-lg text-white hover:underline">
             Sabores
           </Link>
-          <Link href="#nosotros" className="text-xl text-white hover:underline">
+          <Link href="#nosotros" className="text-lg text-white hover:underline">
             Nosotros
           </Link>
-          <Link href="#publicaciones" className="text-xl text-white hover:underline">
+          <Link href="#publicaciones" className="text-lg text-white hover:underline">
             Publicaciones
           </Link>
-        </nav> */}
+        </nav>
 
         {/* Acciones de usuario (oculto en móviles) */}
         <div className="hidden items-center space-x-2 md:flex">
           {status === "loading" ? (
             <Button isLoading loaderClassname="w-6 h-6"></Button>
           ) : session ? (
-            <Button className="text-xl text-white" onClick={() => handleSignOut()} variant="link">
+            <Button className="text-lg text-white" onClick={() => handleSignOut()} variant="link">
               Cerrar sesión
             </Button>
           ) : (
-            <Button className="text-xl text-white">
+            <Button className="text-lg text-white">
               <Link
                 href="/login"
-                className="text-xl text-white hover:underline"
+                className="text-lg text-white hover:underline"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Iniciar sesión
@@ -86,21 +86,21 @@ const Header: React.FC = () => {
           <nav className="flex flex-col items-center space-y-8 bg-red-600 py-4">
             <Link
               href="#sabores"
-              className="text-xl text-white hover:underline"
+              className="text-lg text-white hover:underline"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Sabores
             </Link>
             <Link
               href="#nosotros"
-              className="text-xl text-white hover:underline"
+              className="text-lg text-white hover:underline"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Nosotros
             </Link>
             <Link
               href="#publicaciones"
-              className="text-xl text-white hover:underline"
+              className="text-lg text-white hover:underline"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Publicaciones
@@ -109,7 +109,7 @@ const Header: React.FC = () => {
               <Button isLoading loaderClassname="w-6 h-6" variant="ghost"></Button>
             ) : session ? (
               <Button
-                className="text-xl text-white"
+                className="text-lg text-white"
                 onClick={() => {
                   handleSignOut();
                   setIsMobileMenuOpen(false);
@@ -118,10 +118,10 @@ const Header: React.FC = () => {
                 Cerrar sesión
               </Button>
             ) : (
-              <Button className="text-xl text-white">
+              <Button className="text-lg text-white">
                 <Link
                   href="/login"
-                  className="text-xl text-white hover:underline"
+                  className="text-lg text-white hover:underline"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   Iniciar sesión

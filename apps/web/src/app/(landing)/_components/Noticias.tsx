@@ -40,7 +40,7 @@ function Noticias() {
   return (
     <div className="max-w-6xl mx-auto p-4">
       <div className="flex justify-between items-center mb-2">
-        <h1 className="font-bold md:text-7xl sm:text-5xl text-4xl">Nuestras noticias</h1>
+        <h1 className="text-4xl font-bold">Nuestras noticias</h1>
         <Button variant="secondary" className="text-md">Ver todas</Button>
       </div>
       <p className="text-sm text-gray-600 mb-4">

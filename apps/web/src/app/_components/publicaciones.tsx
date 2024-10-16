@@ -57,7 +57,7 @@ function Publicaciones() {
   return (
     <div className="max-w-7xl mx-auto py-12">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold">Mira nuestras últimas publicaciones</h1>
+        <h1 className="font-bold md:text-7xl sm:text-5xl text-4xl">Mira nuestras últimas publicaciones</h1>
         <p className="text-gray-500">Entérate de las nuevas novedades dentro de la magia de nuestros helados</p>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
