@@ -603,7 +603,7 @@ model vi_usuario {
   apellido               String                   @db.VarChar(100)
   concuenta              Boolean
   numerotelefono         String?                  @db.VarChar(15)
-  correo                 String                   @unique @db.VarChar(150)
+  correo                 String?                  @unique @db.VarChar(150)
   contrasena             String                   @db.VarChar(255)
   fechaultimologin       DateTime?                @db.Timestamp(6)
   id_persona             String?                  @db.VarChar(50)
@@ -614,6 +614,8 @@ model vi_usuario {
   usuariocreacion        String                   @db.VarChar(50)
   usuarioactualizacion   String?                  @db.VarChar(50)
   id_rol                 String?                  @db.VarChar(50)
+  resettoken             String?                  @db.VarChar(255)
+  resettokenexpiracion   DateTime?                @db.Date
   vi_comentario          vi_comentario[]
   vi_historialrepartidor vi_historialrepartidor[]
   vi_motorizado          vi_motorizado[]
