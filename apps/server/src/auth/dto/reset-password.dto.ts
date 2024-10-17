@@ -2,9 +2,9 @@ import { IsString } from 'class-validator';
 
 export class ResetPasswordDto {
   @IsString()
+  id: string;
+  @IsString()
   password: string;
   @IsString()
-  jwtToken: string;
-  @IsString()
-  resetToken: string;
+  token: string;
 }

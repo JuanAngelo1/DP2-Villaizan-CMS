@@ -49,4 +49,30 @@ export class UsuarioRepository {
 
     return user;
   }
+
+  async saveResetToken(
+    id: string,
+    resetToken: string,
+    expirationDate: Date,
+  ): Promise<void> {
+    await this.prisma.vi_usuario.update({
+      where: { id },
+      data: {
+        resettoken: resetToken,
+        resettokenexpiracion: expirationDate,
+      },
+    });
+  }
+
+  async clearResetToken(id: string): Promise<void> {
+    await this.prisma.vi_usuario.update({
+      where: {
+        id,
+      },
+      data: {
+        resettoken: null,
+        resettokenexpiracion: null,
+      },
+    });
+  }
 }
