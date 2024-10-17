@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   NotFoundException,
   Param,
   ParseIntPipe,
@@ -18,21 +20,24 @@ import { EtiquetaDto } from './dto/etiqueta.dto';
 export class EtiquetaController {
   constructor(private readonly etiquetaService: EtiquetaService) {}
 
+  //Tomar como referencia el siguiente código
   @Get()
-  async getAllEtiquetas(@Res() response: Response): Promise<any> {
+  async getAllEtiquetas(): Promise<any> {
     try {
       const result = await this.etiquetaService.getAllEtiquetas();
-      return response.status(200).json({
+      return {
         status: 'Success',
         message: 'Etiquetas Encontradas',
         result: result,
-      });
+      };
     } catch (err) {
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Internal Server Error',
-        result: [],
-      });
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 

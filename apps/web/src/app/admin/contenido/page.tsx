@@ -1,8 +1,8 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   Breadcrumb,
@@ -12,7 +12,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@repo/ui/components/breadcrumb";
-import { buttonVariants } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { Separator } from "@repo/ui/components/separator";
 import { cn } from "@repo/ui/lib/utils";
 import Categorias from "./_components/categorias";
@@ -24,64 +25,57 @@ type contentSections = "publicaciones" | "comentarios" | "categorias" | "etiquet
 
 type contentSidebarItem = {
   label: string;
-  href: string;
-  hash: string;
+  param: string;
 };
 
 const contentSidebarItems: contentSidebarItem[] = [
   {
     label: "Publicaciones",
-    href: "/admin/contenido#publicaciones",
-    hash: "publicaciones",
+    param: "publicaciones",
   },
   {
     label: "Categorías",
-    href: "/admin/contenido#categorias",
-    hash: "categorias",
+    param: "categorias",
   },
   {
     label: "Etiquetas",
-    href: "/admin/contenido#etiquetas",
-    hash: "etiquetas",
+    param: "etiquetas",
   },
   {
     label: "Comentarios",
-    href: "/admin/contenido#comentarios",
-    hash: "comentarios",
+    param: "comentarios",
   },
 ];
 
 function Page() {
-  const router = useRouter();
-  const [selectedSection, setSelectedSection] = useState<contentSections>("publicaciones");
+  const searchParams = useSearchParams();
+  const prev_content = searchParams.get("content");
+  const content =
+    prev_content === null ||
+    !["publicaciones", "comentarios", "categorias", "etiquetas"].includes(prev_content)
+      ? "publicaciones"
+      : prev_content;
 
-  useEffect(() => {
-    console.log("trigger");
-    const currentHash = window.location.href.split("#")[1];
-    if (!["publicaciones", "comentarios", "categorias", "etiquetas"].includes(currentHash as string)) {
-      router.push("/admin/contenido#publicaciones");
-    }
-    setSelectedSection(currentHash as contentSections);
-  }, []);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
-    <div className="flex-1 flex flex-col gap-[24px]">
-      <Breadcrumb>
+    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[24px] lg:p-[32px]">
+      <Breadcrumb className="px-1 lg:px-0">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="/">Gestión de contenido</Link>
+              <Link href="/admin">Gestión de contenido</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>Publicaciones</BreadcrumbPage>
+            <BreadcrumbPage>Contenido</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
 
-      <main className="flex flex-row gap-6 flex-1">
-        <section className="flex w-[170px] flex-col gap-4">
+      <main className="flex h-full flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
+        <section className="hidden w-[185px] gap-4 lg:flex lg:flex-col">
           <h1 className="text-2xl font-bold">Contenido</h1>
           <Separator orientation="horizontal" />
 
@@ -93,24 +87,66 @@ function Page() {
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
                     "w-full justify-start",
-                    selectedSection === item.hash ? "bg-secondary text-primary-background" : ""
+                    content === item.param ? "bg-secondary text-primary-background" : ""
                   )}
-                  href={item.href}
-                  onClick={() => setSelectedSection(item.hash as contentSections)}
+                  href={{
+                    pathname: "/admin/contenido",
+                    query: { content: item.param },
+                  }}
                 >
-                  <div className="flex w-full flex-row justify-between">
+                  <div className="flex w-full flex-row items-center justify-between">
                     {item.label}
-                    {selectedSection === item.hash && <ChevronRight className="h-4 w-4" />}
+                    {content === item.param && <ChevronRight className="h-4 w-4" />}
                   </div>
                 </Link>
               );
             })}
           </ul>
         </section>
-        {selectedSection === "publicaciones" && <Publicaciones />}
-        {selectedSection === "categorias" && <Categorias />}
-        {selectedSection === "etiquetas" && <Etiquetas />}
-        {selectedSection === "comentarios" && <Comentarios />}
+
+        <div className="flex items-center gap-2 px-1 lg:hidden">
+          <h1 className="text-2xl font-bold">Contenido</h1>
+          <ChevronRight className="h-4 w-4" />
+          <h1 className="text-2xl font-bold">
+            {contentSidebarItems.find((item) => item.param === content)?.label}
+          </h1>
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button variant={"outline"} className="h-8 w-8">
+                <ChevronDown className="h-5 w-5 shrink-0" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent side="bottom" align="end" className="w-[190px]">
+              {contentSidebarItems.map((item, index) => {
+                return (
+                  <Link
+                    key={index}
+                    className={cn(
+                      buttonVariants({ variant: "ghost" }),
+                      "w-full justify-start",
+                      content === item.param ? "bg-secondary text-primary-background" : ""
+                    )}
+                    href={{
+                      pathname: "/admin/contenido",
+                      query: { content: item.param },
+                    }}
+                    onClick={() => setIsPopoverOpen(false)}
+                  >
+                    <div className="flex w-full flex-row items-center justify-between">
+                      {item.label}
+                      {content === item.param && <ChevronRight className="h-4 w-4" />}
+                    </div>
+                  </Link>
+                );
+              })}
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {content === "publicaciones" && <Publicaciones />}
+        {content === "categorias" && <Categorias />}
+        {content === "etiquetas" && <Etiquetas />}
+        {content === "comentarios" && <Comentarios />}
       </main>
     </div>
   );

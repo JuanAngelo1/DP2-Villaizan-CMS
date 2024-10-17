@@ -7,18 +7,18 @@ CREATE TABLE vi_usuario (
     correo VARCHAR(150) NOT NULL UNIQUE,
     contrasena VARCHAR(255) NOT NULL,
     fechaultimologin TIMESTAMP,
-	id_persona VARCHAR(50),  -- Relación con Persona
-    -- Nuevas relaciones
-    id_rol VARCHAR(50),  -- Relación con la tabla Rol
-    -- Trazabilidad
+    id_persona VARCHAR(50), -- Relación con Persona
+    id_rol VARCHAR(50), -- Relación con la tabla Rol
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
     desactivadoen TIMESTAMP,
     creadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     actualizadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     usuariocreacion VARCHAR(50) NOT NULL,
     usuarioactualizacion VARCHAR(50),
+    resetToken VARCHAR(255) DEFAULT NULL, -- Campo para el token de restablecimiento de contraseña
+    resetTokenExpiracion DATE DEFAULT NULL, -- Campo para la fecha de expiración del token
     CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
-    CONSTRAINT fk_rol FOREIGN KEY (idRol) REFERENCES vi_rol(id),
+    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id)
 );
 
 
@@ -77,6 +77,21 @@ CREATE TABLE vi_persona (
 );
 
 --NUESTRA TABLAS
+
+CREATE TABLE vi_comentario (
+    id SERIAL PRIMARY KEY,
+    comentario TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	estadoaprobacion TEXT DEFAULT NULL,
+	nombreautor VARCHAR(255) NOT NULL,
+	estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
+ 	id_usuario VARCHAR(50),  -- Relación con la tabla Usuario
+    id_publicacion INT,  -- Relación con la tabla Publicacion
+    CONSTRAINT fk_usuario_comentario FOREIGN KEY (id_usuario) REFERENCES vi_usuario(id),
+    CONSTRAINT fk_publicacion_comentario FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id)  -- Relación con Publicacion
+);
+
+
 
 CREATE TABLE vi_tipo_publicacion (
     id INT PRIMARY KEY,

@@ -30,7 +30,8 @@ const Sabores: React.FC = () => {
                 <div className="p-1">
                   <Card>
                     <CardContent className="flex aspect-square items-center justify-center p-6">
-                      <span className="text-3xl font-semibold">{index + 1}</span>
+                      <img src={`https://drive.google.com/uc?export=view&id=1AawQX8MBzCH4ny5jAne-kMbLNf7Ha3DZ`}
+                        alt={`img_${index}`}/>
                     </CardContent>
                   </Card>
                 </div>
