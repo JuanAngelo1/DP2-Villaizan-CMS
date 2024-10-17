@@ -7,18 +7,18 @@ CREATE TABLE vi_usuario (
     correo VARCHAR(150) NOT NULL UNIQUE,
     contrasena VARCHAR(255) NOT NULL,
     fechaultimologin TIMESTAMP,
-	id_persona VARCHAR(50),  -- Relación con Persona
-    -- Nuevas relaciones
-    id_rol VARCHAR(50),  -- Relación con la tabla Rol
-    -- Trazabilidad
+    id_persona VARCHAR(50), -- Relación con Persona
+    id_rol VARCHAR(50), -- Relación con la tabla Rol
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
     desactivadoen TIMESTAMP,
     creadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     actualizadoen TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     usuariocreacion VARCHAR(50) NOT NULL,
     usuarioactualizacion VARCHAR(50),
+    resetToken VARCHAR(255) DEFAULT NULL, -- Campo para el token de restablecimiento de contraseña
+    resetTokenExpiracion DATE DEFAULT NULL, -- Campo para la fecha de expiración del token
     CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
-    CONSTRAINT fk_rol FOREIGN KEY (idRol) REFERENCES vi_rol(id),
+    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id)
 );
 
 
