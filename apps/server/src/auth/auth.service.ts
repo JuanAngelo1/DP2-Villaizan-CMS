@@ -119,6 +119,7 @@ export class AuthService {
       }
 
       const now = new Date();
+      //console.log(now);
       if (user.resettokenexpiracion < now) {
         throw new UnauthorizedException('Token expirado');
       }
