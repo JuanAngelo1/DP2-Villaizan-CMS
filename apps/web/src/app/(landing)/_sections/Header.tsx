@@ -15,7 +15,7 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed z-50 h-20 w-full border-b-2 border-b-rose-800 bg-red-600 shadow-xl font-['Abhaya_Libre']">
+    <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 bg-red-600 shadow-xl font-['Abhaya_Libre']">
       <MaxWidthWrapper className="flex h-full items-center justify-between">
         {/* Logo */}
         <Link id="logo" href="/">

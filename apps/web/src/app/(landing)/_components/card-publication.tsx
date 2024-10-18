@@ -21,27 +21,28 @@ const CardPublication: React.FC<CardPublicationProps> = ({ publication }) => {
       <Card
         ref={ref}
         className={cn(
-          "flex min-h-fit h-full overflow-hidden rounded-lg bg-white shadow-md",
+          "flex h-full min-h-fit overflow-hidden rounded-lg bg-white hover:bg-primary-foreground hover:shadow-lg transition-all group/maincard",
           isRow ? "flex-row" : "flex-col"
         )}
       >
-        <CardHeader className={cn("w-full", isRow ? "w-1/2" : "h-1/2")}>
-          <AspectRatio ratio={16 / 9} className="w-full">
+        <CardContent className="flex flex-1 flex-col p-5">
+          <AspectRatio ratio={16 / 9} className="w-full overflow-hidden rounded-md">
             <Image
               src={publication.imagen}
               alt={publication.titulo}
               fill
-              className="rounded-md object-cover"
+              className="object-cover group-hover/maincard:scale-110 transition-all"
               priority={false}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </AspectRatio>
-        </CardHeader>
-        <CardContent className="flex flex-1 flex-col p-4">
-          <h3 className="text-primary mb-2 text-xl font-bold md:text-2xl">{publication.titulo}</h3>
-          <p className="flex-1 text-gray-600">{publication.descripcion}</p>
+
+          <h3 className="text-primary mt-3 line-clamp-1 text-lg font-bold md:text-xl">
+            {publication.titulo}
+          </h3>
+          <p className="mt-2 line-clamp-5 flex-1 text-gray-600 text-sm">{publication.descripcion}</p>
           <div className="mt-4 flex justify-between text-sm text-gray-500">
-            <span>Autor: {publication.autor}</span>
+            <span>{publication.autor}</span>
             <span>{new Date(publication.fecha).toLocaleDateString()}</span>
           </div>
         </CardContent>
