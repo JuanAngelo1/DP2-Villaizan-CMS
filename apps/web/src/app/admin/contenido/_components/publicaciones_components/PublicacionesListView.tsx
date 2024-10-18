@@ -13,7 +13,7 @@ import ContentFooter from "../general_components/ContentFooter";
 import MainContent from "../general_components/MainContent";
 import TopHeader from "../general_components/TopHeader";
 
-function PublicacionesListView() {
+function PublicacionesListView({ changeType } : { changeType: (type: string | null) => void }) {
   const [isLoading, setIsLoading] = useState(true);
   const [publicaciones, setPublicaciones] = useState<Publicacion[]>([]);
   const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
@@ -43,7 +43,7 @@ function PublicacionesListView() {
     <>
       <TopHeader>
         <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
-        <Button className="w-10 gap-2 sm:w-auto">
+        <Button className="w-10 gap-2 sm:w-auto" onClick={() => changeType("create")}>
           <Plus className="h-4 w-4 shrink-0" />
           <p className="hidden sm:block">Agregar</p>
         </Button>
