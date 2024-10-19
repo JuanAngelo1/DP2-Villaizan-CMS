@@ -55,9 +55,9 @@ function Sidebar() {
         <Button variant="ghost" className={buttonStyle[1]}>
           <Sun className={iconStyle} />
         </Button>
-        <Button variant="ghost" className={buttonStyle[1]}>
+        <Link href={"/"} className={cn(buttonVariants({ variant: "ghost" }), buttonStyle[1])}>
           <LogOut className={iconStyle} />
-        </Button>
+        </Link>
       </div>
     </div>
   );
