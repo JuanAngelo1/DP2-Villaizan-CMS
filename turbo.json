@@ -20,8 +20,8 @@
       "outputs": [],
       "cache": false
     },
-    "db:generate": {
-      "cache": false
+    "generate": {
+      "dependsOn": ["^generate"]
     },
     "db:push": {
       "cache": false
