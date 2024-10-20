@@ -5,7 +5,10 @@ import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Nosotros: React.FC = () => {
   return (
-    <section id="nosotros" className="bg-red-600 px-4 py-16 font-['Abhaya_Libre'] text-white">
+    <section
+      id="nosotros"
+      className="bg-[url('/nosotros/aboutus7.jpg')] bg-fixed px-4 py-16 font-['Abhaya_Libre'] text-white bg-center bg-contain"
+    >
       <MaxWidthWrapper>
         <div className="mt-[200px] flex h-screen flex-col items-center justify-start text-center">
           <h1 className="mb-2 text-4xl sm:text-5xl md:text-7xl">Conoce un poco más sobre nosotros</h1>

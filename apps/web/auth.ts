@@ -15,7 +15,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
 
           const data = response.data;
-          console.log("See API response: ", data);
 
           if (data.status !== "Success") {
             console.log("Invalid credentials");
@@ -35,6 +34,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const isLoggedIn = !!auth?.user;
       const { pathname } = nextUrl;
 
+      //! Fix this, middleware not working
+      console.log("==========================")
+      console.log("isLoggedIn: ", isLoggedIn);
+      console.log("pathname: ", pathname);
+      console.log("==========================")
+
       if (pathname.startsWith("/login") && isLoggedIn) {
         return Response.redirect(new URL("/", nextUrl));
       }
@@ -42,7 +47,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return !!auth;
     },
   },
-  //   pages: {
-  //     signIn: "/login",
-  //   },
+    pages: {
+      signIn: "/login",
+      error: "/login",
+    },
 });
