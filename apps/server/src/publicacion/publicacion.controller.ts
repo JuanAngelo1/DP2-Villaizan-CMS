@@ -27,10 +27,7 @@ export class PublicacionController {
   //Metodos APIs
 
   @Get()
-  async getAllPubs(
-    @Req() request: Request,
-    @Res() response: Response,
-  ): Promise<any> {
+  async getAllPubs(@Req() request: Request, @Res() response: Response,): Promise<any> {
     try {
       const result = await this.publicacionService.getAllPublicaciones();
       return response.status(200).json({
@@ -40,8 +37,8 @@ export class PublicacionController {
       });
     } catch (err) {
       return response.status(500).json({
-        status: 'Error!',
-        message: 'Internal Server Error',
+        status: 'Error',
+        message: 'Error al encontrar las publicaciones',
         result: [],
       });
     }
@@ -84,7 +81,7 @@ export class PublicacionController {
     }
   }
 
-  @Get(':id')
+  @Get('obtener/:id')
   async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
     const publicacionFound =
       await this.publicacionService.getPublicacionByID(id);
@@ -128,4 +125,76 @@ export class PublicacionController {
       throw new NotFoundException('Publicacion no existe');
     }
   }
+
+  @Post('cambiarEstadoPublicacion/:id')
+  async cambiarEstadoPublicacion(@Param('id',ParseIntPipe) id: number, @Body('nuevoEstado') nuevoEstado: number ): Promise<any> {
+      try {
+          const publicacion = await this.publicacionService.cambiarEstadoPublicacion(id, nuevoEstado);
+          return {
+              status: 'Success',
+              message: 'Estado de la publicación actualizado correctamente',
+              result: publicacion,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al actualizar el estado de la publicación',
+          };
+      }
+  }
+  
+  @Post('cambiarEstadoArchivado/:id')
+  async cambiarEstadoArchivado(@Param('id', ParseIntPipe) id: number, @Body('archivado') archivado: boolean): Promise<any> {
+      try {
+          const publicacion = await this.publicacionService.cambiarEstadoArchivado(id, archivado);
+          return {
+              status: 'Success',
+              message: 'Estado de archivado actualizado correctamente',
+              result: publicacion,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al actualizar el estado de archivado',
+          };
+      }
+  }
+
+  @Get('estadosPublicacion')
+  async listarEstadosPublicacion(): Promise<any> {
+      try {
+          const estados = await this.publicacionService.listarTodosEstadosPublicacion();
+          return {
+              status: 'Success',
+              message: 'Estados de publicación listados correctamente',
+              result: estados,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al listar los estados de publicación',
+          };
+      }
+  }
+
+  @Get('tiposPublicacion')
+  async listarTiposPublicacion(): Promise<any> {
+      try {
+          const tipos = await this.publicacionService.listarTodosTiposPublicacion();
+          return {
+              status: 'Success',
+              message: 'Tipos de publicación listados correctamente',
+              result: tipos,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al listar los tipos de publicación',
+          };
+      }
+  }
+
+
+
+
 }

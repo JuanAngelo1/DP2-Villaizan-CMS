@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model vi_almacen {
   id                   String                 @id @db.VarChar(50)
   nombre               String                 @db.VarChar(255)
@@ -36,14 +35,14 @@ model vi_banco {
 }
 
 model vi_categoria_publicacion {
-  id             Int              @id @default(autoincrement())
-  nombre         String           @db.VarChar(255)
-  descripcion    String?
-  fechacreacion  DateTime         @default(now()) @db.Timestamp(6)
-  colorfondo     String?          @db.VarChar(20)
-  estaactivo     Boolean          @default(true)
-  colortexto     String?          @db.VarChar(20)
-  vi_publicacion vi_publicacion[]
+  id                         Int                          @id @default(autoincrement())
+  nombre                     String                       @db.VarChar(255)
+  descripcion                String?
+  fechacreacion              DateTime                     @default(now()) @db.Timestamp(6)
+  colorfondo                 String?                      @db.VarChar(20)
+  colortexto                 String?                      @db.VarChar(20)
+  estaactivo                 Boolean                      @default(true)
+  vi_publicacion_x_categoria vi_publicacion_x_categoria[]
 }
 
 model vi_ciudad {
@@ -64,7 +63,7 @@ model vi_comentario {
   id               Int             @id @default(autoincrement())
   comentario       String
   fecha            DateTime        @default(now()) @db.Timestamp(6)
-  estadoaprobacion Boolean?
+  estadoaprobacion Boolean         @default(false)
   nombreautor      String          @db.VarChar(255)
   estaactivo       Boolean         @default(true)
   id_usuario       String?         @db.VarChar(50)
@@ -146,8 +145,8 @@ model vi_etiqueta_publicacion {
   descripcion               String?
   fechacreacion             DateTime                    @default(now()) @db.Timestamp(6)
   colorfondo                String?                     @db.VarChar(20)
-  estaactivo                Boolean                     @default(true)
   colortexto                String?                     @db.VarChar(20)
+  estaactivo                Boolean                     @default(true)
   vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
 }
 
@@ -480,24 +479,35 @@ model vi_producto_subcategoria {
 }
 
 model vi_publicacion {
-  id                        Int                         @id @default(autoincrement())
-  titulo                    String                      @db.VarChar(255)
-  urlimagen                 String?                     @db.VarChar(255)
-  descripcion               String
-  fechacreacion             DateTime                    @default(now()) @db.Timestamp(6)
-  fechapublicacion          DateTime?                   @db.Timestamp(6)
-  fechaultimamodificacion   DateTime                    @default(now()) @db.Timestamp(6)
-  estaactivo                Boolean                     @default(true)
-  id_categoria_publicacion  Int?
-  id_tipo_publicacion       Int?
-  id_estado_publicacion     Int?
-  id_usuario                String?                     @db.VarChar(50)
-  vi_comentario             vi_comentario[]
-  vi_categoria_publicacion  vi_categoria_publicacion?   @relation(fields: [id_categoria_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria")
-  vi_estado_publicacion     vi_estado_publicacion?      @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
-  vi_tipo_publicacion       vi_tipo_publicacion?        @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
-  vi_usuario                vi_usuario?                 @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
-  vi_publicacion_x_etiqueta vi_publicacion_x_etiqueta[]
+  id                         Int                          @id @default(autoincrement())
+  titulo                     String                       @db.VarChar(255)
+  urlimagen                  String?                      @db.VarChar(255)
+  descripcionseo             String?                      @db.VarChar(255)
+  slug                       String?                      @db.VarChar(255)
+  richtext                   String?
+  fechacreacion              DateTime                     @default(now()) @db.Timestamp(6)
+  fechapublicacion           DateTime?                    @db.Timestamp(6)
+  fechaultimamodificacion    DateTime                     @default(now()) @db.Timestamp(6)
+  estaactivo                 Boolean                      @default(true)
+  archivado                  Boolean?                     @default(false)
+  id_tipo_publicacion        Int?
+  id_estado_publicacion      Int?
+  id_usuario                 String?                      @db.VarChar(50)
+  vi_comentario              vi_comentario[]
+  vi_estado_publicacion      vi_estado_publicacion?       @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
+  vi_tipo_publicacion        vi_tipo_publicacion?         @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
+  vi_usuario                 vi_usuario?                  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+  vi_publicacion_x_categoria vi_publicacion_x_categoria[]
+  vi_publicacion_x_etiqueta  vi_publicacion_x_etiqueta[]
+}
+
+model vi_publicacion_x_categoria {
+  id_publicacion           Int
+  id_categoria_publicacion Int
+  vi_categoria_publicacion vi_categoria_publicacion @relation(fields: [id_categoria_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categoria_publicacion_categoria")
+  vi_publicacion           vi_publicacion           @relation(fields: [id_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_publicacion_categoria_publicacion")
+
+  @@id([id_publicacion, id_categoria_publicacion])
 }
 
 model vi_publicacion_x_etiqueta {
@@ -615,7 +625,7 @@ model vi_usuario {
   usuarioactualizacion   String?                  @db.VarChar(50)
   id_rol                 String?                  @db.VarChar(50)
   resettoken             String?                  @db.VarChar(255)
-  resettokenexpiracion   DateTime?                @db.Date
+  resettokenexpiracion   DateTime?                @db.Timestamp(6)
   vi_comentario          vi_comentario[]
   vi_historialrepartidor vi_historialrepartidor[]
   vi_motorizado          vi_motorizado[]
