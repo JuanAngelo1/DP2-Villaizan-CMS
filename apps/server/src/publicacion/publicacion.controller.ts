@@ -55,8 +55,8 @@ export class PublicacionController {
       });
     } catch (err) {
       return response.status(500).json({
-        status: 'Error!',
-        message: 'Internal Server Error',
+        status: 'Error',
+        message: 'Error al obtener la cantidad de comentarios',
         result: [],
       });
     }
@@ -74,8 +74,8 @@ export class PublicacionController {
     } catch (err) {
       console.error(err);
       return {
-        status: 'Error!',
-        message: 'Internal Server Error',
+        status: 'Error',
+        message: 'Error al crear la publicacion',
         result: [],
       };
     }
@@ -83,11 +83,21 @@ export class PublicacionController {
 
   @Get('obtener/:id')
   async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
-    const publicacionFound =
-      await this.publicacionService.getPublicacionByID(id);
-    if (!publicacionFound)
-      throw new BadRequestException('Publicación no existe');
-    return publicacionFound;
+    try{
+      const result= await this.publicacionService.getPublicacionByID(id);
+      return{
+        status: 'Success',
+        message: 'Publicación encontrada',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener publicacion por ID',
+        result: [],
+      };
+    }
   }
 
   @Get('recien_editados/:numero')

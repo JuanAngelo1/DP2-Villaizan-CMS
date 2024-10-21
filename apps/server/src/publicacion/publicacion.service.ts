@@ -19,14 +19,60 @@ import * as fs from 'fs';
 export class PublicacionService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllPublicaciones(): Promise<vi_publicacion[]> {
-    return this.prisma.vi_publicacion.findMany({
-        where: {
-            estaactivo: true,
+  async getAllPublicaciones(): Promise<any[]> {
+    const publicaciones = await this.prisma.vi_publicacion.findMany({
+      where: {
+        estaactivo: true,
+      },
+      include: {
+        vi_publicacion_x_etiqueta: {
+          include: {
+            vi_etiqueta_publicacion: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                colorfondo: true,
+                colortexto: true,
+              },
+            },
+          },
         },
+        vi_publicacion_x_categoria: { 
+          include: {
+            vi_categoria_publicacion: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                colorfondo: true,
+                colortexto: true,
+              },
+            },
+          },
+        },
+      },
     });
+  
+    // Mapeamos el resultado para cambiar los nombres de las claves
+    return publicaciones.map(publicacion => ({
+      ...publicacion,
+      etiquetas: publicacion.vi_publicacion_x_etiqueta.map(etiquetaRel => ({
+        nombre: etiquetaRel.vi_etiqueta_publicacion.nombre,
+        descripcion: etiquetaRel.vi_etiqueta_publicacion.descripcion,
+        colorfondo: etiquetaRel.vi_etiqueta_publicacion.colorfondo,
+        colortexto: etiquetaRel.vi_etiqueta_publicacion.colortexto,
+      })),
+      categorias: publicacion.vi_publicacion_x_categoria.map(categoriaRel => ({
+        nombre: categoriaRel.vi_categoria_publicacion.nombre,
+        descripcion: categoriaRel.vi_categoria_publicacion.descripcion,
+        colorfondo: categoriaRel.vi_categoria_publicacion.colorfondo,
+        colortexto: categoriaRel.vi_categoria_publicacion.colortexto,
+      })),
+      vi_publicacion_x_etiqueta: undefined,  // Eliminamos el campo original etiquetas
+      vi_publicacion_x_categoria: undefined, // Eliminamos el campo original categorias
+    }));
   }
-
+  
+  
   async getPublicacionesCantidadComentarios(): Promise<any[]> {
     const publicaciones = await this.prisma.vi_publicacion.findMany();
 
@@ -48,13 +94,58 @@ export class PublicacionService {
     return publicacionesConCantidadComentarios;
   }
 
-  async getPublicacionByID(id: number): Promise<vi_publicacion> {
-    return this.prisma.vi_publicacion.findUnique({
+  async getPublicacionByID(id: number): Promise<any> {
+    const publicacion = await this.prisma.vi_publicacion.findUnique({
       where: {
         id: id,
       },
+      include: {
+        vi_publicacion_x_etiqueta: {
+          include: {
+            vi_etiqueta_publicacion: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                colorfondo: true,
+                colortexto: true,
+              },
+            },
+          },
+        },
+        vi_publicacion_x_categoria: {
+          include: {
+            vi_categoria_publicacion: {
+              select: {
+                nombre: true,
+                descripcion: true,
+                colorfondo: true,
+                colortexto: true,
+              },
+            },
+          },
+        },
+      },
     });
+  
+    return {
+      ...publicacion,
+      etiquetas: publicacion.vi_publicacion_x_etiqueta.map(etiquetaRel => ({
+        nombre: etiquetaRel.vi_etiqueta_publicacion.nombre,
+        descripcion: etiquetaRel.vi_etiqueta_publicacion.descripcion,
+        colorfondo: etiquetaRel.vi_etiqueta_publicacion.colorfondo,
+        colortexto: etiquetaRel.vi_etiqueta_publicacion.colortexto,
+      })),
+      categorias: publicacion.vi_publicacion_x_categoria.map(categoriaRel => ({
+        nombre: categoriaRel.vi_categoria_publicacion.nombre,
+        descripcion: categoriaRel.vi_categoria_publicacion.descripcion,
+        colorfondo: categoriaRel.vi_categoria_publicacion.colorfondo,
+        colortexto: categoriaRel.vi_categoria_publicacion.colortexto,
+      })),
+      vi_publicacion_x_etiqueta: undefined,  // Eliminamos el campo original
+      vi_publicacion_x_categoria: undefined, // Eliminamos el campo original
+    };
   }
+  
 
   async getFirstsEditedPublicacion(numero: number): Promise<vi_publicacion[]> {
     return this.prisma.vi_publicacion.findMany({
