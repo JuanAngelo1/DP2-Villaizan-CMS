@@ -1,6 +1,6 @@
 "use client";
 
-import { GlobeLock } from "lucide-react";
+import { GlobeLock, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -31,7 +31,7 @@ const Header: React.FC = () => {
         </div>
 
         {/* Menú de navegación (oculto en móviles) */}
-        <nav className="z-[51] hidden items-center justify-center space-x-8 font-bold md:flex text-lg">
+        <nav className="z-[51] hidden items-center justify-center space-x-8 text-lg font-bold md:flex">
           <Link href="#sabores" className="hover:underline">
             Sabores
           </Link>
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
         {/* Acciones de usuario (oculto en móviles) */}
         <div className="z-[51] hidden items-center space-x-2 md:flex">
           {status === "loading" ? (
-            <Button isLoading loaderClassname="w-6 h-6"></Button>
+            <Loader2 className="h-4 w-4 animate-spin mr-3"></Loader2>
           ) : session ? (
             <Button className="text-lg font-bold" onClick={() => handleSignOut()} variant="link">
               Cerrar sesión
@@ -54,14 +54,14 @@ const Header: React.FC = () => {
           ) : (
             <Link
               href="/login"
-              className={cn(buttonVariants({variant: 'link'}), "text-lg font-bold")}
+              className={cn(buttonVariants({ variant: "link" }), "text-lg font-bold")}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Iniciar sesión
             </Link>
           )}
           <Link
-            className={cn(buttonVariants({variant: 'ghost'}), "h-9 w-9 hover:bg-[#c9bf9e]")}
+            className={cn(buttonVariants({ variant: "ghost" }), "h-9 w-9 hover:bg-[#c9bf9e]")}
             href={"/admin"}
             onClick={() => setIsMobileMenuOpen(false)}
           >
