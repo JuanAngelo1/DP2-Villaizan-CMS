@@ -14,14 +14,14 @@ export class AuthController {
   }
 
   //Tomar como referencia el siguiente código
-  @Post('request-reset-password')
+  @Post('solicitarCambiarContrasena')
   requestResetPassword(
     @Body() requestResetPasswordDto: RequestResetPasswordDto,
   ) {
     return this.authService.requestResetPassword(requestResetPasswordDto);
   }
 
-  @Post('reset-password')
+  @Post('cambiarContrasena')
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPasswordToken(resetPasswordDto);
   }

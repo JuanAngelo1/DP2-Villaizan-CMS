@@ -105,7 +105,6 @@ export class AuthService {
     return {
       status: 'Success',
       message: 'Token generado exitosamente',
-      resetToken: tenDigitToken,
     };
   }
 
