@@ -37,7 +37,6 @@ function Usuarios() {
     fetchData();
   }, []);
 
-  console.log("Usuarios -> ", usuarios);
   return (
     <>
       <MainContent
@@ -48,6 +47,16 @@ function Usuarios() {
           <section className="flex items-center rounded-md border px-4 py-3">
             <div className="flex-1">
               <Skeleton className="w-[300px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+                .
+              </Skeleton>
+            </div>
+            <div className="flex-1">
+              <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+                .
+              </Skeleton>
+            </div>
+            <div className="flex-1">
+              <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
                 .
               </Skeleton>
             </div>
@@ -74,7 +83,7 @@ function Usuarios() {
                       <p>{id_rol || "No registrado"}</p>
                     </div>
                     <div className="flex-1">
-                      <p>{formatDate(creadoen)}</p>
+                      <p>{formatDate(creadoen.toString())}</p>
                     </div>
                   </section>
                 );
