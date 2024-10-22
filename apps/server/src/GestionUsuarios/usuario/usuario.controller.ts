@@ -20,13 +20,13 @@ import { UsuarioDto } from './dto/usuario.dto';
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
-  @Get('obtenerTodos')
+  @Get('')
   async getAllUsuarios(
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<any> {
     try {
-      const result = await this.usuarioService.getAllUsers();
+      const result = await this.usuarioService.getAllUsuarios();
       return response.status(200).json({
         status: 'Success',
         message: 'Usuarios encontrados',
