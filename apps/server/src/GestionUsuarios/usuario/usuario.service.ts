@@ -9,7 +9,7 @@ import * as bcrypt from 'bcrypt';
 export class UsuarioService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllUsers(): Promise<vi_usuario[]> {
+  async getAllUsuarios(): Promise<vi_usuario[]> {
     return this.prisma.vi_usuario.findMany();
   }
 

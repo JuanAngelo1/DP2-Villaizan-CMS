@@ -20,7 +20,7 @@ export type Categoria = {
   descripcion: string;
   colorfondo: string;
   colortexto: string;
-}
+};
 
 export type Publicacion = {
   id: number;
@@ -28,15 +28,17 @@ export type Publicacion = {
   descripcion: string;
   urlImagen: string;
   //!TODO -> Añadir los campos faltantes
-}
+};
 
 export type Usuario = {
   id: string;
   nombre: string;
   apellido: string;
   correo: string;
+  id_rol: number;
+  creadoen: Date;
   //!TODO -> Añadir los campos faltantes
-}
+};
 
 export type Comentario = {
   comentario: string;
@@ -45,4 +47,4 @@ export type Comentario = {
   id: number;
   publicacion: Publicacion;
   usuario: Usuario;
-}
+};
