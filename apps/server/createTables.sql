@@ -76,6 +76,16 @@ CREATE TABLE vi_persona (
     usuarioactualizacion VARCHAR(50)
 );
 
+CREATE TABLE vi_rol_permiso (
+    id_rol VARCHAR(50),  -- Clave foránea hacia la tabla Rol
+    id_permiso VARCHAR(50),  -- Clave foránea hacia la tabla Permiso
+    creadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    actualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id),
+    CONSTRAINT fk_permiso FOREIGN KEY (id_permiso) REFERENCES vi_permiso(id),
+    PRIMARY KEY (id_rol, id_permiso)  -- La clave primaria es la combinación de ambas claves foráneas
+);
+
 --NUESTRA TABLAS
 
 CREATE TABLE vi_comentario (
@@ -101,11 +111,10 @@ CREATE TABLE vi_tipo_publicacion (
 );
 
 
-CREATE TABLE vi_estado_publicacion (
+CREATE TABLE vi_estado_version (
     id INT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion TEXT,
-    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     color VARCHAR(20),
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL
 );
@@ -152,32 +161,27 @@ CREATE TABLE vi_publicacion_x_etiqueta (
 
 CREATE TABLE vi_publicacion (
     id SERIAL PRIMARY KEY,
-    titulo VARCHAR(255) NOT NULL,
-    urlImagen VARCHAR(255),
-    descripcionSEO VARCHAR(255),
-    slug VARCHAR(255),
-    richtext TEXT,
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    fechapublicacion TIMESTAMP,
-    fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
-    archivado BOOLEAN DEFAULT FALSE,
+	archivado BOOLEAN DEFAULT FALSE,
     id_tipo_publicacion INT,
-    id_estado_publicacion INT,
     id_usuario VARCHAR(50),
     CONSTRAINT fk_tipo_publicacion FOREIGN KEY (id_tipo_publicacion) REFERENCES vi_tipo_publicacion(id),
-    CONSTRAINT fk_estado_publicacion FOREIGN KEY (id_estado_publicacion) REFERENCES vi_estado_publicacion(id),
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES vi_usuario(id)
 );
 
 
-
-CREATE TABLE vi_rol_permiso (
-    id_rol VARCHAR(50),  -- Clave foránea hacia la tabla Rol
-    id_permiso VARCHAR(50),  -- Clave foránea hacia la tabla Permiso
-    creadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    actualizadoEn TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id),
-    CONSTRAINT fk_permiso FOREIGN KEY (id_permiso) REFERENCES vi_permiso(id),
-    PRIMARY KEY (id_rol, id_permiso)  -- La clave primaria es la combinación de ambas claves foráneas
+CREATE TABLE vi_version_publicacion (
+    id SERIAL PRIMARY KEY,
+    id_publicacion INT NOT NULL,
+	id_estado INT NOT NULL,
+	titulo VARCHAR(255) NOT NULL,
+    urlImagen VARCHAR(255),
+    descripcionSEO VARCHAR(255),
+    slug VARCHAR(255),
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    estaactivo BOOLEAN DEFAULT TRUE,
+    CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
+	CONSTRAINT fk_estado_version FOREIGN KEY (id_estado) REFERENCES vi_estado_version(id)
 );

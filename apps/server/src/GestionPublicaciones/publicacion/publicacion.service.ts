@@ -7,12 +7,13 @@ import {vi_etiqueta_publicacion} from '@prisma/client';
 import {vi_publicacion_x_categoria} from '@prisma/client';
 import {vi_publicacion_x_etiqueta} from '@prisma/client';
 
-import { vi_estado_publicacion } from '@prisma/client';
+import { vi_estado_version } from '@prisma/client';
 import { vi_tipo_publicacion } from '@prisma/client';
+import { vi_version_publicacion } from '@prisma/client';
 
 import { v4 as uuidv4 } from 'uuid';
 import { CreatePublicacionDto } from './dto/pub.dto';
-import { GoogleDriveHelper } from '../utils/google-drive.helper';
+import { GoogleDriveHelper } from '../../utils/google-drive.helper';
 import * as fs from 'fs';
 
 @Injectable()
@@ -71,7 +72,6 @@ export class PublicacionService {
       vi_publicacion_x_categoria: undefined, // Eliminamos el campo original categorias
     }));
   }
-  
   
   async getPublicacionesCantidadComentarios(): Promise<any[]> {
     const publicaciones = await this.prisma.vi_publicacion.findMany();
@@ -145,38 +145,64 @@ export class PublicacionService {
       vi_publicacion_x_categoria: undefined, // Eliminamos el campo original
     };
   }
-  
 
-  async getFirstsEditedPublicacion(numero: number): Promise<vi_publicacion[]> {
-    return this.prisma.vi_publicacion.findMany({
-      where: {
-        estaactivo: true,
-      },
-      take: numero,
-      orderBy: {
-        fechaultimamodificacion: 'desc',
-      },
-    });
+  async getFirstsEditedPublicacion(numero: number) {
+      const publicaciones = await this.prisma.vi_publicacion.findMany({
+        take: numero,
+        select: {
+          id: true,
+          vi_version_publicacion: {
+            orderBy: {
+              fechaultimamodificacion: 'desc',  
+            },
+            take: 1,  
+            select: {
+              titulo: true,
+              slug: true,
+              fechaultimamodificacion: true,
+            }
+          }
+        }
+      });
+      return publicaciones;
   }
 
-  async createPublicacion(data: CreatePublicacionDto): Promise<vi_publicacion> {
+  async createPublicacion(data: CreatePublicacionDto): Promise<any> {
     try {
         // Creación de la publicación
         const nuevaPublicacion = await this.prisma.vi_publicacion.create({
             data: {
-                titulo: data.titulo,
-                urlimagen: data.urlimagen,
-                descripcionseo: data.descripcionSEO,
-                slug: data.slug,
-                fechapublicacion: data.fechapublicacion,
-                richtext: data.richtext,  // Campo richtext añadido
                 id_tipo_publicacion: data.id_tipopublicacion,
-                id_estado_publicacion: data.id_estadopublicacion,
                 id_usuario: data.id_usuario,
+                estaactivo: true,  // Publicación activa por defecto
+                archivado: false,  // No archivada por defecto
             },
         });
 
-        // Buscar IDs de las categorías por sus nombres
+        // Crear una versión asociada a la publicación, con estado "Borrador activo"
+        const estadoBorradorActivo = await this.prisma.vi_estado_version.findFirst({
+            where: { nombre: 'Borrador activo' }
+        });
+
+        let nuevaVersionPublicacion;
+        if (estadoBorradorActivo) {
+            nuevaVersionPublicacion = await this.prisma.vi_version_publicacion.create({
+                data: {
+                    id_publicacion: nuevaPublicacion.id,
+                    id_estado: estadoBorradorActivo.id,  // Relacionar con el estado de "Borrador activo"
+                    titulo: data.titulo,
+                    urlimagen: data.urlimagen,
+                    descripcionseo: data.descripcionSEO,
+                    slug: data.slug,
+                    fechaultimamodificacion: new Date(),
+                    estaactivo: true,
+                },
+            });
+        } else {
+            console.error("Estado 'Borrador activo' no encontrado.");
+        }
+
+        // Relacionar las categorías
         if (data.categorias && data.categorias.length > 0) {
             for (const nombreCategoria of data.categorias) {
                 const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
@@ -195,7 +221,7 @@ export class PublicacionService {
             }
         }
 
-        // Buscar IDs de las etiquetas por sus nombres
+        // Relacionar las etiquetas
         if (data.etiquetas && data.etiquetas.length > 0) {
             for (const nombreEtiqueta of data.etiquetas) {
                 const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
@@ -214,12 +240,17 @@ export class PublicacionService {
             }
         }
 
-        return nuevaPublicacion;
+        // Retornar la publicación creada junto con la versión
+        return {
+            ...nuevaPublicacion,
+            version_publicacion: nuevaVersionPublicacion,  // Incluimos la versión de la publicación en el retorno
+        };
     } catch (error) {
-        console.error(error);
-        return null;
+        console.error('Error al crear la publicación:', error);
+        throw error;
     }
 }
+
 
   async updatePublicacion(
     id: number,
@@ -241,29 +272,13 @@ export class PublicacionService {
     });
   }
 
-  async cambiarEstadoPublicacion(id: number, nuevoEstado: number): Promise<vi_publicacion> {
-    try {
-        const publicacionActualizada = await this.prisma.vi_publicacion.update({
-            where: { id: id },
-            data: {
-                id_estado_publicacion: nuevoEstado,  // Cambiamos el estado de la publicación
-                fechaultimamodificacion: new Date(),  // Actualizamos la fecha de modificación
-            },
-        });
-        return publicacionActualizada;
-    } catch (error) {
-        console.error('Error al cambiar el estado de la publicación:', error);
-        throw error;
-    }
-  }
 
   async cambiarEstadoArchivado(id: number, archivado: boolean): Promise<vi_publicacion> {
     try {
         const publicacionActualizada = await this.prisma.vi_publicacion.update({
             where: { id: id },
             data: {
-                archivado: archivado,  // Cambiamos el estado de archivado
-                fechaultimamodificacion: new Date(),  // Actualizamos la fecha de modificación
+                archivado: archivado
             },
         });
         return publicacionActualizada;
@@ -274,11 +289,11 @@ export class PublicacionService {
   }
 
 
-  async listarTodosEstadosPublicacion(): Promise<vi_estado_publicacion[]> {
+  async listarTodosEstadosPublicacion(): Promise<vi_version_publicacion[]> {
     try {
-        return this.prisma.vi_estado_publicacion.findMany();
+        return this.prisma.vi_version_publicacion.findMany();
     } catch (error) {
-        console.error('Error al listar los estados de publicación:', error);
+        console.error('Error al listar los estados de version:', error);
         throw error;
     }
   }
@@ -292,7 +307,54 @@ export class PublicacionService {
     }
   }
 
+  async getPublicacionesConVersionesRecientes() {
+    const publicaciones = await this.prisma.vi_publicacion.findMany({
+      select: {
+        id: true,
+        vi_version_publicacion: {
+          orderBy: {
+            fechaultimamodificacion: 'desc',
+          },
+          take: 1, 
+          select: {
+            titulo: true,
+            slug: true,
+            fechaultimamodificacion: true,
+          }
+        }
+      }
+    });
 
+    return publicaciones;
+  }
+
+  async getVersionesByPublicacionId(idPublicacion: number): Promise<any[]> {
+    try {
+        // Traer todas las versiones de la publicación dada
+        const versiones = await this.prisma.vi_version_publicacion.findMany({
+            where: {
+                id_publicacion: idPublicacion,  // Filtrar por el id de la publicación
+            },
+            orderBy: {
+                fechaultimamodificacion: 'desc',  // Ordenar por la última modificación, de la más reciente a la más antigua
+            },
+            select: {
+                id: true,
+                titulo: true,
+                slug: true,
+                descripcionseo: true,
+                fechaultimamodificacion: true,
+                id_estado: true,  // Podrías incluir el estado de la versión
+                estaactivo: true,
+            },
+        });
+
+        return versiones;
+    } catch (error) {
+        console.error('Error al obtener las versiones de la publicación:', error);
+        throw error;
+    }
+}
 
 
 
