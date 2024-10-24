@@ -21,7 +21,7 @@ import { Input } from "@repo/ui/components/input";
 import { Label } from "@repo/ui/components/label";
 import { Separator } from "@repo/ui/components/separator";
 import { cn } from "@repo/ui/lib/utils";
-import TextEditor from "./TextEditor";
+import TextEditor from "@web/src/app/_components/TextEditor";
 import MainContent from "../general_components/MainContent";
 import { Badge } from "@repo/ui/components/badge";
 

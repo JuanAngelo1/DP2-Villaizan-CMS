@@ -10,7 +10,7 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
 import History from "@tiptap/extension-history";
-import content from "./content";
+import content from "../admin/contenido/_components/publicaciones_components/content";
 import { cn } from "@repo/ui/lib/utils"; // Asegúrate de que esta ruta sea correcta
 import { BoldIcon, Code2, ItalicIcon, Redo2, Strikethrough, UnderlineIcon, Undo2 } from "lucide-react";
 
