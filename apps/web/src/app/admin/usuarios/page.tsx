@@ -1,3 +1,5 @@
+import { ChevronDown, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -6,13 +8,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@repo/ui/components/breadcrumb";
-import Link from "next/link";
-import { Separator } from "@repo/ui/components/separator";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import TopHeader from "../contenido/_components/general_components/TopHeader";
 import { Input } from "@repo/ui/components/input";
+import { Separator } from "@repo/ui/components/separator";
 import SectionWrapper from "../contenido/_components/general_components/SectionWrapper";
-import Usuarios from '../contenido/_components/usuarios';
+import TopHeader from "../contenido/_components/general_components/TopHeader";
+import Usuarios from "../contenido/_components/usuarios";
 
 function Page() {
   return (
@@ -32,15 +32,9 @@ function Page() {
       </Breadcrumb>
 
       <main className="flex h-full flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
-        <SectionWrapper>
-          <TopHeader>
-            <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
-          </TopHeader>
-
-          <Usuarios/>
-        </SectionWrapper>
+        <Usuarios />
       </main>
     </div>
-  )
+  );
 }
-export default Page
+export default Page;
