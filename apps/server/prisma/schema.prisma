@@ -129,14 +129,13 @@ model vi_direccion {
   vi_pedido            vi_pedido[]
 }
 
-model vi_estado_publicacion {
-  id             Int              @id
-  nombre         String           @db.VarChar(255)
-  descripcion    String?
-  fechacreacion  DateTime         @default(now()) @db.Timestamp(6)
-  color          String?          @db.VarChar(20)
-  estaactivo     Boolean          @default(true)
-  vi_publicacion vi_publicacion[]
+model vi_estado_version {
+  id                     Int                      @id
+  nombre                 String                   @db.VarChar(255)
+  descripcion            String?
+  color                  String?                  @db.VarChar(20)
+  estaactivo             Boolean                  @default(true)
+  vi_version_publicacion vi_version_publicacion[]
 }
 
 model vi_etiqueta_publicacion {
@@ -480,25 +479,17 @@ model vi_producto_subcategoria {
 
 model vi_publicacion {
   id                         Int                          @id @default(autoincrement())
-  titulo                     String                       @db.VarChar(255)
-  urlimagen                  String?                      @db.VarChar(255)
-  descripcionseo             String?                      @db.VarChar(255)
-  slug                       String?                      @db.VarChar(255)
-  richtext                   String?
   fechacreacion              DateTime                     @default(now()) @db.Timestamp(6)
-  fechapublicacion           DateTime?                    @db.Timestamp(6)
-  fechaultimamodificacion    DateTime                     @default(now()) @db.Timestamp(6)
   estaactivo                 Boolean                      @default(true)
   archivado                  Boolean?                     @default(false)
   id_tipo_publicacion        Int?
-  id_estado_publicacion      Int?
   id_usuario                 String?                      @db.VarChar(50)
   vi_comentario              vi_comentario[]
-  vi_estado_publicacion      vi_estado_publicacion?       @relation(fields: [id_estado_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_publicacion")
   vi_tipo_publicacion        vi_tipo_publicacion?         @relation(fields: [id_tipo_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tipo_publicacion")
   vi_usuario                 vi_usuario?                  @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
   vi_publicacion_x_categoria vi_publicacion_x_categoria[]
   vi_publicacion_x_etiqueta  vi_publicacion_x_etiqueta[]
+  vi_version_publicacion     vi_version_publicacion[]
 }
 
 model vi_publicacion_x_categoria {
@@ -658,3 +649,19 @@ model vi_venta {
   vi_ordenserie        vi_ordenserie? @relation(fields: [id_ordenserie], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ordenserie")
   vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
 }
+
+model vi_version_publicacion {
+  id                      Int               @id @default(autoincrement())
+  id_publicacion          Int
+  id_estado               Int
+  titulo                  String            @db.VarChar(255)
+  urlimagen               String?           @db.VarChar(255)
+  descripcionseo          String?           @db.VarChar(255)
+  slug                    String?           @db.VarChar(255)
+  fechacreacion           DateTime          @default(now()) @db.Timestamp(6)
+  fechaultimamodificacion DateTime          @default(now()) @db.Timestamp(6)
+  estaactivo              Boolean?          @default(true)
+  vi_estado_version       vi_estado_version @relation(fields: [id_estado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_version")
+  vi_publicacion          vi_publicacion    @relation(fields: [id_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_publicacion")
+}
+

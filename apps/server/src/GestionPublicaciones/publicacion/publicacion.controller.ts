@@ -26,6 +26,25 @@ export class PublicacionController {
 
   //Metodos APIs
 
+  @Get('versionesRecientes')
+  async getPublicaciones() {
+    try{
+      const result= await this.publicacionService.getPublicacionesConVersionesRecientes();
+      return{
+        status: 'Success',
+        message: 'Publicaciones encontradas',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener publicaciones recientes',
+        result: [],
+      };
+    }
+  }
+
   @Get()
   async getAllPubs(@Req() request: Request, @Res() response: Response,): Promise<any> {
     try {
@@ -100,7 +119,7 @@ export class PublicacionController {
     }
   }
 
-  @Get('recien_editados/:numero')
+  @Get('recienEditados/:numero')
   async getFirstsEdited(@Param('numero') numero: string) {
     const numeroParsed = parseInt(numero);
     if (isNaN(numeroParsed) || numeroParsed <= 0) {
@@ -134,23 +153,6 @@ export class PublicacionController {
     } catch (error) {
       throw new NotFoundException('Publicacion no existe');
     }
-  }
-
-  @Post('cambiarEstadoPublicacion/:id')
-  async cambiarEstadoPublicacion(@Param('id',ParseIntPipe) id: number, @Body('nuevoEstado') nuevoEstado: number ): Promise<any> {
-      try {
-          const publicacion = await this.publicacionService.cambiarEstadoPublicacion(id, nuevoEstado);
-          return {
-              status: 'Success',
-              message: 'Estado de la publicación actualizado correctamente',
-              result: publicacion,
-          };
-      } catch (error) {
-          return {
-              status: 'Error',
-              message: 'Error al actualizar el estado de la publicación',
-          };
-      }
   }
   
   @Post('cambiarEstadoArchivado/:id')
@@ -202,6 +204,26 @@ export class PublicacionController {
               message: 'Error al listar los tipos de publicación',
           };
       }
+  }
+
+  @Get('versiones/:id')
+  async getVersionesByPublicacionId(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getVersionesByPublicacionId(id);
+      return{
+        status: 'Success',
+        message: 'Versiones encontradas',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener versiones por ID',
+        result: [],
+      };
+    }
+
   }
 
 

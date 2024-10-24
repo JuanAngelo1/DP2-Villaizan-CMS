@@ -1,4 +1,5 @@
 // page.tsx
+import MapComponent from "./_components/map";
 import Nosotros from "./_sections/Nosotros";
 import Publicaciones from "./_sections/Publicaciones";
 import Sabores from "./_sections/Sabores";
@@ -11,6 +12,7 @@ export default function Page(): JSX.Element {
       <Sabores />
       <Nosotros />
       <Publicaciones />
+      <MapComponent/>
     </>
   );
 }
