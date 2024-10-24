@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
   return (
     <div className="flex flex-col min-h-dvh">
       <Header />
-      <main className="flex-1 mt-[68px] h-full">{children}</main>
+      <main className="flex-1 mt-[68px] flex flex-col">{children}</main>
       <Footer />
     </div>
   );

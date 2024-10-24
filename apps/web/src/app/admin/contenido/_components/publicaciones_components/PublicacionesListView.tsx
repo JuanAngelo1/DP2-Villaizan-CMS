@@ -1,43 +1,29 @@
-// PublicacionesListView.tsx
+// /apps/web/src/admin/contenido/_components/PublicacionesListView.tsx
+import React from 'react';
+import usePublicaciones from '@web/src/app/services/api/publicaciones/hooks/usePublicaciones';
+import { Publicacion } from '@web/types';
+import { Button } from '@repo/ui/components/button';
+import { Ellipsis, Plus } from 'lucide-react';
+import { Input } from '@repo/ui/components/input';
+import { Skeleton } from '@repo/ui/components/skeleton';
+import { cn } from '@repo/ui/lib/utils';
+import { buttonVariants } from '@repo/ui/components/button';
+import { CardDescription, CardHeader, CardTitle } from '@repo/ui/components/card';
+import { formatDate } from '@web/utils/date';
 import usePagination from "@web/hooks/usePagination";
-import { Publicacion, Response } from "@web/types";
-import axios from "axios";
-import { Plus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Button, buttonVariants } from "@repo/ui/components/button";
-import { CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
-import { Input } from "@repo/ui/components/input";
-import { Skeleton } from "@repo/ui/components/skeleton";
-import { cn } from "@repo/ui/lib/utils";
-import ContentFooter from "../general_components/ContentFooter";
-import MainContent from "../general_components/MainContent";
-import TopHeader from "../general_components/TopHeader";
+import ContentFooter from '../general_components/ContentFooter';
+import MainContent from '../general_components/MainContent';
+import TopHeader from '../general_components/TopHeader';
+import PublicacionItem from './PublicacionItem';
 
-function PublicacionesListView({ changeType } : { changeType: (type: string | null) => void }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [publicaciones, setPublicaciones] = useState<Publicacion[]>([]);
+interface PublicacionesListViewProps {
+  changeType: (type: string | null, id?: string | null) => void;
+}
+
+const PublicacionesListView: React.FC<PublicacionesListViewProps> = ({ changeType }) => {
+  const { publicaciones, isLoading, error } = usePublicaciones();
   const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
     usePagination<Publicacion>({ items: publicaciones, startingEntriesPerPage: 10 });
-
-  useEffect(() => {
-    async function getPublicaciones() {
-      try {
-        setIsLoading(true);
-        const response: Response<Publicacion[]> = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/obtenerTodos`
-        );
-        if (response.data.status === "Error") throw new Error(response.data.message);
-
-        setPublicaciones(response.data.result);
-      } catch (error) {
-        console.error("Error en la obtencion de listado de publicaciones: ", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    getPublicaciones();
-  }, []);
 
   return (
     <>
@@ -79,34 +65,35 @@ function PublicacionesListView({ changeType } : { changeType: (type: string | nu
         }
       >
         <section className="h-full space-y-2 overflow-y-auto">
-          {isLoading
-            ? [1, 2, 3, 4].map((i) => {
-                return (
-                  <section key={i} className="flex items-center rounded-md border px-4 py-3 text-sm">
-                    <div className="flex-1">
-                      <Skeleton className="w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
-                    </div>
-                    <div className="flex flex-1">
-                      <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">
-                        .
-                      </Skeleton>
-                    </div>
-                    <div className="flex flex-1">
-                      <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">
-                        .
-                      </Skeleton>
-                    </div>
-                    <div className="flex flex-1">
-                      <Skeleton className="ml-auto w-[200px] rounded-3xl font-normal text-transparent">
-                        .
-                      </Skeleton>
-                    </div>
-                  </section>
-                );
-              })
-            : currentPageItems.map((publicacion) => {
-                return <div></div>;
-              })}
+          {isLoading ? (
+            // Renderiza skeletons mientras se cargan las publicaciones
+            [1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-center rounded-md border px-4 py-3 text-sm">
+                <div className="flex-1">
+                  <Skeleton className="w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                </div>
+                <div className="flex flex-1">
+                  <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                </div>
+                <div className="flex flex-1">
+                  <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                </div>
+                <div className="flex flex-1">
+                  <Skeleton className="ml-auto w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                </div>
+              </div>
+            ))
+          ) : publicaciones.length > 0 ? (
+            // Renderiza la lista de publicaciones
+            publicaciones.map((publicacion) => (
+              <PublicacionItem key={publicacion.id} publicacion={publicacion} onEdit={() => changeType("edit", publicacion.id)} />
+            ))
+          ) : (
+            // Renderiza el mensaje cuando no hay publicaciones
+            <CardDescription className='h-full flex items-center justify-center'>
+              No se han encontrado publicaciones.
+            </CardDescription>
+          )}
         </section>
         <ContentFooter
           page={page}

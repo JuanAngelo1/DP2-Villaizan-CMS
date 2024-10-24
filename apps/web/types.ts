@@ -23,11 +23,53 @@ export type Categoria = {
 };
 
 export type Publicacion = {
-  id: number;
+  id: string;
   titulo: string;
   descripcion: string;
   urlImagen: string;
-  //!TODO -> Añadir los campos faltantes
+  fechacreacion: string;
+  estaactivo: boolean;
+  archivado?: boolean;
+  tipo_publicacion?: TipoPublicacion | null;
+  id_usuario?: string | null;
+  comentarios: Comentario[];
+  
+  fecha_creacion: string;
+  vi_version_publicacion: VersionPublicacion[];
+};
+
+export type TipoPublicacion = {
+  id: number;
+  nombre: string;
+  descripcion?: string | null;
+  fechacreacion: string;
+  estaactivo: boolean;
+  publicaciones: Publicacion[];
+};
+
+export type VersionPublicacion = {
+  id: number;
+  titulo: string;
+  urlimagen?: string | null;
+  descripcionseo?: string | null;
+  slug?: string | null;
+  richtext: string;
+  fechacreacion: string;
+  fechaultimamodificacion: string;
+  estaactivo?: boolean | null;
+  estado_version: EstadoVersion;
+  categorias: string[];
+  etiquetas: string[];
+  publicacion: Publicacion;
+};
+
+export type EstadoVersion = {
+  id: number;
+  nombre: string;
+  descripcion?: string | null;
+  color?: string | null;
+  estaactivo: boolean;
+  versiones: VersionPublicacion[];
 };
 
 export type Usuario = {

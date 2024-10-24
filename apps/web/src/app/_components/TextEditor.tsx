@@ -10,11 +10,15 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
 import History from "@tiptap/extension-history";
-import content from "./content";
-import { cn } from "@repo/ui/lib/utils"; // Asegúrate de que esta ruta sea correcta
+import { cn } from "@repo/ui/lib/utils";
 import { BoldIcon, Code2, ItalicIcon, Redo2, Strikethrough, UnderlineIcon, Undo2 } from "lucide-react";
 
-export default function TextEditor() {
+interface TextEditorProps {
+  content: string;
+  onContentChange: (content: string) => any;
+}
+
+export default function TextEditor<T extends TextEditorProps>({ content, onContentChange }: T) {
   const editor = useEditor({
     extensions: [
       Document,
@@ -30,7 +34,10 @@ export default function TextEditor() {
       Strike,
       Code
     ],
-    content
+    content,
+    onUpdate(props) {
+      onContentChange(props.editor.getHTML());
+    },
   }) as Editor;
 
   const [modalIsOpen, setIsOpen] = useState(false);
