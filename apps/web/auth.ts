@@ -46,6 +46,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return !!auth;
     },
+    jwt({ token, user }) {
+      if (user) { // User is available during sign-in
+        token.id = user.id as string;
+        token.name = user.name as string; 
+        token.email = user.email as string;
+      }
+      return token
+    },
+    session({ session, token }) {
+      session.user.id = token.id as string;
+      session.user.name = token.name as string;
+      session.user.email = token.email as string;
+      return session
+    },
   },
     pages: {
       signIn: "/login",
