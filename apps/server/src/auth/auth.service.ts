@@ -64,7 +64,11 @@ export class AuthService {
     return Math.floor(1000000000 + Math.random() * 9000000000).toString();
   }
 
-  async sendResetPasswordEmail(email: string, resetToken: string) {
+  async sendResetPasswordEmail(
+    email: string,
+    nombre: string,
+    resetToken: string,
+  ) {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
@@ -79,7 +83,16 @@ export class AuthService {
       from: process.env.EMAIL,
       to: email,
       subject: 'Restablecimiento de contraseña',
-      text: `Tu código de restablecimiento de contraseña es: ${resetToken}. Este código es válido por 2 minutos.`,
+      html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+        <h2 style="color: black;">Hola, ${nombre}!</h2>
+        <p>Recibimos una solicitud para restablecer tu contraseña. Haz clic en el botón de abajo para cambiarla:</p>
+        <a href="http://localhost:3000/recuperar-contrasena?token=${resetToken}" style="display: inline-block; padding: 10px 20px; background-color: rgb(153, 27, 27); color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">Cambiar Contraseña</a>
+        <p style="margin-top: 20px;">Si no solicitaste este cambio, puedes ignorar este correo.</p>
+        <p>Este enlace es válido por 2 minutos.</p>
+        <p style="margin-top: 30px;">Saludos,<br>El equipo de soporte</p>
+      </div>
+    `,
     };
 
     await transporter.sendMail(mailOptions);
@@ -100,7 +113,7 @@ export class AuthService {
     );
 
     // Envía el token de restablecimiento por correo
-    await this.sendResetPasswordEmail(user.correo, tenDigitToken);
+    await this.sendResetPasswordEmail(email, user.nombre, tenDigitToken);
 
     return {
       status: 'Success',
