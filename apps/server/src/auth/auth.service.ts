@@ -68,6 +68,7 @@ export class AuthService {
     email: string,
     nombre: string,
     resetToken: string,
+    id_usuario: string,
   ) {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
@@ -87,7 +88,7 @@ export class AuthService {
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
         <h2 style="color: black;">Hola, ${nombre}!</h2>
         <p>Recibimos una solicitud para restablecer tu contraseña. Haz clic en el botón de abajo para cambiarla:</p>
-        <a href="http://localhost:3000/recuperar-contrasena?token=${resetToken}" style="display: inline-block; padding: 10px 20px; background-color: rgb(153, 27, 27); color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">Cambiar Contraseña</a>
+        <a href="http://localhost:3000/recuperar-contrasena?token=${resetToken}&id=${id_usuario}" style="display: inline-block; padding: 10px 20px; background-color: rgb(153, 27, 27); color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">Cambiar Contraseña</a>
         <p style="margin-top: 20px;">Si no solicitaste este cambio, puedes ignorar este correo.</p>
         <p>Este enlace es válido por 2 minutos.</p>
         <p style="margin-top: 30px;">Saludos,<br>El equipo de soporte</p>
@@ -99,26 +100,38 @@ export class AuthService {
   }
 
   async requestResetPassword(requestResetPasswordDto: RequestResetPasswordDto) {
-    const { email } = requestResetPasswordDto;
-    const user = await this.usuarioRepository.findByEmail(email);
+    try {
+      const { email } = requestResetPasswordDto;
+      const user = await this.usuarioRepository.findByEmail(email);
 
-    const tenDigitToken = this.generateTenDigitToken();
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado :(');
+      }
+      const tenDigitToken = this.generateTenDigitToken();
 
-    const expirationDate = dayjs().add(2, 'minute').toDate();
+      const expirationDate = dayjs().add(2, 'minute').toDate();
 
-    await this.usuarioRepository.saveResetToken(
-      user.id,
-      tenDigitToken,
-      expirationDate,
-    );
+      await this.usuarioRepository.saveResetToken(
+        user.id,
+        tenDigitToken,
+        expirationDate,
+      );
 
-    // Envía el token de restablecimiento por correo
-    await this.sendResetPasswordEmail(email, user.nombre, tenDigitToken);
+      // Envía el token de restablecimiento por correo
+      await this.sendResetPasswordEmail(
+        email,
+        user.nombre,
+        tenDigitToken,
+        user.id,
+      );
 
-    return {
-      status: 'Success',
-      message: 'Token generado exitosamente',
-    };
+      return {
+        status: 'Success',
+        message: 'Token generado exitosamente',
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async resetPasswordToken(resetPasswordDto: ResetPasswordDto) {
