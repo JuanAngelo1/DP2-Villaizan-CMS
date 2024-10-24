@@ -5,10 +5,13 @@ import { Response, Rol, Usuario } from "@web/types";
 import axios from "axios";
 import { useCallback, useMemo, useState } from "react";
 import { useEffect } from "react";
-import { Button } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
+import { cn } from "@repo/ui/lib/utils";
 import MainContent from "./general_components/MainContent";
 import SectionWrapper from "./general_components/SectionWrapper";
+import TopHeader from "./general_components/TopHeader";
 import SheetUsuario from "./usuarios_components/SheetUsuario";
 import UsuarioTableRow from "./usuarios_components/UsuarioTableRow";
 import UsuariosTableHeader from "./usuarios_components/UsuariosTableHeader";
@@ -102,6 +105,28 @@ function Usuarios() {
   return (
     <>
       <SectionWrapper>
+        <TopHeader>
+          <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+          <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
+            <p>Mostrando</p>
+            <Input
+              className="h-[30px] w-[40px] px-0 text-center"
+              value={entriesPerPage}
+              onChange={(e) => {
+                if (e.target.value === "") {
+                  setEntriesPerPage(0);
+                  return;
+                }
+                if (isNaN(parseInt(e.target.value))) return;
+                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
+
+                setEntriesPerPage(parseInt(e.target.value));
+              }}
+            />
+            <p>por página</p>
+          </div>
+        </TopHeader>
+
         <MainContent
           title="Usuarios"
           description="Administra los usuarios del sistema y sus permisos correspondientes."
