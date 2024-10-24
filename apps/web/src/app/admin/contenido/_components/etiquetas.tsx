@@ -183,7 +183,7 @@ function Etiquetas() {
                           onClick={() => openEditSheet(etiqueta)}
                         />
                       </div>
-                      <div className="flex-1 text-sm font-light">{etiqueta.descripcion}</div>
+                      <div className="flex-1 text-sm font-light"> {etiqueta.descripcion}</div>
                       <Popover>
                         <PopoverTrigger>
                           <Ellipsis />

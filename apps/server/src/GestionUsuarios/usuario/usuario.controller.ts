@@ -10,6 +10,9 @@ import {
   BadRequestException,
   Req,
   Res,
+  Patch,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { vi_usuario } from '@prisma/client';
@@ -131,6 +134,32 @@ export class UsuarioController {
         message: 'Usuario no existe',
         result: [],
       });
+    }
+  }
+
+  @Patch('/rol/:id')
+  async updateRol(
+    @Param('id') id_usuario: string,
+    @Body('id_rol') id_rol: string,
+  ) {
+    try {
+      const usuarioUpdated = await this.usuarioService.updateRol(
+        id_usuario,
+        id_rol,
+      );
+      return {
+        status: 'Success',
+        message: 'Rol actualizado exitosamente',
+        result: usuarioUpdated,
+      };
+    } catch (e) {
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: e.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
