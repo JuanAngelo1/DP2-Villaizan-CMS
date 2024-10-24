@@ -90,7 +90,7 @@ const MapComponent: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-gradient-to-b  min-h-[500px] p-6">
+    <section className="bg-gradient-to-b  min-h-[500px] p-6" id="mapa">
       <div className="max-w-7xl mx-auto space-y-4">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold mb-2">
@@ -110,7 +110,7 @@ const MapComponent: React.FC = () => {
               </div>
             </div>
           ) : location ? (
-            <div className="h-[600px] relative">
+            <div className="h-[600px] relative  z-0">
               <MapContainer 
                 center={[location.latitude, location.longitude]} 
                 zoom={zoom} 
