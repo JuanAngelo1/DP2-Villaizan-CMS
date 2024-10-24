@@ -1,6 +1,6 @@
 // /apps/web/src/admin/contenido/_components/PublicacionesListView.tsx
 import React from 'react';
-import usePublicaciones from '@web/src/app/services/api/publicaciones/hooks/usePublicacionesVersionesRecientes';
+import usePublicaciones from '@web/src/app/services/api/publicaciones/hooks/usePublicaciones';
 import { Publicacion } from '@web/types';
 import { Button } from '@repo/ui/components/button';
 import { Ellipsis, Plus } from 'lucide-react';
@@ -17,7 +17,7 @@ import TopHeader from '../general_components/TopHeader';
 import PublicacionItem from './PublicacionItem';
 
 interface PublicacionesListViewProps {
-  changeType: (type: string | null) => void;
+  changeType: (type: string | null, id?: string | null) => void;
 }
 
 const PublicacionesListView: React.FC<PublicacionesListViewProps> = ({ changeType }) => {
@@ -86,7 +86,7 @@ const PublicacionesListView: React.FC<PublicacionesListViewProps> = ({ changeTyp
           ) : publicaciones.length > 0 ? (
             // Renderiza la lista de publicaciones
             publicaciones.map((publicacion) => (
-              <PublicacionItem key={publicacion.id} publicacion={publicacion} onEdit={(id) => changeType(`edit`)} />
+              <PublicacionItem key={publicacion.id} publicacion={publicacion} onEdit={() => changeType("edit", publicacion.id)} />
             ))
           ) : (
             // Renderiza el mensaje cuando no hay publicaciones

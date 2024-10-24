@@ -1,14 +1,14 @@
 // /apps/web/src/services/api/publicaciones/getVersionesPublicacion.ts
-import axios from 'axios';
-import { Publicacion, Response } from "@web/types";
+import axiosInstance from "@web/src/app/services/axiosInstance";
+import { Response, Publicacion, VersionPublicacion } from "@web/types";
 
 interface VersionesPublicacionPayload {
-  publicacionId: string;
+  id: Publicacion["id"];
 }
 
-const getPublicaciones = async (payload: VersionesPublicacionPayload ): Promise<Response<Publicacion[]>> => {
-  const response: Response<Publicacion[]> = await axios.get("/publicaciones/versiones" + payload.publicacionId);
+const getVersionesPublicacion = async (payload: VersionesPublicacionPayload ): Promise<Response<VersionPublicacion[]>> => {
+  const response: Response<VersionPublicacion[]> = await axiosInstance.get("/publicaciones/versiones/" + payload.id);
   return response;
 };
 
-export default getPublicaciones;
+export default getVersionesPublicacion;
