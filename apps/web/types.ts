@@ -23,7 +23,7 @@ export type Categoria = {
 };
 
 export type Publicacion = {
-  id: number;
+  id: string;
   titulo: string;
   descripcion: string;
   urlImagen: string;

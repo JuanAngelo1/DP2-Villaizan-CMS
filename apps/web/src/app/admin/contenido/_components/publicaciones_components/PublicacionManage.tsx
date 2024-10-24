@@ -24,6 +24,9 @@ import { cn } from "@repo/ui/lib/utils";
 import TextEditor from "@web/src/app/_components/TextEditor";
 import MainContent from "../general_components/MainContent";
 import { Badge } from "@repo/ui/components/badge";
+import usePublicacion from "@web/src/app/services/api/publicaciones/hooks/usePublicacion";
+import { Skeleton } from "@repo/ui/components/skeleton";
+import { Publicacion } from "@web/types";
 
 interface PublicationManageProps {
   type: "create" | "edit";
@@ -31,21 +34,43 @@ interface PublicationManageProps {
   changeType?: (type: string | null) => void;
 }
 
+const createPub = async () => {
+  // createPublicacion
+}
+
+const createVersionPub = async () => {
+  // createVersionPublicacion
+}
+
 function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const pub_action = searchParams.get('publication_action');
+  const pub_id = searchParams.get('publication_id');
+  const { publicacion, isLoading, error, fetchPublicacion } = usePublicacion();
+  const [pub, setPub] = React.useState<Publicacion | null>(null);
 
   useEffect(() => {
-    if (type === "edit" && !id && changeType) {
-      changeType("list");
+    if (pub_action == "edit") {
+      if (!pub_id && changeType) {
+        changeType("list");
+      } else if (pub_id) {
+        fetchPublicacion(pub_id);
+        setPub(publicacion);
+      }
     }
-  }, [type, id, changeType]);
+
+    if (pub_action == "create") {
+      setPub(null);
+    }
+  }, []);
+
+  console.log(publicacion);
 
   return (
     <MainContent title={"[Titulo de publicacion]"}>
       <Separator />
-      <section className="flex h-full flex-row gap-4 overflow-y-auto py-4 *:flex *:flex-col *:gap-4">
+      <section className="flex h-full flex-row gap-4 overflow-y-auto py-4 *:flex *:flex-col *:gap-4 w-full">
+        {isLoading && <Skeleton />}
         <div className="flex-[4] *:flex *:flex-col *:gap-2">
           <h3 className="text-lg font-semibold">Información del contenido</h3>
           <div>
@@ -64,16 +89,16 @@ function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
           </div>
         </div>
         <Separator orientation="vertical" />
-        <div className="flex-[1] *:flex *:flex-col *:gap-2 *:w-fit">
-          <div>
+        <div className="w-1/5 *:flex *:gap-2 *:w-fit">
+          <div className="flex-col">
             <Label>Estado</Label>
             <Badge variant={"default"} className="w-fit">Publicado</Badge>
           </div>
-          <div>
+          <div className="flex-col">
             <Label>Categorías</Label>
             <Popover>
               <PopoverTrigger>
-                <Button variant="outline" className="w-fit">Elegir categoría</Button>
+                Elegir categoría
               </PopoverTrigger>
               <PopoverContent>
                 <Command>
@@ -90,11 +115,11 @@ function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
               </PopoverContent>
             </Popover>
           </div>
-          <div>
+          <div className="flex-col">
             <Label>Etiquetas</Label>
             <Popover>
               <PopoverTrigger>
-                <Button variant="outline" className="w-fit">Elegir etiquetas</Button>
+                Elegir etiquetas
               </PopoverTrigger>
               <PopoverContent>
                 <Command>
@@ -111,17 +136,21 @@ function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
               </PopoverContent>
             </Popover>
           </div>
-          <div>
+          <div className="flex-col">
             <Label>Fecha de publicación</Label>
             <Input type="date" />
           </div>
-          <div>
+          <div className="flex-col">
             <Label>Fecha de creación</Label>
             <Input type="date" disabled />
           </div>
-          <div>
+          <div className="flex-col">
             <Label>Última actualización</Label>
             <Input type="date" disabled />
+          </div>
+          <div className="w-full flex flex-wrap jusify-around align-bottom items-end">
+            <Button variant={"ghost"} onClick={() => changeType && changeType("list")}>Cancelar</Button>
+            <Button variant={"default"} onClick={() => {}}>Guardar</Button>
           </div>
         </div>
       </section>

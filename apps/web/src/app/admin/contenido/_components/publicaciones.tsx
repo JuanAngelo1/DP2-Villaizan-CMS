@@ -15,17 +15,21 @@ function Publicaciones() {
   const router = useRouter();
 
   // Actualiza los parámetros de la URL sin necesidad de estado local
-  const handleChangeType = (type: string | null) => {
+  const handleChangeType = (type: string | null, id?: string | null) => {
     const params = new URLSearchParams(searchParams);
     if (type) {
       params.set('publication_action', type);
     } else {
       params.delete('publication_action');
     }
+    if (id) {
+      params.set('publication_id', id);
+    } else {
+      params.delete('publication_id');
+    }
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  // Detecta manualmente cambios en la URL mediante useEffect
   useEffect(() => {
     // Este efecto se disparará cuando cambie la URL o los parámetros
   }, [pub_action, pub_id]);
