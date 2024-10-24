@@ -193,6 +193,7 @@ export class PublicacionService {
                     titulo: data.titulo,
                     urlimagen: data.urlimagen,
                     descripcionseo: data.descripcionSEO,
+                    richtext: data.richtext,
                     slug: data.slug,
                     fechaultimamodificacion: new Date(),
                     estaactivo: true,

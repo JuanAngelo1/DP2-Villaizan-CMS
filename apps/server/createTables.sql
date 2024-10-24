@@ -174,14 +174,15 @@ CREATE TABLE vi_publicacion (
 CREATE TABLE vi_version_publicacion (
     id SERIAL PRIMARY KEY,
     id_publicacion INT NOT NULL,
-	id_estado INT NOT NULL,
-	titulo VARCHAR(255) NOT NULL,
+    id_estado INT NOT NULL,
+    titulo VARCHAR(255) NOT NULL,
     urlImagen VARCHAR(255),
     descripcionSEO VARCHAR(255),
     slug VARCHAR(255),
+    richtext TEXT,  -- Nuevo campo richtext
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     estaactivo BOOLEAN DEFAULT TRUE,
     CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
-	CONSTRAINT fk_estado_version FOREIGN KEY (id_estado) REFERENCES vi_estado_version(id)
+    CONSTRAINT fk_estado_version FOREIGN KEY (id_estado) REFERENCES vi_estado_version(id)
 );
