@@ -1,18 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EtiquetaDto } from './dto/etiqueta.dto';
 import { vi_etiqueta_publicacion } from '@prisma/client';
+import { EtiquetaRepository } from './etiqueta.repository';
 
 @Injectable()
 export class EtiquetaService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private etiquetaRepository: EtiquetaRepository,
+  ) {}
 
-  async getAllEtiquetas() {
-    return this.prisma.vi_etiqueta_publicacion.findMany({
-      where: {
-        estaactivo: true,
-      },
-    });
+  async getAllEtiquetas(): Promise<vi_etiqueta_publicacion[]> {
+    try {
+      return await this.etiquetaRepository.findAll();
+    } catch (error) {
+      throw new InternalServerErrorException('Error al listar etiquetas');
+    }
   }
 
   async createEtiqueta(data: EtiquetaDto): Promise<vi_etiqueta_publicacion> {
