@@ -1,16 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { vi_usuario } from '@prisma/client';
 import { UsuarioDto } from './dto/usuario.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
+import { UsuarioRepository } from './usuario.repository';
 
 @Injectable()
 export class UsuarioService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private usuarioRepository: UsuarioRepository,
+  ) {}
 
   async getAllUsuarios(): Promise<vi_usuario[]> {
-    return this.prisma.vi_usuario.findMany();
+    return this.usuarioRepository.findAll();
   }
 
   async getUsuarioByID(id: string): Promise<vi_usuario> {
@@ -93,5 +97,13 @@ export class UsuarioService {
   async sendEmailRecoverPassword(data: UsuarioDto): Promise<any> {
     // Send email logic
     return data;
+  }
+
+  async updateRol(usuarioId: string, newRoleId: string): Promise<vi_usuario> {
+    try {
+      return this.usuarioRepository.updateRole(usuarioId, newRoleId);
+    } catch (error) {
+      throw new InternalServerErrorException('Error al listar etiquetas');
+    }
   }
 }
