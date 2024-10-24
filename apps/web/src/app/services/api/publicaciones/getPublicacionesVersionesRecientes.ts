@@ -1,9 +1,9 @@
 // /apps/web/src/services/api/publicaciones/getPublicacionesVersionesRecientes.ts
-import axios from 'axios';
+import axiosInstance from "@web/src/app/services/axiosInstance";
 import { Publicacion, Response } from "@web/types";
 
 const getPublicacionesVersionesRecientes = async (): Promise<Response<Publicacion[]>> => {
-  const response: Response<Publicacion[]> = await axios.get("/publicaciones/versionesRecientes");
+  const response: Response<Publicacion[]> = await axiosInstance.get("/publicaciones/versionesRecientes");
   return response;
 };
 
