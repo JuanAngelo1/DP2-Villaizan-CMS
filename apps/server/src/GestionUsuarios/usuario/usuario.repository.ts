@@ -75,4 +75,16 @@ export class UsuarioRepository {
       },
     });
   }
+
+  async updateRole(id: string, roleId: string): Promise<vi_usuario> {
+    const user = await this.prisma.vi_usuario.update({
+      where: {
+        id,
+      },
+      data: {
+        id_rol: roleId,
+      },
+    });
+    return user;
+  }
 }

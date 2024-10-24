@@ -74,7 +74,7 @@ export type Usuario = {
   nombre: string;
   apellido: string;
   correo: string;
-  id_rol: number;
+  id_rol: string;
   creadoen: Date;
   //!TODO -> Añadir los campos faltantes
 };
@@ -86,4 +86,12 @@ export type Comentario = {
   id: number;
   publicacion: Publicacion;
   usuario: Usuario;
+};
+
+export type Rol = {
+  id: string;
+  nombre: string;
+  actualizadoen: Date;
+  eliminadoen: Date | null;
+  estaactivo: true;
 };
