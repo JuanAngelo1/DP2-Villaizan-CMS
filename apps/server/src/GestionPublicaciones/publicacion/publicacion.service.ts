@@ -124,6 +124,20 @@ export class PublicacionService {
             },
           },
         },
+        vi_version_publicacion: {  // Incluir vi_version_publicacion
+          select: {
+            id: true,
+            id_estado: true,
+            titulo: true,
+            urlimagen: true,
+            descripcionseo: true,
+            slug: true,
+            richtext: true, // Incluir el nuevo campo richtext
+            fechacreacion: true,
+            fechaultimamodificacion: true,
+            estaactivo: true,
+          },
+        },
       },
     });
   
@@ -343,6 +357,7 @@ export class PublicacionService {
                 id: true,
                 titulo: true,
                 slug: true,
+                richtext: true,
                 descripcionseo: true,
                 fechaultimamodificacion: true,
                 id_estado: true,  // Podrías incluir el estado de la versión
