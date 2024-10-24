@@ -3,9 +3,9 @@
 import { AuthError } from "next-auth";
 import { signIn, signOut } from "next-auth/react";
 
-export async function handleCredentialsSignIn({ email, password }: { email: string; password: string }) {
+export async function handleCredentialsSignIn({ email, password, redirectTo = "/" }: { email: string; password: string; redirectTo?: string }) {
   try {
-    await signIn("credentials", { email, password, redirect: true, redirectTo: "/" });
+    await signIn("credentials", { email, password, redirect: true, redirectTo });
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -26,4 +26,3 @@ export async function handleCredentialsSignIn({ email, password }: { email: stri
 export async function handleSignOut() {
   await signOut();
 }
-

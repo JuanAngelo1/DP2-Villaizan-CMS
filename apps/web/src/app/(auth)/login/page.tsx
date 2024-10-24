@@ -2,7 +2,7 @@
 
 import { handleCredentialsSignIn } from "@web/src/app/actions/authActions";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
@@ -18,10 +18,19 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const router = useRouter(); // Correct hook from next/navigation
+  const redirect = searchParams.get("redirect");
+
   const onLogin = async ({ email, password }: { email: string; password: string }) => {
     try {
       setIsLoading(true);
-      const result = await handleCredentialsSignIn({ email, password });
+      const result = await handleCredentialsSignIn({ email, password, redirectTo: redirect as string || '/' });
+      if (result?.message) {
+        // Handle error message
+      } else {
+        // Redirect to the specified URL or default to "/"
+        router.push(redirect as string || '/'); // Correct usage of router.push
+      }
     } catch (error) {
       console.log("An unexpected error ocurred. Please try again.");
     }
