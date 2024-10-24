@@ -1,20 +1,21 @@
 // /services/api/publicaciones/createPublicacion.ts
 import axiosInstance from "@web/src/app/services/axiosInstance";
-import { Categoria, Etiqueta, Publicacion, TipoPublicacion, Usuario } from "@web/types";
 
 interface CreatePublicacionPayload {
   titulo: string;
-  descripcionseo: string;
-  richtext: string;
+  urlimagen?: string;
+  descripcionSEO?: string;
+  fechapublicacion?: Date;
   slug: string;
-  id_tipo_publicacion: TipoPublicacion["id"];
-  id_usuario: Usuario["id"];
-  categorias: Categoria[];
-  etiquetas: Etiqueta[];
+  richtext: string;
+  id_tipopublicacion: number;
+  id_usuario: string;
+  categorias: string[];
+  etiquetas: string[];
 }
 
-const createPublicacion = async (payload: CreatePublicacionPayload): Promise<Response> => {
-  const response: Response = await axiosInstance.post("/publicaciones/crearPubliacion", payload);
+const createPublicacion = async (payload: any): Promise<Response> => {
+  const response: Response = await axiosInstance.post("/publicaciones/crearPublicacion", payload);
   return response;
 };
 

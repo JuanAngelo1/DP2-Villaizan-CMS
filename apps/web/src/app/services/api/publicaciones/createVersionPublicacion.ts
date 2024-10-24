@@ -6,6 +6,7 @@ interface CreateVersionPayload {
   id_publicacion: number;
   id_estado: number;
   titulo: string;
+  richtext: string;
   urlimagen?: string;
   descripcionseo?: string;
   slug?: string;

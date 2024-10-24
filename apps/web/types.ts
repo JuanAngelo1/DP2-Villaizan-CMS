@@ -31,10 +31,10 @@ export type Publicacion = {
   estaactivo: boolean;
   archivado?: boolean;
   tipo_publicacion?: TipoPublicacion | null;
-  usuario?: Usuario | null;
+  id_usuario?: string | null;
   comentarios: Comentario[];
-  categorias: Categoria[];
-  etiquetas: Etiqueta[];
+  
+  fecha_creacion: string;
   vi_version_publicacion: VersionPublicacion[];
 };
 
@@ -53,10 +53,13 @@ export type VersionPublicacion = {
   urlimagen?: string | null;
   descripcionseo?: string | null;
   slug?: string | null;
+  richtext: string;
   fechacreacion: string;
   fechaultimamodificacion: string;
   estaactivo?: boolean | null;
   estado_version: EstadoVersion;
+  categorias: string[];
+  etiquetas: string[];
   publicacion: Publicacion;
 };
 

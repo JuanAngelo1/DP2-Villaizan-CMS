@@ -26,7 +26,7 @@ const PublicacionItem: React.FC<PublicacionItemProps> = ({ publicacion, onEdit }
             ? formatDate(publicacion.vi_version_publicacion[0].fechaultimamodificacion)
             : "Sin Fecha"}
         </p>
-        <Button onClick={() => onEdit(publicacion.id)} variant="ghost">
+        <Button onClick={() => onEdit(Number(publicacion.id))} variant="ghost">
           <Ellipsis className="h-4 w-4" />
         </Button>
       </CardContent>
