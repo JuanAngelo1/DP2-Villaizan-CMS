@@ -7,7 +7,14 @@ export class UsuarioRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<vi_usuario[]> {
-    return this.prisma.vi_usuario.findMany();
+    return this.prisma.vi_usuario.findMany({
+      where: {
+        estaactivo: true,
+      },
+      orderBy: {
+        creadoen: 'desc',
+      },
+    });
   }
 
   async findById(id: string): Promise<vi_usuario | null> {
