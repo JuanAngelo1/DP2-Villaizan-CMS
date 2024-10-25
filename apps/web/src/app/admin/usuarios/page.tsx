@@ -8,10 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@repo/ui/components/breadcrumb";
-import { Input } from "@repo/ui/components/input";
-import { Separator } from "@repo/ui/components/separator";
-import SectionWrapper from "../contenido/_components/general_components/SectionWrapper";
-import TopHeader from "../contenido/_components/general_components/TopHeader";
 import Usuarios from "../contenido/_components/usuarios";
 
 function Page() {

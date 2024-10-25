@@ -34,7 +34,7 @@ export class EtiquetaController {
       throw new HttpException(
         {
           status: 'Error',
-          message: 'Internal Server Error',
+          message: err.message,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );

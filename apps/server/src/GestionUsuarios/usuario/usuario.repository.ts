@@ -23,6 +23,17 @@ export class UsuarioRepository {
     return user;
   }
 
+  async deleteById(id: string): Promise<void> {
+    await this.prisma.vi_usuario.update({
+      where: {
+        id,
+      },
+      data: {
+        estaactivo: false,
+      },
+    });
+  }
+
   async findByEmail(email: string): Promise<vi_usuario | null> {
     const user = await this.prisma.vi_usuario.findUnique({
       where: {
