@@ -13,6 +13,8 @@ function UsuarioTableRow({
   openEditSheet,
   updateRol,
   roles,
+  setDelUsuario,
+  setDeleteModalOpen,
 }: {
   usuario: Usuario;
   setUsuarios: (usuario: Usuario) => void;
@@ -20,6 +22,8 @@ function UsuarioTableRow({
   openEditSheet: (usuario: Usuario) => void;
   updateRol: (newUsuario: Usuario) => void;
   roles: Rol[];
+  setDelUsuario: (usuario: Usuario) => void;
+  setDeleteModalOpen: (open: boolean) => void;
 }) {
   const { id, nombre, correo, id_rol, creadoen } = usuario;
 
@@ -28,8 +32,6 @@ function UsuarioTableRow({
     updateRol({ ...usuario, id_rol: newRolId }); // Llamamos a la función para actualizar el rol en el servidor
   };
 
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [delUsuario, setDelUsuario] = useState<Usuario | null>(null);
   return (
     <>
       <section key={id} className="flex items-center rounded-md border px-4 py-3">

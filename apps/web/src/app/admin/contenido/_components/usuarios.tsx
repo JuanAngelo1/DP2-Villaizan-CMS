@@ -9,6 +9,7 @@ import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { cn } from "@repo/ui/lib/utils";
+import DialogDelete from "./general_components/DialogDelete";
 import MainContent from "./general_components/MainContent";
 import SectionWrapper from "./general_components/SectionWrapper";
 import TopHeader from "./general_components/TopHeader";
@@ -30,6 +31,9 @@ function Usuarios() {
   const [roles, setRoles] = useState<Rol[]>([]);
   const [currUsuario, setCurrUsuario] = useState<Usuario>(initUsuario);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState<boolean>(false);
+  const [delUsuario, setDelUsuario] = useState<Usuario | null>(null);
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
     usePagination<Usuario>({
@@ -101,6 +105,21 @@ function Usuarios() {
     setCurrUsuario(usuario);
     setIsEditSheetOpen(true);
   }, []);
+
+  const deleteUsuario = async (usuario: Usuario | null) => {
+    if (!usuario) return;
+
+    const response: Response<null> = await axios.delete(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/${usuario.id}`
+    );
+
+    if (response.data.status === "Error") throw new Error(response.data.message);
+
+    const newUsuarios = usuarios.filter((_usuario) => _usuario.id !== usuario.id);
+    setUsuarios(newUsuarios);
+
+    setDelUsuario(null);
+  };
 
   return (
     <>
@@ -176,6 +195,8 @@ function Usuarios() {
                     }}
                     updateRol={(updatedUsuario) => updateRolUsuario(updatedUsuario)}
                     roles={roles}
+                    setDelUsuario={setDelUsuario}
+                    setDeleteModalOpen={setDeleteModalOpen}
                   />
                 ))}
               </section>
@@ -211,6 +232,13 @@ function Usuarios() {
           onAction={() => updateRolUsuario(currUsuario)}
           roles={roles}
           rolMap={rolMap}
+        />
+        <DialogDelete
+          open={deleteModalOpen}
+          onOpenChange={setDeleteModalOpen}
+          onAction={() => deleteUsuario(delUsuario)}
+          title="¿Estás absolutamente seguro?"
+          description="Esta acción no se puede deshacer. Esto eliminará permanentemente al usuario."
         />
       </SectionWrapper>
     </>

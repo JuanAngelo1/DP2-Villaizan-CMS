@@ -7,7 +7,14 @@ export class UsuarioRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(): Promise<vi_usuario[]> {
-    return this.prisma.vi_usuario.findMany();
+    return this.prisma.vi_usuario.findMany({
+      where: {
+        estaactivo: true,
+      },
+      orderBy: {
+        creadoen: 'desc',
+      },
+    });
   }
 
   async findById(id: string): Promise<vi_usuario | null> {
@@ -21,6 +28,17 @@ export class UsuarioRepository {
       throw new NotFoundException('Usuario no encontrado');
     }
     return user;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.prisma.vi_usuario.update({
+      where: {
+        id,
+      },
+      data: {
+        estaactivo: false,
+      },
+    });
   }
 
   async findByEmail(email: string): Promise<vi_usuario | null> {
