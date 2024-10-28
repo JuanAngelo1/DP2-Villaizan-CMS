@@ -32,14 +32,9 @@ function Usuarios() {
   const [currUsuario, setCurrUsuario] = useState<Usuario>(initUsuario);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState<boolean>(false);
   const [delUsuario, setDelUsuario] = useState<Usuario | null>(null);
+  const [search, setSearch] = useState<string>("");
 
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
-
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Usuario>({
-      items: usuarios,
-      startingEntriesPerPage: 10,
-    });
 
   useEffect(() => {
     async function fetchData() {
@@ -121,11 +116,31 @@ function Usuarios() {
     setDelUsuario(null);
   };
 
+  const filteredUsuarios = useMemo(() => {
+    return usuarios.filter(
+      (usuario) =>
+        usuario.nombre?.toLowerCase().includes(search.toLowerCase()) ||
+        usuario.apellido?.toLowerCase().includes(search.toLowerCase()) ||
+        usuario.correo?.toLowerCase().includes(search.toLowerCase()) ||
+        rolMap[usuario.id_rol]?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [usuarios, search, rolMap]);
+
+  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
+    usePagination<Usuario>({
+      items: filteredUsuarios,
+      startingEntriesPerPage: 10,
+    });
   return (
     <>
       <SectionWrapper>
         <TopHeader>
-          <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+          <Input
+            placeholder="Buscar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 lg:w-fit"
+          />
           <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
             <p>Mostrando</p>
             <Input

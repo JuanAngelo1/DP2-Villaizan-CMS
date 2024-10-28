@@ -36,6 +36,7 @@ export class UsuarioController {
         result: result,
       });
     } catch (err) {
+      console.log(err);
       return response.status(500).json({
         status: 'Error',
         message: 'Error al obtener los usuarios',
