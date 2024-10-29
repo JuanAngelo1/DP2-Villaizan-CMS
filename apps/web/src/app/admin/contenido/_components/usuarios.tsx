@@ -146,16 +146,7 @@ function Usuarios() {
             <Input
               className="h-[30px] w-[40px] px-0 text-center"
               value={entriesPerPage}
-              onChange={(e) => {
-                if (e.target.value === "") {
-                  setEntriesPerPage(0);
-                  return;
-                }
-                if (isNaN(parseInt(e.target.value))) return;
-                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-
-                setEntriesPerPage(parseInt(e.target.value));
-              }}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
             />
             <p>por página</p>
           </div>

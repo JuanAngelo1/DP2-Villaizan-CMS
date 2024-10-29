@@ -25,11 +25,21 @@ function ComentariosListView() {
   const searchParams = useSearchParams();
   const prev_view = searchParams.get("view");
   const view = prev_view === null || !["all", "post"].includes(prev_view) ? "all" : prev_view;
+  const [searchValue, setSearchValues] = useState<string>("");
+
+  useEffect(() => {
+    setSearchValues("");
+  }, [view]);
 
   return (
     <>
       <TopHeader>
-        <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+        <Input
+          placeholder="Buscar..."
+          className="flex-1 lg:w-fit"
+          value={searchValue}
+          onChange={(e) => setSearchValues(e.target.value)}
+        />
         <Tabs value={view}>
           <TabsList>
             <Link
@@ -56,7 +66,11 @@ function ComentariosListView() {
         </Tabs>
       </TopHeader>
 
-      {view === "all" ? <ViewAllComentarios /> : <ViewPerPostComentarios />}
+      {view === "all" ? (
+        <ViewAllComentarios searchValue={searchValue} />
+      ) : (
+        <ViewPerPostComentarios searchValue={searchValue} />
+      )}
     </>
   );
 }

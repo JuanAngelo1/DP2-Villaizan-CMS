@@ -186,3 +186,12 @@ CREATE TABLE vi_version_publicacion (
     CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
     CONSTRAINT fk_estado_version FOREIGN KEY (id_estado) REFERENCES vi_estado_version(id)
 );
+
+CREATE TABLE vi_preguntas_frecuentes (
+    id SERIAL PRIMARY KEY,
+    pregunta TEXT,
+    respuest TEXT,
+    fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    estaactivo BOOLEAN DEFAULT TRUE
+);

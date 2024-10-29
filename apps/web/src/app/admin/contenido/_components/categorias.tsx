@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/pop
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { cn } from "@repo/ui/lib/utils";
 import SheetCategoria from "./categorias_components/SheetCategoria";
+import ContentFooter from "./general_components/ContentFooter";
 import DialogDelete from "./general_components/DialogDelete";
 import MainContent from "./general_components/MainContent";
 import SectionWrapper from "./general_components/SectionWrapper";
@@ -27,8 +28,29 @@ const initCategoria: Categoria = {
 function Categorias() {
   const [isLoading, setIsLoading] = useState(false);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Categoria>({ items: categorias, startingEntriesPerPage: 10 });
+  const [searchValue, setSearchValue] = useState<string>("");
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+    totalPages,
+    prevPage,
+    nextPage,
+  } = usePagination<Categoria>({
+    items: categorias,
+    startingEntriesPerPage: 10,
+    filters: [searchValue],
+    filterFunction: (item: Categoria) => {
+      return (
+        item.nombre.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.descripcion.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    },
+  });
 
   const [isNewSheetOpen, setIsNewSheetOpen] = useState(false);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
@@ -134,22 +156,18 @@ function Categorias() {
     <>
       <SectionWrapper>
         <TopHeader>
-          <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+          <Input
+            placeholder="Buscar..."
+            className="flex-1 lg:w-fit"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
           <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
             <p>Mostrando</p>
             <Input
               className="h-[30px] w-[40px] px-0 text-center"
               value={entriesPerPage}
-              onChange={(e) => {
-                if (e.target.value === "") {
-                  setEntriesPerPage(0);
-                  return;
-                }
-                if (isNaN(parseInt(e.target.value))) return;
-                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-
-                setEntriesPerPage(parseInt(e.target.value));
-              }}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
             />
             <p className="">por página</p>
           </div>
@@ -216,25 +234,16 @@ function Categorias() {
                   );
                 })}
               </section>
-              <section className="flex flex-row items-center justify-between">
-                <div className="flex items-center gap-1 text-sm">
-                  <span className="hidden sm:flex">Mostrando </span>
-                  <span className="font-bold">{`${(page - 1) * entriesPerPage + 1}-${page * entriesPerPage > categorias.length ? categorias.length : page * entriesPerPage}`}</span>{" "}
-                  de <span className="font-bold">{categorias.length}</span> categorías
-                </div>
-                <div className="space-x-2">
-                  <Button variant={"secondary"} onClick={prevPage} disabled={page === 1}>
-                    Anterior
-                  </Button>
-                  <Button
-                    variant={"secondary"}
-                    onClick={nextPage}
-                    disabled={page === totalPages || totalPages === 0}
-                  >
-                    Siguiente
-                  </Button>
-                </div>
-              </section>
+              <ContentFooter
+                page={page}
+                totalPages={totalPages}
+                allFilteredItems={allFilteredItems}
+                indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+                indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
+                prevPage={prevPage}
+                nextPage={nextPage}
+                itemName="categorías"
+              />
             </>
           )}
         </MainContent>
