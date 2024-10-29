@@ -25,6 +25,7 @@ const initUsuario: Usuario = {
   id_rol: "",
   creadoen: new Date(),
 };
+
 function Usuarios() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
