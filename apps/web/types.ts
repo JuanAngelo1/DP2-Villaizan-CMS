@@ -33,7 +33,7 @@ export type Publicacion = {
   tipo_publicacion?: TipoPublicacion | null;
   id_usuario?: string | null;
   comentarios: Comentario[];
-  
+
   fecha_creacion: string;
   vi_version_publicacion: VersionPublicacion[];
 };
@@ -97,4 +97,12 @@ export type Rol = {
   actualizadoen: Date;
   eliminadoen: Date | null;
   estaactivo: true;
+};
+
+export type FAQ = {
+  id: string;
+  pregunta: string;
+  respuesta: string;
+  estaactivo: boolean;
+  creadoen: Date;
 };
