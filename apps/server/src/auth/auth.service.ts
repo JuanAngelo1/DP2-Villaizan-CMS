@@ -88,7 +88,7 @@ export class AuthService {
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
         <h2 style="color: black;">Hola, ${nombre}!</h2>
         <p>Recibimos una solicitud para restablecer tu contraseña. Haz clic en el botón de abajo para cambiarla:</p>
-        <a href="http://localhost:3000/recuperar-contrasena?token=${resetToken}&id=${id_usuario}" style="display: inline-block; padding: 10px 20px; background-color: rgb(153, 27, 27); color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">Cambiar Contraseña</a>
+        <a href="${process.env.NEXT_PUBLIC_API_URL}/recuperar-contrasena?token=${resetToken}&id=${id_usuario}" style="display: inline-block; padding: 10px 20px; background-color: rgb(153, 27, 27); color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">Cambiar Contraseña</a>
         <p style="margin-top: 20px;">Si no solicitaste este cambio, puedes ignorar este correo.</p>
         <p>Este enlace es válido por 2 minutos.</p>
         <p style="margin-top: 30px;">Saludos,<br>El equipo de soporte</p>
