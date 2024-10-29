@@ -2,20 +2,38 @@ import usePagination from "@web/hooks/usePagination";
 import { Comentario, Response } from "@web/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { buttonVariants } from "@repo/ui/components/button";
 import { CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
+import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
+import { cn } from "@repo/ui/lib/utils";
 import ContentFooter from "../general_components/ContentFooter";
 import MainContent from "../general_components/MainContent";
 import ComentarioCard from "./ComentarioCard";
-import { cn } from "@repo/ui/lib/utils";
-import { buttonVariants } from "@repo/ui/components/button";
-import { Input } from "@repo/ui/components/input";
 
-function ViewAllComentarios() {
+function ViewAllComentarios({ searchValue }: { searchValue: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Comentario>({ items: comentarios, startingEntriesPerPage: 10 });
+
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+    totalPages,
+    prevPage,
+    nextPage,
+  } = usePagination<Comentario>({
+    items: comentarios,
+    startingEntriesPerPage: 10,
+    filters: [searchValue],
+    filterFunction: (item: Comentario) => {
+      return item.comentario.toLowerCase().includes(searchValue.toLowerCase());
+    },
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -54,15 +72,7 @@ function ViewAllComentarios() {
             <Input
               className="h-[30px] w-[40px] px-0 text-center"
               value={entriesPerPage}
-              onChange={(e) => {
-                if (e.target.value === "") {
-                  setEntriesPerPage(0);
-                  return;
-                }
-                if (isNaN(parseInt(e.target.value))) return;
-                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-                setEntriesPerPage(parseInt(e.target.value));
-              }}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
             />
             <p className="">por página</p>
           </div>
@@ -96,16 +106,18 @@ function ViewAllComentarios() {
               );
             })
           : currentPageItems.map((comentario) => {
-              return <ComentarioCard comentario={comentario} key={comentario.id} showPublicacionData/>;
+              return <ComentarioCard comentario={comentario} key={comentario.id} showPublicacionData />;
             })}
       </section>
       <ContentFooter
         page={page}
-        entriesPerPage={entriesPerPage}
         totalPages={totalPages}
-        items={comentarios}
+        allFilteredItems={allFilteredItems}
+        indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+        indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
         prevPage={prevPage}
         nextPage={nextPage}
+        itemName="comentarios"
       />
     </MainContent>
   );
