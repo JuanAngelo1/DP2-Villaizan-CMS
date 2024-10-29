@@ -130,6 +130,7 @@ export class AuthService {
         message: 'Token generado exitosamente',
       };
     } catch (error) {
+      console.error(error);
       throw error;
     }
   }
