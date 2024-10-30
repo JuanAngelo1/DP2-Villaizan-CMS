@@ -190,7 +190,7 @@ CREATE TABLE vi_version_publicacion (
 CREATE TABLE vi_preguntas_frecuentes (
     id SERIAL PRIMARY KEY,
     pregunta TEXT,
-    respuest TEXT,
+    respuesta TEXT,
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     estaactivo BOOLEAN DEFAULT TRUE
