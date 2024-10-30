@@ -26,45 +26,62 @@ export class FrutasService {
     }
 
     async getFrutaById(id: string) {
-        return await this.prisma.vi_fruta.findUnique({
+      return await this.prisma.vi_fruta.findUnique({
           where: { id },
           select: {
-            id: true,
-            nombre: true,
-            urlimagen: true,
-            descripcion: true,
-            informacioneducativa: true,
-
-            vi_producto_fruta: {
-
-              select: {
-                vi_producto: {
+              id: true,
+              nombre: true,
+              urlimagen: true,
+              descripcion: true,
+              informacioneducativa: true,
+              
+              vi_producto_fruta: {
                   select: {
-                    id: true,
-                    nombre: true,
-                    urlimagen: true,
-                    precioecommerce: true,
-                    descripcion: true,
-
-                    vi_promocion: {
-                      where: {
-                        estado: true,
-                        fechainicio: { lte: new Date() },
-                        fechafin: { gte: new Date() },
+                      vi_producto: {
+                          select: {
+                              id: true,
+                              nombre: true,
+                              urlimagen: true,
+                              precioecommerce: true,
+                              descripcion: true,
+                              
+                              vi_promocion: {
+                                  where: {
+                                      estado: true,
+                                      fechainicio: { lte: new Date() },
+                                      fechafin: { gte: new Date() },
+                                  },
+                                  select: {
+                                      id: true,
+                                      titulo: true,
+                                      porcentajedescuento: true,
+                                  },
+                              },
+  
+                              // Añadir los combos por producto
+                              vi_combo_x_producto: {
+                                  select: {
+                                      vi_combo: {
+                                          select: {
+                                              id: true,
+                                              titulo: true,
+                                              descripcion: true,
+                                              precio: true,
+                                              fechainicio: true,
+                                              fechafin: true,
+                                          },
+                                      },
+                                      cantidad: true,
+                                  },
+                              },
+                          },
                       },
-                      select: {
-                        id: true,
-                        titulo: true,
-                        porcentajedescuento: true,
-                      },
-                    },
                   },
-                },
               },
-            },
           },
-        });
-      }
+      });
+  }
+  
       
 
 }
