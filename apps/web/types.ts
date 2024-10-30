@@ -102,7 +102,8 @@ export type Rol = {
 export type FAQ = {
   id: string;
   pregunta: string;
-  respuesta: string;
+  respuest: string;
+  fechacreacion: Date;
+  fechaultimamodificacion: Date;
   estaactivo: boolean;
-  creadoen: Date;
 };
