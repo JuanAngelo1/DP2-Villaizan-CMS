@@ -40,4 +40,27 @@ export class FrutasController {
       }
     }
 
+    @Get(':id')
+    async getFrutaById(
+    @Param('id') id: string,
+    @Req() request: Request,
+    @Res() response: Response
+    ): Promise<any> {
+        try{
+            const result= await this.frutasService.getFrutaById(id);
+            return response.status(200).json({
+                status: 'Success',
+                message: 'Frutas encontrada',
+                result: result,
+              });
+        }catch (err) {
+            return response.status(500).json({
+              status: 'Error',
+              message: 'Error al encontrar fruta con id: '+id,
+              result: [],
+            });
+          }
+      
+    }
+
 }
