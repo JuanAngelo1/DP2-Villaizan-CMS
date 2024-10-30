@@ -1,29 +1,39 @@
 // /apps/web/src/admin/contenido/_components/PublicacionesListView.tsx
-import React from 'react';
-import usePublicaciones from '@web/src/app/services/api/publicaciones/hooks/usePublicacionesVersionesRecientes';
-import { Publicacion } from '@web/types';
-import { Button } from '@repo/ui/components/button';
-import { Ellipsis, Plus } from 'lucide-react';
-import { Input } from '@repo/ui/components/input';
-import { Skeleton } from '@repo/ui/components/skeleton';
-import { cn } from '@repo/ui/lib/utils';
-import { buttonVariants } from '@repo/ui/components/button';
-import { CardDescription, CardHeader, CardTitle } from '@repo/ui/components/card';
-import { formatDate } from '@web/utils/date';
 import usePagination from "@web/hooks/usePagination";
-import ContentFooter from '../general_components/ContentFooter';
-import MainContent from '../general_components/MainContent';
-import TopHeader from '../general_components/TopHeader';
-import PublicacionItem from './PublicacionItem';
+import usePublicaciones from "@web/src/app/services/api/publicaciones/hooks/usePublicaciones";
+import { Publicacion } from "@web/types";
+import { formatDate } from "@web/utils/date";
+import { Ellipsis, Plus } from "lucide-react";
+import React from "react";
+import { Button } from "@repo/ui/components/button";
+import { buttonVariants } from "@repo/ui/components/button";
+import { CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
+import { Input } from "@repo/ui/components/input";
+import { Skeleton } from "@repo/ui/components/skeleton";
+import { cn } from "@repo/ui/lib/utils";
+import ContentFooter from "../general_components/ContentFooter";
+import MainContent from "../general_components/MainContent";
+import TopHeader from "../general_components/TopHeader";
+import PublicacionItem from "./PublicacionItem";
 
 interface PublicacionesListViewProps {
-  changeType: (type: string | null) => void;
+  changeType: (type: string | null, id?: string | null) => void;
 }
 
 const PublicacionesListView: React.FC<PublicacionesListViewProps> = ({ changeType }) => {
   const { publicaciones, isLoading, error } = usePublicaciones();
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Publicacion>({ items: publicaciones, startingEntriesPerPage: 10 });
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+    totalPages,
+    prevPage,
+    nextPage,
+  } = usePagination<Publicacion>({ items: publicaciones, startingEntriesPerPage: 10 });
 
   return (
     <>
@@ -49,15 +59,7 @@ const PublicacionesListView: React.FC<PublicacionesListViewProps> = ({ changeTyp
               <Input
                 className="h-[30px] w-[40px] px-0 text-center"
                 value={entriesPerPage}
-                onChange={(e) => {
-                  if (e.target.value === "") {
-                    setEntriesPerPage(0);
-                    return;
-                  }
-                  if (isNaN(parseInt(e.target.value))) return;
-                  if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-                  setEntriesPerPage(parseInt(e.target.value));
-                }}
+                onChange={(e) => setEntriesPerPage(e.target.value)}
               />
               <p className="">por página</p>
             </div>
@@ -73,39 +75,51 @@ const PublicacionesListView: React.FC<PublicacionesListViewProps> = ({ changeTyp
                   <Skeleton className="w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
                 </div>
                 <div className="flex flex-1">
-                  <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                  <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">
+                    .
+                  </Skeleton>
                 </div>
                 <div className="flex flex-1">
-                  <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                  <Skeleton className="mx-auto w-[200px] rounded-3xl font-normal text-transparent">
+                    .
+                  </Skeleton>
                 </div>
                 <div className="flex flex-1">
-                  <Skeleton className="ml-auto w-[200px] rounded-3xl font-normal text-transparent">.</Skeleton>
+                  <Skeleton className="ml-auto w-[200px] rounded-3xl font-normal text-transparent">
+                    .
+                  </Skeleton>
                 </div>
               </div>
             ))
           ) : publicaciones.length > 0 ? (
             // Renderiza la lista de publicaciones
             publicaciones.map((publicacion) => (
-              <PublicacionItem key={publicacion.id} publicacion={publicacion} onEdit={(id) => changeType(`edit`)} />
+              <PublicacionItem
+                key={publicacion.id}
+                publicacion={publicacion}
+                onEdit={() => changeType("edit", publicacion.id)}
+              />
             ))
           ) : (
             // Renderiza el mensaje cuando no hay publicaciones
-            <CardDescription className='h-full flex items-center justify-center'>
+            <CardDescription className="flex h-full items-center justify-center">
               No se han encontrado publicaciones.
             </CardDescription>
           )}
         </section>
         <ContentFooter
           page={page}
-          entriesPerPage={entriesPerPage}
           totalPages={totalPages}
-          items={publicaciones}
+          allFilteredItems={allFilteredItems}
+          indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+          indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
           prevPage={prevPage}
           nextPage={nextPage}
+          itemName="categorías"
         />
       </MainContent>
     </>
   );
-}
+};
 
 export default PublicacionesListView;

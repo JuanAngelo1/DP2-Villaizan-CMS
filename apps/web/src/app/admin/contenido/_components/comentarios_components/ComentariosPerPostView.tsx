@@ -1,6 +1,8 @@
 import usePagination from "@web/hooks/usePagination";
 import { Comentario, Publicacion, Response } from "@web/types";
 import axios from "axios";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
@@ -11,8 +13,6 @@ import { cn } from "@repo/ui/lib/utils";
 import ContentFooter from "../general_components/ContentFooter";
 import MainContent from "../general_components/MainContent";
 import ComentarioCard from "./ComentarioCard";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 
 function ComentariosPerPostView({ id }: { id: string | null }) {
   const router = useRouter();
@@ -20,8 +20,27 @@ function ComentariosPerPostView({ id }: { id: string | null }) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Comentario>({ items: comentarios, startingEntriesPerPage: 10 });
+
+  const [searchValue, setSearchValue] = useState<string>("");
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+    totalPages,
+    prevPage,
+    nextPage,
+  } = usePagination<Comentario>({
+    items: comentarios,
+    startingEntriesPerPage: 10,
+    filters: [searchValue],
+    filterFunction: (item: Comentario) => {
+      return item.comentario.toLowerCase().includes(searchValue.toLowerCase());
+    },
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -52,7 +71,7 @@ function ComentariosPerPostView({ id }: { id: string | null }) {
     <>
       <MainContent
         titleSlot={
-          <CardHeader className="flex flex-row justify-between pb-4 items-start">
+          <CardHeader className="flex flex-row items-start justify-between pb-4">
             <div className="flex flex-col items-start space-y-1.5">
               <div className="flex flex-row gap-2">
                 <Link
@@ -67,22 +86,14 @@ function ComentariosPerPostView({ id }: { id: string | null }) {
                 Visualiza los comentarios realizados por los usuarios en esta publicación particular.
               </CardDescription>
             </div>
-            
-            <div className="flex items-center gap-1 ">
+
+            <div className="flex items-center gap-1">
               <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
                 <p>Mostrando</p>
                 <Input
                   className="h-[30px] w-[40px] px-0 text-center"
                   value={entriesPerPage}
-                  onChange={(e) => {
-                    if (e.target.value === "") {
-                      setEntriesPerPage(0);
-                      return;
-                    }
-                    if (isNaN(parseInt(e.target.value))) return;
-                    if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-                    setEntriesPerPage(parseInt(e.target.value));
-                  }}
+                  onChange={(e) => setEntriesPerPage(e.target.value)}
                 />
                 <p className="">por página</p>
               </div>
@@ -123,11 +134,13 @@ function ComentariosPerPostView({ id }: { id: string | null }) {
         </section>
         <ContentFooter
           page={page}
-          entriesPerPage={entriesPerPage}
           totalPages={totalPages}
-          items={comentarios}
+          allFilteredItems={allFilteredItems}
+          indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+          indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
           prevPage={prevPage}
           nextPage={nextPage}
+          itemName="comentarios"
         />
       </MainContent>
     </>

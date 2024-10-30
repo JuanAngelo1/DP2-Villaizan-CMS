@@ -36,6 +36,7 @@ export class UsuarioController {
         result: result,
       });
     } catch (err) {
+      console.log(err);
       return response.status(500).json({
         status: 'Error',
         message: 'Error al obtener los usuarios',
@@ -66,6 +67,7 @@ export class UsuarioController {
         result: result,
       });
     } catch (err) {
+      console.log(err);
       return response.status(500).json({
         status: 'Error',
         message: 'Error al crear el usuario',
@@ -94,7 +96,7 @@ export class UsuarioController {
     });
   }
 
-  @Delete('eliminarUsuario/:id')
+  @Delete('/:id')
   async deleteUsuarioByID(
     @Param('id') id: string,
     @Res() response: Response,

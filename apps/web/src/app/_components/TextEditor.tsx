@@ -13,26 +13,15 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
 import History from "@tiptap/extension-history";
-import content from "../admin/contenido/_components/publicaciones_components/content";
-import { cn } from "@repo/ui/lib/utils"; // Asegúrate de que esta ruta sea correcta
-import { AlignCenterIcon, AlignJustifyIcon, AlignLeftIcon, AlignRightIcon, BoldIcon, Code2, ImageIcon, ItalicIcon, MinusIcon, PlusIcon, Redo2, Strikethrough, Trash2Icon, UnderlineIcon, Undo2, VideoIcon } from "lucide-react";
-import API from './api';  // aPI PARA SUBIR IMGS
+import { cn } from "@repo/ui/lib/utils";
+import { BoldIcon, Code2, ItalicIcon, Redo2, Strikethrough, UnderlineIcon, Undo2 } from "lucide-react";
 
-const CustomImage = Image.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      width: {
-        default: '300px',
-        renderHTML: (attributes) => ({
-          style: `width: ${attributes.width}; display: block; margin-left: auto; margin-right: auto;`, // Centrar la imagen
-        }),
-      },
-    };
-  },
-});
+interface TextEditorProps {
+  content: string;
+  onContentChange: (content: string) => any;
+}
 
-export default function TextEditor() {
+export default function TextEditor<T extends TextEditorProps>({ content, onContentChange }: T) {
   const editor = useEditor({
     extensions: [
       Document,
@@ -54,7 +43,10 @@ export default function TextEditor() {
       Strike,
       Code
     ],
-    content
+    content,
+    onUpdate(props) {
+      onContentChange(props.editor.getHTML());
+    },
   }) as Editor;
 
   const [modalIsOpen, setIsOpen] = useState(false);

@@ -9,9 +9,9 @@ import { Input } from "@repo/ui/components/input";
 import { Label } from "@repo/ui/components/label";
 import { Separator } from "@repo/ui/components/separator";
 import ErrorMessage from "../_components/ErrorMessage";
-import SuccessMessage from "../_components/SuccessMessage";
 import InputWithLabel from "../_components/InputWithLabel";
 import LogoBackHome from "../_components/LogoBackHome";
+import SuccessMessage from "../_components/SuccessMessage";
 
 function RegisterPage() {
   const router = useRouter();
@@ -54,13 +54,14 @@ function RegisterPage() {
       router.push("/login");
     } catch (error) {
       setError("Ups! Algo salió mal.");
+      console.log(error);
       setIsLoading(false);
     }
   };
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <LogoBackHome/>
+      <LogoBackHome />
       <p className="text-muted-foreground mt-3 text-sm">
         Ingresa tus datos para registrarte en la plataforma
       </p>
@@ -117,7 +118,5 @@ function RegisterPage() {
     </div>
   );
 }
-
-
 
 export default RegisterPage;

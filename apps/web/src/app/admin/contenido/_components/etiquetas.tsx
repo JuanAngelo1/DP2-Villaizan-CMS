@@ -12,6 +12,7 @@ import { Skeleton } from "@repo/ui/components/skeleton";
 import { cn } from "@repo/ui/lib/utils";
 import ChipEtiqueta from "./etiquetas_components/ChipEtiqueta";
 import SheetEtiqueta from "./etiquetas_components/SheetEtiqueta";
+import ContentFooter from "./general_components/ContentFooter";
 import DialogDelete from "./general_components/DialogDelete";
 import MainContent from "./general_components/MainContent";
 import SectionWrapper from "./general_components/SectionWrapper";
@@ -39,8 +40,29 @@ function Etiquetas() {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Etiqueta>({ items: etiquetas, startingEntriesPerPage: 10 });
+  const [searchValue, setSearchValue] = useState<string>("");
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+    totalPages,
+    prevPage,
+    nextPage,
+  } = usePagination<Etiqueta>({
+    items: etiquetas,
+    startingEntriesPerPage: 10,
+    filters: [searchValue],
+    filterFunction: (item: Etiqueta) => {
+      return (
+        item.nombre.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.descripcion.toLowerCase().includes(searchValue.toLowerCase())
+      );
+    },
+  });
 
   const openEditSheet = (etiqueta: Etiqueta) => {
     setCurrEtiqueta(etiqueta);
@@ -128,22 +150,18 @@ function Etiquetas() {
     <>
       <SectionWrapper>
         <TopHeader>
-          <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+          <Input
+            placeholder="Buscar..."
+            className="flex-1 lg:w-fit"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
           <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
             <p>Mostrando</p>
             <Input
               className="h-[30px] w-[40px] px-0 text-center"
               value={entriesPerPage}
-              onChange={(e) => {
-                if (e.target.value === "") {
-                  setEntriesPerPage(0);
-                  return;
-                }
-                if (isNaN(parseInt(e.target.value))) return;
-                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-
-                setEntriesPerPage(parseInt(e.target.value));
-              }}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
             />
             <p>por página</p>
           </div>
@@ -214,25 +232,16 @@ function Etiquetas() {
                   );
                 })}
               </section>
-              <section className="flex flex-row items-center justify-between">
-                <p className="text-sm">
-                  Mostrando{" "}
-                  <span className="font-bold">{`${(page - 1) * entriesPerPage + 1}-${page * entriesPerPage > etiquetas.length ? etiquetas.length : page * entriesPerPage}`}</span>{" "}
-                  de <span className="font-bold">{etiquetas.length}</span> etiquetas
-                </p>
-                <div className="space-x-2">
-                  <Button variant={"secondary"} onClick={prevPage} disabled={page === 1}>
-                    Anterior
-                  </Button>
-                  <Button
-                    variant={"secondary"}
-                    onClick={nextPage}
-                    disabled={page === totalPages || totalPages === 0}
-                  >
-                    Siguiente
-                  </Button>
-                </div>
-              </section>
+              <ContentFooter
+                page={page}
+                totalPages={totalPages}
+                allFilteredItems={allFilteredItems}
+                indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+                indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
+                prevPage={prevPage}
+                nextPage={nextPage}
+                itemName="etiquetas"
+              />
             </>
           )}
         </MainContent>

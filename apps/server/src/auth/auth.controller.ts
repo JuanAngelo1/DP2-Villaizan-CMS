@@ -1,4 +1,11 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthPayLoad } from './dto/auth.dto';
 import { RequestResetPasswordDto } from './dto/request-reset-password.dto';
@@ -18,7 +25,23 @@ export class AuthController {
   requestResetPassword(
     @Body() requestResetPasswordDto: RequestResetPasswordDto,
   ) {
-    return this.authService.requestResetPassword(requestResetPasswordDto);
+    try {
+      return this.authService.requestResetPassword(requestResetPasswordDto);
+    } catch (e) {
+      if (e instanceof NotFoundException) {
+        return {
+          status: 'Success',
+          message: 'Usuario no encontrado',
+        };
+      }
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Post('cambiarContrasena')

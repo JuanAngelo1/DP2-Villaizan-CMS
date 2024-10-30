@@ -35,10 +35,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const { pathname } = nextUrl;
 
       //! Fix this, middleware not working
-      console.log("==========================")
+      console.log("==========================");
       console.log("isLoggedIn: ", isLoggedIn);
       console.log("pathname: ", pathname);
-      console.log("==========================")
+      console.log("==========================");
 
       if (pathname.startsWith("/login") && isLoggedIn) {
         return Response.redirect(new URL("/", nextUrl));
@@ -47,8 +47,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return !!auth;
     },
   },
-    pages: {
-      signIn: "/login",
-      error: "/login",
-    },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
 });

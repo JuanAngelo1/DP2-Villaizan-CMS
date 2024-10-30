@@ -19,6 +19,12 @@ import { PermisoModule } from './GestionUsuarios/permiso/permiso.module';
 import { PermisoController } from './GestionUsuarios/permiso/permiso.controller';
 import { PermisoService } from './GestionUsuarios/permiso/permiso.service';
 import { ComentarioModule } from './GestionPublicaciones/comentario/comentario.module';
+import { FaqController } from './faq/faq.controller';
+import { FaqModule } from './faq/faq.module';
+import { FaqService } from './faq/faq.service';
+import { FrutasModule } from './Frutas/frutas.module';
+import { FrutasService } from './Frutas/frutas.service';
+import { FrutasController } from './Frutas/frutas.controller';
 
 @Module({
   imports: [
@@ -34,8 +40,10 @@ import { ComentarioModule } from './GestionPublicaciones/comentario/comentario.m
     RolModule,
     PermisoModule,
     ComentarioModule,
+    FaqModule,
+    FrutasModule,
   ],
-  controllers: [UsuarioController, ArchivoController, RolController,PermisoController],
-  providers: [UsuarioService, ArchivoService,RolService,PermisoService],
+  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController],
+  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService],
 })
 export class AppModule {}

@@ -78,12 +78,12 @@ export class UsuarioService {
     });
   }
 
-  async deleteUsuario(id: string): Promise<vi_usuario> {
-    return this.prisma.vi_usuario.delete({
-      where: {
-        id,
-      },
-    });
+  async deleteUsuario(id: string): Promise<void> {
+    try {
+      return this.usuarioRepository.deleteById(id);
+    } catch (error) {
+      throw new InternalServerErrorException('Error al borrar usuario');
+    }
   }
 
   async findByEmail(correo: string): Promise<vi_usuario | null> {
@@ -92,11 +92,6 @@ export class UsuarioService {
         correo,
       },
     });
-  }
-
-  async sendEmailRecoverPassword(data: UsuarioDto): Promise<any> {
-    // Send email logic
-    return data;
   }
 
   async updateRol(usuarioId: string, newRoleId: string): Promise<vi_usuario> {

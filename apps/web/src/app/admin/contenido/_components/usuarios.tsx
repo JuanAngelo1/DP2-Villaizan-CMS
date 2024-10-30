@@ -5,10 +5,14 @@ import { Response, Rol, Usuario } from "@web/types";
 import axios from "axios";
 import { useCallback, useMemo, useState } from "react";
 import { useEffect } from "react";
-import { Button } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
+import { cn } from "@repo/ui/lib/utils";
+import DialogDelete from "./general_components/DialogDelete";
 import MainContent from "./general_components/MainContent";
 import SectionWrapper from "./general_components/SectionWrapper";
+import TopHeader from "./general_components/TopHeader";
 import SheetUsuario from "./usuarios_components/SheetUsuario";
 import UsuarioTableRow from "./usuarios_components/UsuarioTableRow";
 import UsuariosTableHeader from "./usuarios_components/UsuariosTableHeader";
@@ -21,18 +25,17 @@ const initUsuario: Usuario = {
   id_rol: "",
   creadoen: new Date(),
 };
+
 function Usuarios() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [roles, setRoles] = useState<Rol[]>([]);
   const [currUsuario, setCurrUsuario] = useState<Usuario>(initUsuario);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState<boolean>(false);
+  const [delUsuario, setDelUsuario] = useState<Usuario | null>(null);
+  const [search, setSearch] = useState<string>("");
 
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Usuario>({
-      items: usuarios,
-      startingEntriesPerPage: 10,
-    });
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -99,9 +102,57 @@ function Usuarios() {
     setIsEditSheetOpen(true);
   }, []);
 
+  const deleteUsuario = async (usuario: Usuario | null) => {
+    if (!usuario) return;
+
+    const response: Response<null> = await axios.delete(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/${usuario.id}`
+    );
+
+    if (response.data.status === "Error") throw new Error(response.data.message);
+
+    const newUsuarios = usuarios.filter((_usuario) => _usuario.id !== usuario.id);
+    setUsuarios(newUsuarios);
+
+    setDelUsuario(null);
+  };
+
+  const filteredUsuarios = useMemo(() => {
+    return usuarios.filter(
+      (usuario) =>
+        usuario.nombre?.toLowerCase().includes(search.toLowerCase()) ||
+        usuario.apellido?.toLowerCase().includes(search.toLowerCase()) ||
+        usuario.correo?.toLowerCase().includes(search.toLowerCase()) ||
+        rolMap[usuario.id_rol]?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [usuarios, search, rolMap]);
+
+  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
+    usePagination<Usuario>({
+      items: filteredUsuarios,
+      startingEntriesPerPage: 10,
+    });
   return (
     <>
       <SectionWrapper>
+        <TopHeader>
+          <Input
+            placeholder="Buscar..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 lg:w-fit"
+          />
+          <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
+            <p>Mostrando</p>
+            <Input
+              className="h-[30px] w-[40px] px-0 text-center"
+              value={entriesPerPage}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
+            />
+            <p>por página</p>
+          </div>
+        </TopHeader>
+
         <MainContent
           title="Usuarios"
           description="Administra los usuarios del sistema y sus permisos correspondientes."
@@ -151,6 +202,8 @@ function Usuarios() {
                     }}
                     updateRol={(updatedUsuario) => updateRolUsuario(updatedUsuario)}
                     roles={roles}
+                    setDelUsuario={setDelUsuario}
+                    setDeleteModalOpen={setDeleteModalOpen}
                   />
                 ))}
               </section>
@@ -186,6 +239,13 @@ function Usuarios() {
           onAction={() => updateRolUsuario(currUsuario)}
           roles={roles}
           rolMap={rolMap}
+        />
+        <DialogDelete
+          open={deleteModalOpen}
+          onOpenChange={setDeleteModalOpen}
+          onAction={() => deleteUsuario(delUsuario)}
+          title="¿Estás absolutamente seguro?"
+          description="Esta acción no se puede deshacer. Esto eliminará permanentemente al usuario."
         />
       </SectionWrapper>
     </>

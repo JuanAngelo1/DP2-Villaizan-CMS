@@ -1,6 +1,7 @@
 import usePagination from "@web/hooks/usePagination";
 import { Publicacion, Response } from "@web/types";
 import axios from "axios";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { buttonVariants } from "@repo/ui/components/button";
 import { CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
@@ -8,11 +9,10 @@ import { Input } from "@repo/ui/components/input";
 import { cn } from "@repo/ui/lib/utils";
 import ContentFooter from "../general_components/ContentFooter";
 import MainContent from "../general_components/MainContent";
-import Link from "next/link";
 
 const mockPosts: Publicacion[] = [
   {
-    id: 1,
+    id: "1",
     titulo: "Post 1",
     descripcion: "Contenido del post 1",
     urlImagen: "https://via.placeholder.com/150",
@@ -37,12 +37,27 @@ const mockPosts: Publicacion[] = [
   },
 ];
 
-function ViewPerPostComentarios() {
+function ViewPerPostComentarios({ searchValue }: { searchValue: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const [publicaciones, setPublicaciones] = useState<Publicacion[]>([]);
 
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Publicacion>({ items: publicaciones, startingEntriesPerPage: 10 });
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+    totalPages,
+    prevPage,
+    nextPage,
+  } = usePagination<Publicacion>({
+    items: publicaciones,
+    startingEntriesPerPage: 10,
+    // filters: [searchValue],
+    // filterFunction: (item: Publicacion) => item.titulo.toLowerCase().includes(searchValue.toLowerCase()),
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -81,15 +96,7 @@ function ViewPerPostComentarios() {
             <Input
               className="h-[30px] w-[40px] px-0 text-center"
               value={entriesPerPage}
-              onChange={(e) => {
-                if (e.target.value === "") {
-                  setEntriesPerPage(0);
-                  return;
-                }
-                if (isNaN(parseInt(e.target.value))) return;
-                if (parseInt(e.target.value) < 1 || parseInt(e.target.value) > 20) return;
-                setEntriesPerPage(parseInt(e.target.value));
-              }}
+              onChange={(e) => setEntriesPerPage(e.target.value)}
             />
             <p className="">por página</p>
           </div>
@@ -115,11 +122,13 @@ function ViewPerPostComentarios() {
       </section>
       <ContentFooter
         page={page}
-        entriesPerPage={entriesPerPage}
         totalPages={totalPages}
-        items={publicaciones}
+        allFilteredItems={allFilteredItems}
+        indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+        indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
         prevPage={prevPage}
         nextPage={nextPage}
+        itemName="publicaciones"
       />
     </MainContent>
   );
