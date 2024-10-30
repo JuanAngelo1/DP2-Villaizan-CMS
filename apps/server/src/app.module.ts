@@ -22,6 +22,9 @@ import { ComentarioModule } from './GestionPublicaciones/comentario/comentario.m
 import { FaqController } from './faq/faq.controller';
 import { FaqModule } from './faq/faq.module';
 import { FaqService } from './faq/faq.service';
+import { FrutasModule } from './Frutas/frutas.module';
+import { FrutasService } from './Frutas/frutas.service';
+import { FrutasController } from './Frutas/frutas.controller';
 
 @Module({
   imports: [
@@ -38,8 +41,9 @@ import { FaqService } from './faq/faq.service';
     PermisoModule,
     ComentarioModule,
     FaqModule,
+    FrutasModule,
   ],
-  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController],
-  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService],
+  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController],
+  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService],
 })
 export class AppModule {}

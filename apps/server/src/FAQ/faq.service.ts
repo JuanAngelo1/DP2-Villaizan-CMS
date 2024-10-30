@@ -21,7 +21,7 @@ export class FaqService {
           const nuevaFAQ = this.prisma.vi_preguntas_frecuentes.create({
             data: {
               pregunta: data.pregunta,
-              respuest: data.respuesta,
+              respuesta: data.respuesta,
             },
           });
           return nuevaFAQ;
@@ -57,7 +57,7 @@ export class FaqService {
           },
           data: {
             pregunta: data.pregunta,
-            respuest: data.respuesta,
+            respuesta: data.respuesta,
           },
         });
       }

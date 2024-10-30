@@ -2564,7 +2564,7 @@ model vi_postetiqueta {
 model vi_preguntas_frecuentes {
   id                      Int      @id @default(autoincrement())
   pregunta                String?
-  respuest                String?
+  respuesta               String?
   fechacreacion           DateTime @default(now()) @db.Timestamp(6)
   fechaultimamodificacion DateTime @default(now()) @db.Timestamp(6)
   estaactivo              Boolean? @default(true)
