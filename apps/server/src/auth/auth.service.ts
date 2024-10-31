@@ -13,7 +13,6 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as dayjs from 'dayjs'; // Para manejar fechas de expiración
 import { UsuarioRepository } from '../GestionUsuarios/usuario/usuario.repository';
-import { from } from 'rxjs';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()

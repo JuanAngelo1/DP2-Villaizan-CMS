@@ -5,11 +5,10 @@ import {
   Put,
   Delete,
   Body,
-  Res,
   Param,
-  Req,
-  NotFoundException,
   ParseIntPipe,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { FaqService } from './faq.service';
 import { Response } from 'express';
@@ -20,74 +19,67 @@ export class FaqController {
   constructor(private readonly faqService: FaqService) {}
 
   @Get()
-  async getFAQS(
-    @Req() request: Request,
-    @Res() response: Response,
-  ): Promise<any> {
+  async getFAQS(): Promise<any> {
     try {
       const result = await this.faqService.getAllFAQs();
-      return response.status(200).json({
+      return {
         status: 'Success',
-        message: 'FAQs encontrados',
+        message: 'FAQs obtenidos exitosamente',
         result: result,
-      });
+      };
     } catch (err) {
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al obtener los FAQs',
-        result: [],
-      });
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   @Post()
-  async createFAQ(
-    @Body() data: FAQDto,
-    @Res() response: Response,
-  ): Promise<any> {
+  async createFAQ(@Body() data: FAQDto): Promise<any> {
     try {
       const result = await this.faqService.createFAQ(data);
-      return response.status(200).json({
+      return {
         status: 'Success',
         message: 'FAQ creado exitosamente',
         result: result,
-      });
+      };
     } catch (err) {
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al crear el FAQ',
-        result: [],
-      });
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  @Put(':id')
-  async deleteFAQ(
-    @Param('id', ParseIntPipe) id: number,
-    @Res() response: Response,
-  ): Promise<any> {
+  @Delete(':id')
+  async deleteFAQ(@Param('id', ParseIntPipe) id: number): Promise<any> {
     try {
       const result = await this.faqService.deleteFAQ(id);
-      return response.status(200).json({
+      return {
         status: 'Success',
         message: 'FAQ eliminado exitosamente',
         result: result,
-      });
+      };
     } catch (error) {
-      return response.status(404).json({
-        status: 'Error',
-        message: 'FAQ no existe',
-        result: [],
-      });
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   @Put(':id')
-  async updateFAQ(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() data: FAQDto,
-    @Res() response: Response,
-  ) {
+  async updateFAQ(@Param('id', ParseIntPipe) id: number, @Body() data: FAQDto) {
     try {
       const result = this.faqService.updateFAQ(id, data);
       return {
@@ -96,11 +88,13 @@ export class FaqController {
         result: result,
       };
     } catch (error) {
-      return response.status(404).json({
-        status: 'Error',
-        message: 'FAQ no existe',
-        result: [],
-      });
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Internal Server Error',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

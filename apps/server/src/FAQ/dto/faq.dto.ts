@@ -1,5 +1,4 @@
 export class FAQDto {
-    pregunta: string;
-    respuesta: string;
-  }
-  
+  pregunta: string;
+  respuesta: string;
+}
