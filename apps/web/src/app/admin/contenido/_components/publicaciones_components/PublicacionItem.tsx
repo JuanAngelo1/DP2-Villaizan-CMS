@@ -15,14 +15,13 @@ const PublicacionItem: React.FC<PublicacionItemProps> = ({ publicacion, onEdit }
   return (
     <Card className="mb-2 flex h-auto items-center justify-between rounded-md border p-4">
       <CardContent className="mb-0 flex h-auto flex-1 flex-row items-center justify-between p-0 text-sm *:h-auto">
-        <p className="text-md underline font-semibold">{publicacion.vi_version_publicacion[0]?.titulo || "Sin Título"}</p>
-        <p>
+        <p className="text-md underline font-semibold flex-1">{publicacion.vi_version_publicacion[0]?.titulo || "Sin Título"}</p>
+        <p className="flex-1">
           {publicacion.vi_version_publicacion[0]?.slug
             ? `/${publicacion.vi_version_publicacion[0].slug}`
             : "Sin Slug"}
         </p>
-        <p>
-          {publicacion.vi_version_publicacion[0]?.fechaultimamodificacion
+        <p className="flex-1">Últ. edición: {publicacion.vi_version_publicacion[0]?.fechaultimamodificacion
             ? formatDate(publicacion.vi_version_publicacion[0].fechaultimamodificacion)
             : "Sin Fecha"}
         </p>

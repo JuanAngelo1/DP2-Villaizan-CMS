@@ -25,7 +25,8 @@ const useCreatePublicacion = () => {
   const createPub = async (pub: PublicacionInfoProps) => {
     setIsLoading(true);
     try {
-      const reponseVersiones = await createPublicacion(pub);
+      const response = await createPublicacion(pub);
+      return response;
     } catch (err) {
       setError('Error al obtener las versiones de la publicación.');
       console.error(err);

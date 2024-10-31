@@ -1,5 +1,6 @@
 // /services/api/publicaciones/createPublicacion.ts
 import axiosInstance from "@web/src/app/services/axiosInstance";
+import { Publicacion, Response } from "@web/types";
 
 interface CreatePublicacionPayload {
   titulo: string;
@@ -14,8 +15,8 @@ interface CreatePublicacionPayload {
   etiquetas: string[];
 }
 
-const createPublicacion = async (payload: any): Promise<Response> => {
-  const response: Response = await axiosInstance.post("/publicaciones/crearPublicacion", payload);
+const createPublicacion = async (payload: any): Promise<Response<Publicacion>> => {
+  const response: Response<Publicacion> = await axiosInstance.post("/publicaciones/crearPublicacion", payload);
   return response;
 };
 

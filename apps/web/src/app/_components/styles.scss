@@ -1,0 +1,169 @@
+div:focus-visible {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+.bubble-menu-text {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  background-color: #6e747d; /* bg-accent */
+  color: #F7FAFC; /* text-whiteCustom */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el BubbleMenu de enlaces */
+.bubble-menu-link {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: #E2E8F0; /* bg-gray1 */
+  color: #1A202C; /* text-whiteCustom */
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el contenido del editor */
+.editor-content {
+  border: 2px solid #CBD5E0; /* border-gray4 */
+  border-radius: 0.5rem; /* rounded */
+  padding: 1rem; /* p-4 */
+  outline: none;
+
+  &:focus {
+    border-color: #2D3748; /* focus:border-blackCustom */
+  }
+}
+
+/* Estilos para el modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5); /* bg-black bg-opacity-50 */
+}
+
+.modal-content {
+  background-color: #FFFFFF; /* bg-whiteCustom */
+  padding: 1.5rem; /* p-6 */
+  border-radius: 0.5rem; /* rounded */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 24rem; /* w-96 */
+}
+
+.modal-title {
+  font-size: 1.25rem; /* text-xl */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.5rem; /* p-2 */
+  border: 2px solid #A0AEC0; /* border-gray5 */
+  border-radius: 0.25rem; /* rounded */
+  margin-bottom: 1rem; /* mb-4 */
+}
+
+.ProseMirror {
+  padding-inline: 5.5rem;
+
+  > * + * {
+    margin-top: 0.75em;
+  }
+
+  [data-id] {
+    border: 3px solid #0D0D0D;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    position: relative;
+    margin-top: 1.5rem;
+    padding: 2rem 1rem 1rem;
+
+    &::before {
+      content: attr(data-id);
+      background-color: #0D0D0D;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      font-weight: bold;
+      text-transform: uppercase;
+      color: #fff;
+      position: absolute;
+      top: 0;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+  }
+}
+
+/* Placeholder (at the top) */
+p.is-editor-empty:first-child::before {
+  color: #A0AEC0; /* text-gray5 */
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.drag-handle {
+  align-items: center;
+  border-radius: .25rem;
+  cursor: grab;
+  display: flex;
+  height: 1.5rem;
+  justify-content: center;
+  width: 1.5rem;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.tiptap {
+  :first-child {
+    margin-top: 0;
+  }
+
+  /* Heading styles */
+  h1, 
+  h2, 
+  h3, 
+  h4, 
+  h5, 
+  h6 {
+    line-height: 1.1;
+    margin-top: 2.5rem;
+    text-wrap: pretty;
+  }
+
+  h1, 
+  h2 {
+    margin-top: 3.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 { 
+    font-size: 1.4rem; 
+  }
+
+  h2 { 
+    font-size: 1.2rem; 
+  }
+
+  h3 { 
+    font-size: 1.1rem; 
+  }
+
+  h4, 
+  h5, 
+  h6 { 
+    font-size: 1rem; 
+  }
+}

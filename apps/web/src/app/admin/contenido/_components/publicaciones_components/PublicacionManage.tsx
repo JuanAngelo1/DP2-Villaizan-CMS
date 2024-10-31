@@ -1,6 +1,7 @@
 // PublicacionManage.tsx
 import { Calendar as CalendarIcon, Info } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "@repo/ui/hooks/use-toast";
 import React, { useEffect } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Calendar } from "@repo/ui/components/calendar";
@@ -37,7 +38,7 @@ import useCreatePublicacion from "@web/src/app/services/api/publicaciones/hooks/
 interface PublicationManageProps {
   type: "create" | "edit";
   id?: string | null;
-  changeType?: (type: string | null) => void;
+  changeType?: (type: string | null, id?: string | null) => void;
 }
 
 interface PublicacionInfoProps {
@@ -59,6 +60,7 @@ interface PublicacionInfoProps {
 }
 
 function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
+  const { toast } = useToast();
   const searchParams = useSearchParams();
   const pub_action = searchParams.get('publication_action');
   const pub_id = searchParams.get('publication_id');
@@ -108,6 +110,26 @@ function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
     }
   }, [publicacion]);
 
+  const manageCreation = async (pub: PublicacionInfoProps) => {
+    try {
+      const response = await create({
+        ...pub,
+        fechapublicacion: pub?.fechapublicacion || "",
+        fechacreacion: pub?.fechacreacion || "",
+        fechaactualizacion: pub?.fechaactualizacion || ""
+      })
+      toast({
+        title: "Publicación creada",
+        description: "La publicación ha sido creada exitosamente",
+      });
+      if (changeType) {
+        changeType("edit", response?.data?.result?.id);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return (
     <>
       {isLoading ? (
@@ -115,10 +137,10 @@ function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
           <div className="flex flex-col gap-8">
             <Skeleton className="w-full h-8" />
             <Separator className="w-full"/>
-            <div className="w-full">
+            <div className="w-full flex flex-row justify-between gap-4">
               <Skeleton className="w-full h-8" />
               <Separator orientation="vertical" />
-              <Skeleton className="w-full h-8" />
+              <Skeleton className="w-2/3 h-8" />
             </div>
           </div>
         </MainContent>
@@ -277,12 +299,7 @@ function PublicacionManage({ type, id, changeType }: PublicationManageProps) {
                 </div>
                 <div className="w-full flex flex-wrap justify-end items-end gap-2">
                   <Button variant={"ghost"} onClick={() => changeType && changeType("list")}>Cancelar edición</Button>
-                  <Button variant={"default"} onClick={() => pub && create({
-                    ...pub,
-                    fechapublicacion: pub?.fechapublicacion || "",
-                    fechacreacion: pub?.fechacreacion || "",
-                    fechaactualizacion: pub?.fechaactualizacion || ""
-                  })}>Guardar cambios</Button>
+                  <Button variant={"default"} onClick={() => pub && manageCreation(pub)}>Guardar cambios</Button>
                 </div>
               </div>
           </section>
