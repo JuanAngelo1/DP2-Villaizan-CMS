@@ -195,3 +195,13 @@ CREATE TABLE vi_preguntas_frecuentes (
     fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     estaactivo BOOLEAN DEFAULT TRUE
 );
+
+CREATE TABLE vi_puntosventa (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    direccion VARCHAR(255) NOT NULL,
+    latitud FLOAT NOT NULL,
+    longitud FLOAT NOT NULL,
+    nota TEXT
+);
+
