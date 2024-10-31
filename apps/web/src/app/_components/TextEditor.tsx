@@ -11,6 +11,8 @@ import Text from "@tiptap/extension-text";
 import TextAlign from '@tiptap/extension-text-align';
 import Link from "@tiptap/extension-link";
 import Bold from "@tiptap/extension-bold";
+import TextAlign from '@tiptap/extension-text-align';
+import Heading from "@tiptap/extension-heading"
 import Underline from "@tiptap/extension-underline";
 import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
@@ -94,6 +96,8 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
       Bold,
       Underline,
       Italic,
+      CustomImage,
+      Image,
       Strike,
       Code,
     ],
@@ -218,15 +222,15 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
 
   return (
     <div className="relative w-full mb-12">
-      {/* BubbleMenu para Formateo de Texto */}
+      {/* BubbleMenu para Formateo de Texto*/}
       <BubbleMenu
         pluginKey="bubbleMenuText"
         className="flex h-fit items-center gap-1 p-1 w-fit overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md"
         tippyOptions={{ duration: 250 }}
         editor={editor}
-        shouldShow={({ editor, view, state, oldState, from, to }) => {
-          // Solo mostrar si hay un rango seleccionado.
-          return from !== to;
+        shouldShow={({ editor }) => {
+          // Mostrar solo si NO es una imagen activa.
+          return !editor.isActive('image') && editor.state.selection.from !== editor.state.selection.to;
         }}
       >
         {/* Popover para jerarquia de parrafo */}
@@ -380,9 +384,9 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
         className="bubble-menu-link"
         tippyOptions={{ duration: 150 }}
         editor={editor}
-        shouldShow={({ editor, view, state, oldState, from, to }) => {
-          // Solo mostrar el bubble menu para enlaces.
-          return from === to && editor.isActive("link");
+        shouldShow={({ editor }) => {
+           // Solo mostrar el bubble menu para enlaces.
+          return !editor.isActive('image') && editor.isActive("link");
         }}
       >
         <button
@@ -400,6 +404,55 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
           Remove
         </button>
       </BubbleMenu>
+
+      {/* BubbleMenu para edición de imágenes */}
+      <BubbleMenu
+        pluginKey="bubbleMenuImage"
+        className="flex items-center gap-2 p-2 bg-white shadow-md rounded"
+        editor={editor}
+        tippyOptions={{ duration: 150 }}
+        shouldShow={({ editor }) => editor.isActive('image')}  // Solo mostrar si una imagen está activa
+      >
+        <button
+          onClick={increaseImageSize}
+          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray-200 hover:bg-gray-300"
+        >
+          <PlusIcon />
+        </button>
+        <button
+          onClick={decreaseImageSize}
+          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray-200 hover:bg-gray-300"
+        >
+          <MinusIcon />
+        </button>
+        <button
+          onClick={removeImage}
+          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-red-500 text-white hover:bg-red-600"
+        >
+          <Trash2Icon />
+        </button>
+      </BubbleMenu>
+
+       {/* FloatingMenu para insertar elementos como imágenes */}
+      <FloatingMenu
+        editor={editor}
+        tippyOptions={{ duration: 150 }}
+        className="flex gap-2 p-2 bg-white shadow-md rounded absolute left-0"
+        shouldShow={({ editor, state }) => {
+          const { $from } = state.selection;
+          return $from.parent.type.name === 'paragraph';
+        }}
+      >
+        <button
+          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray5 hover:bg-gray4"
+          onClick={insertImage}
+        >
+          <ImageIcon />
+        </button>
+        <button className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray5 hover:bg-gray4">
+          <PlusIcon />
+        </button>
+      </FloatingMenu>
 
       {/* Contenido del Editor */}
       <DragHandle editor={editor}

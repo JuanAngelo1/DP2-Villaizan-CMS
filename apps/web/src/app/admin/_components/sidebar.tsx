@@ -1,6 +1,6 @@
 "use client";
 
-import { LayoutDashboard, LogOut, Newspaper, Sun, User } from "lucide-react";
+import { LayoutDashboard, LogOut, Newspaper, Sun, User, MapPin  } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@repo/ui/components/button";
@@ -25,6 +25,10 @@ const sidebarItems: sidebarItem[] = [
     path: "/admin/usuarios",
     icon: User,
   },
+  {
+    path: "/admin/puntos-venta",
+    icon: MapPin,
+  }
 ];
 
 function Sidebar() {
