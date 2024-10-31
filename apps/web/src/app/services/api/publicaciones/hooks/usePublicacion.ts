@@ -1,56 +1,53 @@
 // /apps/web/src/hooks/usePublicacion.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Publicacion, VersionPublicacion } from '@web/types';
 import { getPublicacionById, getVersionesPublicacion } from '@web/src/app/services/api/publicaciones';
 
-const usePublicacion = () => {
+interface UsePublicacionReturn {
+  publicacion: Publicacion | null;
+  isLoading: boolean;
+  error: string | null;
+  fetchPublicacion: (id: Publicacion['id']) => Promise<void>;
+}
+
+const usePublicacion = (): UsePublicacionReturn => {
   const [publicacion, setPublicacion] = useState<Publicacion | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPublicacion = async (id: Publicacion["id"]) => {
+  const fetchPublicacion = useCallback(async (id: Publicacion['id']) => {
     setIsLoading(true);
+    setError(null);
     try {
-      const reponseVersiones = await getVersionesPublicacion({ id });
+      // Obtener la publicación por ID
       const response = await getPublicacionById({ id });
-      setPublicacion({
-        ...response.data.result,
-        vi_version_publicacion: reponseVersiones.data.result,
-      });
-    } catch (err) {
-      setError('Error al obtener las versiones de la publicación.');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      const fetchedPublicacion = response.data.result;
 
-  const fetchVersionesPublicacion = async (id: Publicacion["id"]) => {
-    setIsLoading(true);
-    try {
-      const response = await getVersionesPublicacion({ id });
-      if (publicacion) {
-        setPublicacion({
-          ...publicacion,
-          vi_version_publicacion: response.data.result,
-        });
-      }
+      // Obtener las versiones de la publicación
+      const versionesResponse = await getVersionesPublicacion({ id });
+      const versiones = versionesResponse.data.result;
+
+      // Construir el objeto de publicación con las versiones
+      const publication: Publicacion = {
+        ...fetchedPublicacion,
+        vi_version_publicacion: versiones,
+      };
+
+      setPublicacion(publication);
     } catch (err) {
-      setError('Error al obtener las versiones de la publicación.');
-      console.error(err);
+      console.error('Error al obtener la publicación:', err);
+      setError('Error al obtener la publicación.');
     } finally {
       setIsLoading(false);
     }
-  }
+  }, []);
 
   return {
     publicacion,
     isLoading,
     error,
     fetchPublicacion,
-    fetchVersionesPublicacion,
-    setPublicacion,
   };
-}
+};
 
 export default usePublicacion;

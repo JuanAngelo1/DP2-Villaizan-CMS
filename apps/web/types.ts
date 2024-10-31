@@ -28,12 +28,14 @@ export type Publicacion = {
   descripcion: string;
   urlImagen: string;
   fechacreacion: string;
+  fechapublicacion: string;
   estaactivo: boolean;
   archivado?: boolean;
   tipo_publicacion?: TipoPublicacion | null;
   id_usuario?: string | null;
   comentarios: Comentario[];
-
+  etiquetas: string[];
+  categorias: string[];
   fecha_creacion: string;
   vi_version_publicacion: VersionPublicacion[];
 };

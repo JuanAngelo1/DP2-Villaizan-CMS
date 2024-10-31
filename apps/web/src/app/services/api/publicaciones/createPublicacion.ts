@@ -6,7 +6,7 @@ interface CreatePublicacionPayload {
   titulo: string;
   urlimagen?: string;
   descripcionSEO?: string;
-  fechapublicacion?: Date;
+  fecha_publicacion?: Date;
   slug: string;
   richtext: string;
   id_tipopublicacion: number;
