@@ -262,7 +262,7 @@ const PublicacionManage: React.FC<PublicationManageProps> = ({ type, id, changeT
                     </Badge>
                   </div>
                   {/* Categorías */}
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                     <Label>Categorías</Label>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -276,7 +276,6 @@ const PublicacionManage: React.FC<PublicationManageProps> = ({ type, id, changeT
                           <CommandList>
                             <CommandEmpty>No se encontraron categorías.</CommandEmpty>
                             <CommandGroup>
-                              {/* Reemplaza con tus categorías dinámicas */}
                               {["Noticias", "Eventos", "Blog", "Productos"].map((categoria) => (
                                 <CommandItem
                                   key={categoria}
@@ -295,9 +294,9 @@ const PublicacionManage: React.FC<PublicationManageProps> = ({ type, id, changeT
                         </Command>
                       </PopoverContent>
                     </Popover>
-                  </div>
+                  </div> */}
                   {/* Etiquetas */}
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                     <Label>Etiquetas</Label>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -330,7 +329,7 @@ const PublicacionManage: React.FC<PublicationManageProps> = ({ type, id, changeT
                         </Command>
                       </PopoverContent>
                     </Popover>
-                  </div>
+                  </div> */}
                   {/* Fecha de Publicación */}
                   <div className="flex flex-col">
                     <Label>Fecha de publicación</Label>
