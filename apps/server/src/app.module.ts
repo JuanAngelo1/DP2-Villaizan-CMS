@@ -25,6 +25,9 @@ import { FaqService } from './faq/faq.service';
 import { FrutasModule } from './Frutas/frutas.module';
 import { FrutasService } from './Frutas/frutas.service';
 import { FrutasController } from './Frutas/frutas.controller';
+import { PuntosVentaModule } from './PuntosVenta/puntos-venta.module';
+import { PuntosVentaController } from './PuntosVenta/puntos-venta.controller';
+import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
 
 @Module({
   imports: [
@@ -42,8 +45,9 @@ import { FrutasController } from './Frutas/frutas.controller';
     ComentarioModule,
     FaqModule,
     FrutasModule,
+    PuntosVentaModule,
   ],
-  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController],
-  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService],
+  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController, PuntosVentaController],
+  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService,PuntosVentaService],
 })
 export class AppModule {}

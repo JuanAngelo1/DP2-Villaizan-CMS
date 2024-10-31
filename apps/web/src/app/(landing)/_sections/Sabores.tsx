@@ -15,6 +15,7 @@ import {
   CarouselPrevious,
 } from "@repo/ui/components/carousel";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
+import { useRouter } from "next/navigation";
 
 // app/(landing)/_components/Sabores.tsx
 
@@ -22,6 +23,7 @@ import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Sabores: React.FC = () => {
   const [selectedSabor, setSelectedSabor] = useState<Sabor | null>(null);
+  const router = useRouter();
 
   return (
     <section
@@ -47,13 +49,15 @@ const Sabores: React.FC = () => {
                 <CarouselItem key={sabor.id} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-2">
                     <Card
-                      onClick={() => setSelectedSabor(sabor)}
+                      onClick={() => {
+                        router.push(`/sabores`);
+                      }}
                       className="cursor-pointer transition-shadow duration-300 hover:shadow-lg"
                     >
                       <CardContent className="flex flex-col items-center justify-center p-4">
                         <div className="relative h-32 w-32 sm:h-40 sm:w-40">
                           <Image
-                            src="https://drive.google.com/uc?export=view&id=1BQwyPb5lcxrMWi0qHI-h3-k3r7LLkSJe"
+                            src={sabor.image}
                             alt={sabor.name}
                             fill
                             className="rounded-full object-contain"

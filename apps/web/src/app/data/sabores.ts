@@ -16,8 +16,8 @@ export const sabores: Sabor[] = [
   },
   {
     id: 2,
-    name: "Doctor Nose",
-    image: "/sabores/doctornose.png",
+    name: "Maracumango",
+    image: "/sabores/maracumango.png",
     description: "Un equilibrio perfecto entre dulzura y acidez que deleita el paladar.",
   },
   {

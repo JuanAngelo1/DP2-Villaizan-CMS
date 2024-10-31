@@ -78,7 +78,7 @@ export class ComentarioController {
         } catch (error) {
             return response.status(404).json({
                 status: "Error",
-                message: "Usuario no existe",
+                message: "Comentario no existe",
                 result: []
             });
         }
