@@ -1,66 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { vi_preguntas_frecuentes } from '@prisma/client';
 import { FAQDto } from './dto/faq.dto';
+import { FaqRepository } from './faq.repository';
 
 @Injectable()
 export class FaqService {
+  constructor(private faqRepository: FaqRepository) {}
 
-    constructor(private prisma: PrismaService) {}
-
-    async getAllFAQs() {
-        return this.prisma.vi_preguntas_frecuentes.findMany({
-          where: {
-            estaactivo: true,
-          },
-        });
+  async getAllFAQs() {
+    try {
+      return await this.faqRepository.findAll();
+    } catch (error) {
+      console.error('Error al obtener las publicaciones:', error);
+      throw error;
     }
+  }
 
-    async createFAQ(data: FAQDto): Promise<vi_preguntas_frecuentes> {
-        try {
-          const nuevaFAQ = this.prisma.vi_preguntas_frecuentes.create({
-            data: {
-              pregunta: data.pregunta,
-              respuesta: data.respuesta,
-            },
-          });
-          return nuevaFAQ;
-        } catch (error) {
-            console.error('Error al crear la publicación:', error);
-            throw error;
-        }
-      }
-
-    async deleteFAQ(id: number): Promise<vi_preguntas_frecuentes> {
-        try {
-          return this.prisma.vi_preguntas_frecuentes.update({
-            where: {
-              id: id,
-            },
-            data: {
-              estaactivo: false,
-            },
-          });
-        } catch (error) {
-          console.error(error);
-          return null;
-        }
+  async createFAQ(data: FAQDto): Promise<vi_preguntas_frecuentes> {
+    try {
+      return await this.faqRepository.create(data);
+    } catch (error) {
+      console.error('Error al crear la publicación:', error);
+      throw error;
     }
+  }
 
-    async updateFAQ(
-        id: number,
-        data: FAQDto,
-      ): Promise<vi_preguntas_frecuentes> {
-        return this.prisma.vi_preguntas_frecuentes.update({
-          where: {
-            id: id,
-          },
-          data: {
-            pregunta: data.pregunta,
-            respuesta: data.respuesta,
-          },
-        });
-      }
+  async deleteFAQ(id: number): Promise<vi_preguntas_frecuentes> {
+    try {
+      return await this.faqRepository.delete(id);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
 
-
+  async updateFAQ(id: number, data: FAQDto) {
+    try {
+      return await this.faqRepository.update(id, data);
+    } catch (error) {
+      console.error('Error al actualizar la publicación:', error);
+      throw error;
+    }
+  }
 }
