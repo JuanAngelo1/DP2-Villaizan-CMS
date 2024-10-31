@@ -310,7 +310,6 @@ const PublicacionManage: React.FC<PublicationManageProps> = ({ type, id, changeT
                           <CommandList>
                             <CommandEmpty>No se encontraron etiquetas.</CommandEmpty>
                             <CommandGroup>
-                              {/* Reemplaza con tus etiquetas dinámicas */}
                               {["Etiqueta 1", "Etiqueta 2", "Etiqueta 3"].map((etiqueta) => (
                                 <CommandItem
                                   key={etiqueta}
