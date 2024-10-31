@@ -8,11 +8,9 @@ import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import FileHandler from '@tiptap-pro/extension-file-handler';
 import Text from "@tiptap/extension-text";
-import TextAlign from '@tiptap/extension-text-align';
 import Link from "@tiptap/extension-link";
 import Bold from "@tiptap/extension-bold";
 import TextAlign from '@tiptap/extension-text-align';
-import Heading from "@tiptap/extension-heading"
 import Underline from "@tiptap/extension-underline";
 import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
@@ -96,7 +94,6 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
       Bold,
       Underline,
       Italic,
-      CustomImage,
       Image,
       Strike,
       Code,
@@ -404,55 +401,6 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
           Remove
         </button>
       </BubbleMenu>
-
-      {/* BubbleMenu para edición de imágenes */}
-      <BubbleMenu
-        pluginKey="bubbleMenuImage"
-        className="flex items-center gap-2 p-2 bg-white shadow-md rounded"
-        editor={editor}
-        tippyOptions={{ duration: 150 }}
-        shouldShow={({ editor }) => editor.isActive('image')}  // Solo mostrar si una imagen está activa
-      >
-        <button
-          onClick={increaseImageSize}
-          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray-200 hover:bg-gray-300"
-        >
-          <PlusIcon />
-        </button>
-        <button
-          onClick={decreaseImageSize}
-          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray-200 hover:bg-gray-300"
-        >
-          <MinusIcon />
-        </button>
-        <button
-          onClick={removeImage}
-          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-red-500 text-white hover:bg-red-600"
-        >
-          <Trash2Icon />
-        </button>
-      </BubbleMenu>
-
-       {/* FloatingMenu para insertar elementos como imágenes */}
-      <FloatingMenu
-        editor={editor}
-        tippyOptions={{ duration: 150 }}
-        className="flex gap-2 p-2 bg-white shadow-md rounded absolute left-0"
-        shouldShow={({ editor, state }) => {
-          const { $from } = state.selection;
-          return $from.parent.type.name === 'paragraph';
-        }}
-      >
-        <button
-          className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray5 hover:bg-gray4"
-          onClick={insertImage}
-        >
-          <ImageIcon />
-        </button>
-        <button className="flex items-center justify-center w-8 h-8 p-0 rounded bg-gray5 hover:bg-gray4">
-          <PlusIcon />
-        </button>
-      </FloatingMenu>
 
       {/* Contenido del Editor */}
       <DragHandle editor={editor}
