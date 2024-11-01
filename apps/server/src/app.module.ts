@@ -19,12 +19,15 @@ import { PermisoModule } from './GestionUsuarios/permiso/permiso.module';
 import { PermisoController } from './GestionUsuarios/permiso/permiso.controller';
 import { PermisoService } from './GestionUsuarios/permiso/permiso.service';
 import { ComentarioModule } from './GestionPublicaciones/comentario/comentario.module';
-import { FaqController } from './faq/faq.controller';
-import { FaqModule } from './faq/faq.module';
-import { FaqService } from './faq/faq.service';
+import { FaqController } from './Preguntas/faq.controller';
+import { FaqModule } from './Preguntas/faq.module';
+import { FaqService } from './Preguntas/faq.service';
 import { FrutasModule } from './Frutas/frutas.module';
 import { FrutasService } from './Frutas/frutas.service';
 import { FrutasController } from './Frutas/frutas.controller';
+import { PuntosVentaModule } from './PuntosVenta/puntos-venta.module';
+import { PuntosVentaController } from './PuntosVenta/puntos-venta.controller';
+import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
 
 @Module({
   imports: [
@@ -42,8 +45,9 @@ import { FrutasController } from './Frutas/frutas.controller';
     ComentarioModule,
     FaqModule,
     FrutasModule,
+    PuntosVentaModule,
   ],
-  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController],
-  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService],
+  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController, PuntosVentaController],
+  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService,PuntosVentaService],
 })
 export class AppModule {}

@@ -8,9 +8,9 @@ import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import FileHandler from '@tiptap-pro/extension-file-handler';
 import Text from "@tiptap/extension-text";
-import TextAlign from '@tiptap/extension-text-align';
 import Link from "@tiptap/extension-link";
 import Bold from "@tiptap/extension-bold";
+import TextAlign from '@tiptap/extension-text-align';
 import Underline from "@tiptap/extension-underline";
 import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
@@ -94,6 +94,7 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
       Bold,
       Underline,
       Italic,
+      Image,
       Strike,
       Code,
     ],
@@ -218,15 +219,15 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
 
   return (
     <div className="relative w-full mb-12">
-      {/* BubbleMenu para Formateo de Texto */}
+      {/* BubbleMenu para Formateo de Texto*/}
       <BubbleMenu
         pluginKey="bubbleMenuText"
         className="flex h-fit items-center gap-1 p-1 w-fit overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md"
         tippyOptions={{ duration: 250 }}
         editor={editor}
-        shouldShow={({ editor, view, state, oldState, from, to }) => {
-          // Solo mostrar si hay un rango seleccionado.
-          return from !== to;
+        shouldShow={({ editor }) => {
+          // Mostrar solo si NO es una imagen activa.
+          return !editor.isActive('image') && editor.state.selection.from !== editor.state.selection.to;
         }}
       >
         {/* Popover para jerarquia de parrafo */}
@@ -380,9 +381,9 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
         className="bubble-menu-link"
         tippyOptions={{ duration: 150 }}
         editor={editor}
-        shouldShow={({ editor, view, state, oldState, from, to }) => {
-          // Solo mostrar el bubble menu para enlaces.
-          return from === to && editor.isActive("link");
+        shouldShow={({ editor }) => {
+           // Solo mostrar el bubble menu para enlaces.
+          return !editor.isActive('image') && editor.isActive("link");
         }}
       >
         <button
