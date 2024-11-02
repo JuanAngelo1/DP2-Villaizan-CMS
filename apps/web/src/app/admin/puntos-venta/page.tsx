@@ -15,8 +15,10 @@ import {
 import { Button } from "@repo/ui/components/button";
 import PuntoVentaForm from "./_components/PuntoVentaForm";
 import PuntoVentaList from "./_components/PuntoVentaList";
-import PuntoVentaMap from "./_components/PuntoVentaMap";
+import dynamic from "next/dynamic";
 import PuntoVentaModal from "./_components/PuntoVentaModal";
+
+const PuntoVentaMap = dynamic(() => import("./_components/PuntoVentaMap"), { ssr: false });
 
 // Datos mockeados de San Miguel, Lima
 const mockPuntosDeVenta = [
