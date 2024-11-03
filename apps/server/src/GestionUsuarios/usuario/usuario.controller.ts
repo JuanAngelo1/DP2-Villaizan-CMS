@@ -84,7 +84,7 @@ export class UsuarioController {
       const existingUser = await this.usuarioService.findByEmail(data.email);
       if (existingUser) {
         return response.status(201).json({
-          status: 'Suceess',
+          status: 'Success',
           message: 'Usuario autenticado con Google',
           result: existingUser,
         });
