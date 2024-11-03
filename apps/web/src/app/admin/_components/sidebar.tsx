@@ -1,10 +1,11 @@
 "use client";
 
-import { LayoutDashboard, LogOut, Newspaper, Sun, User, MapPin  } from "lucide-react";
+import { LayoutDashboard, LogOut, MapPin, Newspaper, Sun, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/lib/utils";
+import { handleSignOut } from "../../actions/authActions";
 
 type sidebarItem = {
   path: string;
@@ -28,7 +29,7 @@ const sidebarItems: sidebarItem[] = [
   {
     path: "/admin/puntos-venta",
     icon: MapPin,
-  }
+  },
 ];
 
 function Sidebar() {
@@ -59,9 +60,9 @@ function Sidebar() {
         <Button variant="ghost" className={buttonStyle[1]}>
           <Sun className={iconStyle} />
         </Button>
-        <Link href={"/"} className={cn(buttonVariants({ variant: "ghost" }), buttonStyle[1])}>
+        <Button variant={"ghost"} className={buttonStyle[1]} onClick={handleSignOut}>
           <LogOut className={iconStyle} />
-        </Link>
+        </Button>
       </div>
     </div>
   );

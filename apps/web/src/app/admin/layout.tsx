@@ -1,6 +1,17 @@
+import { auth } from "@web/auth";
 import Sidebar from "./_components/sidebar";
+import { redirect } from "next/navigation";
 
-function AdminLayout({ children }: { children: React.ReactNode }) {
+async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  const user = session?.user;
+
+  if (!user) {
+    redirect("/login?callbackUrl=/admin");
+  }
+
+  //! If user doesnt have admin role, redirect to home
+
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-primary-foreground">
       <Sidebar />

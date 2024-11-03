@@ -1,6 +1,6 @@
 "use client";
 
-import { handleCredentialsSignIn } from "@web/src/app/actions/authActions";
+import { handleCredentialsSignIn, handleGoogleSignIn } from "@web/src/app/actions/authActions";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -9,10 +9,12 @@ import { Input } from "@repo/ui/components/input";
 import { Separator } from "@repo/ui/components/separator";
 import ErrorMessage from "../_components/ErrorMessage";
 import LogoBackHome from "../_components/LogoBackHome";
+import { KeySquare } from "lucide-react";
 
 function LoginPage() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,7 +23,15 @@ function LoginPage() {
   const onLogin = async ({ email, password }: { email: string; password: string }) => {
     try {
       setIsLoading(true);
-      const result = await handleCredentialsSignIn({ email, password });
+      const result = await handleCredentialsSignIn({ email, password, redirectTo: callbackUrl });
+    } catch (error) {
+      console.log("An unexpected error ocurred. Please try again.");
+    }
+  };
+
+  const onLoginGoogle = async () => {
+    try {
+      const result = handleGoogleSignIn({ redirectTo: callbackUrl });
     } catch (error) {
       console.log("An unexpected error ocurred. Please try again.");
     }
@@ -37,8 +47,8 @@ function LoginPage() {
       <div className="mt-7 flex w-[400px] flex-col gap-2">
         {error === "CredentialsSignin" && <ErrorMessage message={"Correo o contraseña incorrecta"} />}
 
-        <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} type="email"/>
-        <Input placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} type="password"/>
+        <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} type="email" />
+        <Input placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} type="password" />
         <Button
           isLoading={isLoading}
           disabled={isLoading}
@@ -54,6 +64,15 @@ function LoginPage() {
             Recuperar contraseña
           </Link>
         </section>
+        <div className="flex items-center gap-3">
+          <Separator orientation="horizontal" className="flex-1" />
+          <p className="text-muted-foreground text-sm">o</p>
+          <Separator orientation="horizontal" className="flex-1" />
+        </div>
+        <Button className="mt-2" variant={"outline"} onClick={() => onLoginGoogle()}>
+          <img src="google-logo.svg" className="w-5 h-5"/>
+          <p>Inicia sesión con Google</p>
+        </Button>
       </div>
     </div>
   );
