@@ -18,6 +18,7 @@ import { UsuarioService } from './usuario.service';
 import { vi_usuario } from '@prisma/client';
 import { Request, response, Response } from 'express';
 import { UsuarioDto } from './dto/usuario.dto';
+import { GoogleUserDto } from './dto/google-user.dto';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -75,6 +76,37 @@ export class UsuarioController {
       });
     }
   }
+
+  
+  @Post('loginGoogle')
+  async verifyCreateGoogleUser( @Body() data: GoogleUserDto, @Res() response: Response): Promise<any> {
+    try {
+      const existingUser = await this.usuarioService.findByEmail(data.email);
+      if (existingUser) {
+        return response.status(201).json({
+          status: 'Suceess',
+          message: 'Usuario autenticado con Google',
+          result: existingUser,
+        });
+      }
+
+    const result = await this.usuarioService.createUserGoogle(data);
+      return response.status(201).json({
+        status: 'Success',
+        message: 'Usuario creado exitosamente',
+        result: result,
+      });
+    } catch (err) {
+      console.log(err);
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Error al crear el usuario',
+        result: [],
+      });
+    }
+  }
+
+
 
   @Get(':id')
   async getUsuarioByID(

@@ -26,7 +26,7 @@ export class AuthController {
 
   @Post('infoUsuario')
   async loginGoogle(@Body() loginGoogleDto: LoginGoogleDto) {
-    return this.authService.loginGoogle(loginGoogleDto);
+    return this.authService.infoUsuario(loginGoogleDto);
   }
 
   //Tomar como referencia el siguiente código

@@ -60,7 +60,7 @@ export class AuthService {
     };
   }
 
-  async loginGoogle(data: LoginGoogleDto) {
+  async infoUsuario(data: LoginGoogleDto) {
     const user = await this.prisma.vi_usuario.findUnique({
       where: {
         correo: data.email,

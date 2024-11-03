@@ -2527,6 +2527,8 @@ model vi_persona {
   actualizadoen        DateTime     @default(now()) @db.Timestamp(6)
   usuariocreacion      String       @db.VarChar(50)
   usuarioactualizacion String?      @db.VarChar(50)
+  sexo                 String?      @db.VarChar(25)
+  edad                 Int?
   vi_usuario           vi_usuario[]
 }
 
@@ -2863,6 +2865,7 @@ model vi_usuario {
   id_rol                                                 String                               @db.VarChar(50)
   resettoken                                             String?                              @db.VarChar(255)
   resettokenexpiracion                                   DateTime?                            @db.Timestamp(6)
+  imagenperfil                                           String?
   marketing_campaigns_campanausuario                     marketing_campaigns_campanausuario[]
   vi_comentario                                          vi_comentario[]
   vi_direccion                                           vi_direccion[]
