@@ -24,7 +24,7 @@ export class AuthController {
     return this.authService.login(payload);
   }
 
-  @Post('loginGoogle')
+  @Post('infoUsuario')
   async loginGoogle(@Body() loginGoogleDto: LoginGoogleDto) {
     return this.authService.loginGoogle(loginGoogleDto);
   }
