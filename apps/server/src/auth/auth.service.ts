@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import * as dayjs from 'dayjs'; // Para manejar fechas de expiración
 import { UsuarioRepository } from '../GestionUsuarios/usuario/usuario.repository';
 import * as nodemailer from 'nodemailer';
+import { LoginGoogleDto } from './dto/login-google.dto';
 
 @Injectable()
 export class AuthService {
@@ -55,7 +56,28 @@ export class AuthService {
       status: 'Success',
       message: 'Usuario correctamente autenticado',
       token: token,
-      user,
+      result: user,
+    };
+  }
+
+  async loginGoogle(data: LoginGoogleDto) {
+    const user = await this.prisma.vi_usuario.findUnique({
+      where: {
+        correo: data.email,
+      },
+    });
+
+    if (!user) {
+      return {
+        status: 'Error',
+        message: 'Usuario no encontrado',
+        result: [],
+      };
+    }
+
+    return {
+      status: 'Success',
+      message: 'Usuario autenticado con Google',
     };
   }
 
