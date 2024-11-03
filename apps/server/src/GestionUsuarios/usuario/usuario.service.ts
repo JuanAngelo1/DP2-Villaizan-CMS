@@ -47,7 +47,7 @@ export class UsuarioService {
 
   }
 
-  async createUserGoogle(data: GoogleUserDto): Promise<vi_usuario> {
+  async createUserGoogle(data: GoogleUserDto): Promise<any> {
     const generatedId = `us-${uuidv4().split('-')[0]}`;
     const generatedPersonaId = `per-${uuidv4().split('-')[0]}`;
     
@@ -67,7 +67,7 @@ export class UsuarioService {
       },
     });
 
-    return this.prisma.vi_usuario.create({
+    const usuario= await this.prisma.vi_usuario.create({
       data: {
         id: generatedId,
         nombre: data.nombre,
@@ -85,7 +85,49 @@ export class UsuarioService {
         },
       },
     });
+
+    const usuarioModificado = {
+      ...usuario,
+      id_rol: undefined,        // Elimina id_rol
+      rolNombre: rol.nombre,    // Agrega rolNombre
+    };
+
+    return {
+      usuario: usuarioModificado,
+    };
+    
   }
+
+  async findByEmailWithRole(email: string): Promise<any> {
+    // Busca al usuario por su correo e incluye el rol en la consulta
+    const usuario = await this.prisma.vi_usuario.findUnique({
+      where: { correo: email },
+      include: {
+        vi_rol: {
+          select: {
+            nombre: true, // Selecciona solo el nombre del rol
+          },
+        },
+      },
+    });
+  
+    if (!usuario) {
+      return { usuario: null, rolNombre: null };
+    }
+  
+    // Modificar el objeto usuario para reemplazar id_rol con rolNombre
+    const usuarioModificado = {
+      ...usuario,
+      id_rol: undefined,                   // Elimina id_rol
+      rolNombre: usuario.vi_rol?.nombre,   // Agrega rolNombre
+      vi_rol: undefined,                   // Elimina vi_rol del resultado
+    };
+  
+    return {
+      usuario: usuarioModificado,
+    };
+  }  
+
 
 
   async createUsuario(data: UsuarioDto): Promise<vi_usuario> {

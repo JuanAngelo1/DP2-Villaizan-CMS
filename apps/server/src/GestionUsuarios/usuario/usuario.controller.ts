@@ -81,7 +81,7 @@ export class UsuarioController {
   @Post('loginGoogle')
   async verifyCreateGoogleUser( @Body() data: GoogleUserDto, @Res() response: Response): Promise<any> {
     try {
-      const existingUser = await this.usuarioService.findByEmail(data.email);
+      const existingUser = await this.usuarioService.findByEmailWithRole(data.email);
       if (existingUser) {
         return response.status(201).json({
           status: 'Success',
