@@ -60,12 +60,12 @@ const Header: React.FC = () => {
                 />
               </PopoverTrigger>
               <PopoverContent
-                className="flex w-[160px] flex-col gap-1 overflow-hidden p-1"
+                className="flex w-fit min-w-0 max-w-[200px] flex-col gap-1 overflow-hidden p-1"
                 side="bottom"
                 align="end"
               >
-                <p className="w-full truncate px-2 py-1 text-sm font-bold">
-                  {session.user.db_info.nombre + session.user.db_info.apellido}
+                <p className="w-fit max-w-full truncate px-2 py-1 text-sm font-bold">
+                  {session.user.db_info.nombre + " " + session.user.db_info.apellido}
                 </p>
                 {session.user.db_info.vi_rol.nombre === "Administrador" && (
                   <Link
@@ -82,7 +82,7 @@ const Header: React.FC = () => {
                   onClick={() => handleSignOut()}
                 >
                   <LogOut className="h-4 w-4 shrink-0" />
-                  <p className="">Cerrar sesión</p>
+                  <p className="w-fit">Cerrar sesión</p>
                 </Button>
               </PopoverContent>
             </Popover>

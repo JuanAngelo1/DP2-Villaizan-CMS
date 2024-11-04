@@ -34,22 +34,22 @@ function UsuarioTableRow({
 
   return (
     <>
-      <section key={id} className="flex items-center rounded-md border px-4 py-3">
-        <div className="flex-1">
+      <section key={id} className="flex items-center gap-3 rounded-md border px-4 py-3">
+        <div className="hidden flex-1 lg:block">
           <p>{nombre}</p>
         </div>
-        <div className="flex-1">
-          <p>{correo || "No registrado"}</p>
+        <div className="min-w-0 flex-1 text-xs md:text-base">
+          <p className="truncate">{correo || "No registrado"}</p>
         </div>
         <div className="flex-1">
           <Select value={usuario.id_rol} onValueChange={handleRolChange}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="min-w-[130px] max-w-[180px] text-xs md:text-base">
               <SelectValue placeholder={rolName} />
             </SelectTrigger>
             <SelectContent>
               {roles.map((rol) => {
                 return (
-                  <SelectItem key={rol.id} value={rol.id}>
+                  <SelectItem key={rol.id} value={rol.id} className="text-xs md:text-base">
                     {rol.nombre}
                   </SelectItem>
                 );
@@ -57,7 +57,7 @@ function UsuarioTableRow({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex-1">
+        <div className="hidden flex-1 xl:block">
           <p>{formatDate(creadoen.toString())}</p>
         </div>
 

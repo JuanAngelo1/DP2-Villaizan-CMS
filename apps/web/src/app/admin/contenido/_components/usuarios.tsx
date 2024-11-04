@@ -1,14 +1,16 @@
 "use client";
 
 import usePagination from "@web/hooks/usePagination";
-import { Response, Rol, Usuario } from "@web/types";
+import { ControlledError, Response, Rol, Usuario } from "@web/types";
 import axios from "axios";
 import { useCallback, useMemo, useState } from "react";
 import { useEffect } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
+import { useToast } from "@repo/ui/hooks/use-toast";
 import { cn } from "@repo/ui/lib/utils";
+import ContentFooter from "./general_components/ContentFooter";
 import DialogDelete from "./general_components/DialogDelete";
 import MainContent from "./general_components/MainContent";
 import SectionWrapper from "./general_components/SectionWrapper";
@@ -24,10 +26,19 @@ const initUsuario: Usuario = {
   correo: "",
   id_rol: "",
   creadoen: new Date(),
+  imagenperfil: "",
+  vi_rol: {
+    id: "10",
+    nombre: "Hola",
+    actualizadoen: new Date(),
+    eliminadoen: new Date(),
+    estaactivo: true,
+  },
 };
 
 function Usuarios() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [roles, setRoles] = useState<Rol[]>([]);
   const [currUsuario, setCurrUsuario] = useState<Usuario>(initUsuario);
@@ -44,7 +55,7 @@ function Usuarios() {
         const response: Response<Usuario[]> = await axios.get(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario`
         );
-        if (response.data.status === "Error") throw new Error(response.data.message);
+        if (response.data.status === "Error") throw new ControlledError(response.data.message);
         setUsuarios(response.data.result);
 
         const responseRoles: Response<Rol[]> = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/rol`);
@@ -52,7 +63,12 @@ function Usuarios() {
         setRoles(responseRoles.data.result);
         console.log("Roles -> ", responseRoles.data.result);
       } catch (error) {
-        console.error("Ups! Algo salio mal -> ", error);
+        if (error instanceof ControlledError) {
+          toast({ title: "Error al obtener los usuarios", description: error.message });
+        } else {
+          console.error("Error al obtener los usuarios:", error);
+          toast({ title: "Ups! Algo salió mal.", description: "Error al obtener los usuarios" });
+        }
       } finally {
         setIsLoading(false);
       }
@@ -127,11 +143,21 @@ function Usuarios() {
     );
   }, [usuarios, search, rolMap]);
 
-  const { page, entriesPerPage, setEntriesPerPage, currentPageItems, totalPages, prevPage, nextPage } =
-    usePagination<Usuario>({
-      items: filteredUsuarios,
-      startingEntriesPerPage: 10,
-    });
+  const {
+    page,
+    entriesPerPage,
+    setEntriesPerPage,
+    currentPageItems,
+    totalPages,
+    prevPage,
+    nextPage,
+    allFilteredItems,
+    indexOfFirstItemOfCurrentPage,
+    indexOfLastItemOfCurrentPage,
+  } = usePagination<Usuario>({
+    items: filteredUsuarios,
+    startingEntriesPerPage: 10,
+  });
   return (
     <>
       <SectionWrapper>
@@ -159,27 +185,29 @@ function Usuarios() {
         >
           <UsuariosTableHeader />
           {isLoading ? (
-            <section className="flex items-center rounded-md border px-4 py-3">
-              <div className="flex-1">
-                <Skeleton className="w-[300px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+            <section className="flex items-center gap-3 rounded-md border px-4 py-3 pr-8">
+              <div className="hidden flex-1 lg:block">
+                <Skeleton className="max-w-[200px] flex-1 rounded-3xl py-1 text-base font-normal text-transparent">
                   .
                 </Skeleton>
               </div>
               <div className="flex-1">
-                <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+                <Skeleton className="max-w-[200px] flex-1 rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
+                  .
+                </Skeleton>
+              </div>
+              <div className="hidden flex-1 xl:block">
+                <Skeleton className="max-w-[200px] rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
                   .
                 </Skeleton>
               </div>
               <div className="flex-1">
-                <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
+                <Skeleton className="w-[180px] flex-1 rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
                   .
                 </Skeleton>
               </div>
-              <div className="flex-1">
-                <Skeleton className="w-[200px] rounded-3xl px-3 py-1 text-sm font-normal text-transparent">
-                  .
-                </Skeleton>
-              </div>
+
+              <div className="h-[10px] w-6 shrink-0" />
             </section>
           ) : (
             <>
@@ -208,25 +236,16 @@ function Usuarios() {
                 ))}
               </section>
 
-              <section className="flex flex-row items-center justify-between">
-                <p className="text-sm">
-                  Mostrando{" "}
-                  <span className="font-bold">{`${(page - 1) * entriesPerPage + 1}-${page * entriesPerPage > usuarios.length ? usuarios.length : page * entriesPerPage}`}</span>{" "}
-                  de <span className="font-bold">{usuarios.length}</span> usuarios
-                </p>
-                <div className="space-x-2">
-                  <Button variant={"secondary"} onClick={prevPage} disabled={page === 1}>
-                    Anterior
-                  </Button>
-                  <Button
-                    variant={"secondary"}
-                    onClick={nextPage}
-                    disabled={page === totalPages || totalPages === 0}
-                  >
-                    Siguiente
-                  </Button>
-                </div>
-              </section>
+              <ContentFooter
+                page={page}
+                totalPages={totalPages}
+                allFilteredItems={allFilteredItems}
+                indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+                indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
+                prevPage={prevPage}
+                nextPage={nextPage}
+                itemName="usuarios"
+              />
             </>
           )}
         </MainContent>

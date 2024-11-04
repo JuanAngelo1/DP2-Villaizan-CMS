@@ -3,21 +3,22 @@ import { Ellipsis } from "lucide-react";
 function UsuariosTableHeader() {
   return (
     <>
-      <section className="text-muted-foreground flex items-center rounded-md border bg-gray-50 px-4 py-3 pr-8">
-        <div className="flex-1">
+      <section className="text-muted-foreground flex items-center gap-3 rounded-md border bg-gray-50 px-4 py-3 pr-8">
+        <div className="hidden flex-1 lg:block">
           <p>Usuario</p>
         </div>
-        <div className="flex-1">
+        <div className="min-w-0 flex-1 text-xs md:text-base">
           <p>Correo</p>
         </div>
-        <div className="flex-1">
+        <div className="min-w-[130px] flex-1 text-xs md:text-base">
           <p>Rol</p>
         </div>
-        <div className="flex-1">
+        <div className="hidden flex-1 xl:block">
           <p>Fecha de creación</p>
         </div>
-        {/* <Ellipsis /> */}
-        <div className="w-6">{<p className="-translate-x-7">Acciones</p>}</div>
+        <div className="w-6">
+          {<p className="-translate-x-4 text-xs md:-translate-x-7 md:text-base">Acciones</p>}
+        </div>
       </section>
     </>
   );
