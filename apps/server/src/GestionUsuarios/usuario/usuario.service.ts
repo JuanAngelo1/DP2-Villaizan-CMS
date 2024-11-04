@@ -78,7 +78,7 @@ export class UsuarioService {
         contrasena: 'google',
         usuariocreacion: '2A',
         vi_rol: {
-          connect: { id: rol.id }, // Asegura que rol.id esté presente y sea válido
+          connect: { id: rol.id }, 
         },
         vi_persona: {
           connect: { id: generatedPersonaId },
@@ -92,6 +92,7 @@ export class UsuarioService {
       },
       include: {
         vi_rol: true,
+        vi_persona: true
       },
     });
 
@@ -104,6 +105,7 @@ export class UsuarioService {
       where: { correo: email },
       include: {
         vi_rol: true,
+        vi_persona: true
       },
     });
 
