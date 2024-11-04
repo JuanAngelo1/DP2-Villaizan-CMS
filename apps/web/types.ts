@@ -80,7 +80,9 @@ export type Usuario = {
   apellido: string;
   correo: string;
   id_rol: string;
+  vi_rol: Rol;
   creadoen: Date;
+  imagenperfil: string;
   //!TODO -> Añadir los campos faltantes
 };
 

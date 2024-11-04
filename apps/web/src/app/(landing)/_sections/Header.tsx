@@ -1,11 +1,12 @@
 "use client";
 
-import { GlobeLock, Loader2 } from "lucide-react";
+import { GlobeLock, KeySquare, Loader2, LogOut } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { cn } from "@repo/ui/lib/utils";
 import { handleSignOut } from "../../actions/authActions";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
@@ -46,11 +47,45 @@ const Header: React.FC = () => {
         {/* Acciones de usuario (oculto en móviles) */}
         <div className="z-[51] hidden items-center space-x-2 md:flex">
           {status === "loading" ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-3"></Loader2>
+            <Loader2 className="mr-3 h-4 w-4 animate-spin"></Loader2>
           ) : session ? (
-            <Button className="text-lg font-bold" onClick={() => handleSignOut()} variant="link">
-              Cerrar sesión
-            </Button>
+            <Popover>
+              <PopoverTrigger>
+                <Image
+                  width={20}
+                  height={20}
+                  src={session.user.db_info.imagenperfil || "/default-profile.png"}
+                  className="h-full w-fit rounded-full border"
+                  alt="PFP"
+                />
+              </PopoverTrigger>
+              <PopoverContent
+                className="flex w-[160px] flex-col gap-1 overflow-hidden p-1"
+                side="bottom"
+                align="end"
+              >
+                <p className="w-full truncate px-2 py-1 text-sm font-bold">
+                  {session.user.db_info.nombre + session.user.db_info.apellido}
+                </p>
+                {session.user.db_info.vi_rol.nombre === "Administrador" && (
+                  <Link
+                    className={cn(buttonVariants({ variant: "ghost" }), "flex flex-row justify-start gap-2")}
+                    href="/admin"
+                  >
+                    <KeySquare className="h-4 w-4 shrink-0" />
+                    <p className="">Admin</p>
+                  </Link>
+                )}
+                <Button
+                  variant={"ghost"}
+                  className="flex flex-row justify-start gap-2"
+                  onClick={() => handleSignOut()}
+                >
+                  <LogOut className="h-4 w-4 shrink-0" />
+                  <p className="">Cerrar sesión</p>
+                </Button>
+              </PopoverContent>
+            </Popover>
           ) : (
             <Link
               href="/login"
@@ -60,13 +95,6 @@ const Header: React.FC = () => {
               Iniciar sesión
             </Link>
           )}
-          <Link
-            className={cn(buttonVariants({ variant: "ghost" }), "h-9 w-9 hover:bg-[#c9bf9e]")}
-            href={"/admin"}
-            onClick={() => setIsMobileMenuOpen(false)}
-          >
-            <GlobeLock className="h-5 w-5 shrink-0" />
-          </Link>
         </div>
 
         {/* Botón de menú móvil */}
@@ -89,58 +117,75 @@ const Header: React.FC = () => {
       {/* Menú móvil desplegable */}
       {isMobileMenuOpen && (
         <div className="md:hidden">
-          <nav className="flex flex-col items-center space-y-8 bg-red-600 py-4">
+          <nav className="flex flex-col items-start space-y-8 bg-red-600 px-4 py-4">
+            {status === "authenticated" && session && (
+              <div className="flex h-[60px] flex-row items-center gap-3 text-white">
+                <Image
+                  alt="PFP"
+                  height={10}
+                  width={10}
+                  src={session?.user.db_info.imagenperfil || "/default-profile.png"}
+                  className="h-full w-auto rounded-full border border-white object-cover"
+                />
+                <section className="flex flex-col">
+                  <p className="text-xl font-bold leading-5">
+                    {session.user.db_info.nombre + session.user.db_info.apellido}
+                  </p>
+                  <p>{session.user.db_info.vi_rol.nombre}</p>
+                </section>
+              </div>
+            )}
             <Link
               href="#sabores"
-              className="text-lg text-white hover:underline"
+              className="w-full text-lg text-white hover:underline"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Sabores
             </Link>
             <Link
               href="#nosotros"
-              className="text-lg text-white hover:underline"
+              className="w-full text-lg text-white hover:underline"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Nosotros
             </Link>
             <Link
               href="#publicaciones"
-              className="text-lg text-white hover:underline"
+              className="w-full text-lg text-white hover:underline"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Publicaciones
             </Link>
+            {session?.user.db_info.vi_rol.nombre === "Administrador" && (
+              <Link
+                className="w-full text-lg text-white hover:underline"
+                href={"/admin"}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Pagina de administrador
+              </Link>
+            )}
             {status === "loading" ? (
-              <Button isLoading loaderClassname="w-6 h-6" variant="ghost"></Button>
+              <Loader2 className="h-4 w-4 animate-spin stroke-white"></Loader2>
             ) : session ? (
-              <Button
-                className="text-lg text-white"
+              <p
+                className="w-full cursor-pointer text-lg text-white hover:underline"
                 onClick={() => {
                   handleSignOut();
                   setIsMobileMenuOpen(false);
                 }}
               >
                 Cerrar sesión
-              </Button>
+              </p>
             ) : (
-              <Button className="text-lg text-white">
-                <Link
-                  href="/login"
-                  className="text-lg text-white hover:underline"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Iniciar sesión
-                </Link>
-              </Button>
+              <Link
+                href="/login"
+                className="w-full text-lg text-white hover:underline"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Iniciar sesión
+              </Link>
             )}
-            <Link
-              className={cn(buttonVariants(), "h-9 w-9")}
-              href={"/admin"}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <GlobeLock className="h-5 w-5 shrink-0" />
-            </Link>
           </nav>
         </div>
       )}

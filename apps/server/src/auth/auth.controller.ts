@@ -5,11 +5,15 @@ import {
   NotFoundException,
   HttpException,
   HttpStatus,
+  Res,
+  Param
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthPayLoad } from './dto/auth.dto';
 import { RequestResetPasswordDto } from './dto/request-reset-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { Request, Response } from 'express';
+import { LoginGoogleDto } from './dto/login-google.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,6 +22,11 @@ export class AuthController {
   @Post()
   login(@Body() payload: AuthPayLoad) {
     return this.authService.login(payload);
+  }
+
+  @Post('infoUsuario')
+  async loginGoogle(@Body() loginGoogleDto: LoginGoogleDto) {
+    return this.authService.infoUsuario(loginGoogleDto);
   }
 
   //Tomar como referencia el siguiente código

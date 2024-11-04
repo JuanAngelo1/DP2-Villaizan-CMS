@@ -29,13 +29,7 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 
 const mockText =
-  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has" +
-  "been the <strong><span style='color: #35E8AE'>industry's standard</span></strong> dummy text ever since the 1500s, when an unknown printer took a" +
-  "galley of type and scrambled it to make a type specimen book. It has survived not only five " +
-  "<strong>CENTURIES</strong>, but also the leap into electronic typesetting, remaining essentially unchanged. " +
-  "It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum" +
-  "passages, and more recently with desktop publishing software like Aldus PageMaker including " +
-  "versions of Lorem Ipsum";
+  "En <strong>Helados Villaizan</strong>, la paleta de <span style='color: #c0392b'>manzana</span> no es solo un sabor; es una celebración de la frescura y el dulzor de esta fruta. La inspiración para esta paleta surgió cuando, en un viaje por las tierras altas de Tarapoto, la familia Villaizan descubrió una pequeña granja donde se cultivaban manzanas de un color rojo profundo y un aroma irresistible. Fascinados por la frescura de cada mordisco, decidieron capturar esa experiencia en un helado. El sabor <span style='color: #c0392b'>manzana</span> en <strong>Helados Villaizan</strong> se elabora a partir de jugo de manzana natural, cuidadosamente seleccionado y prensado en frío para mantener su sabor auténtico y sus beneficios.";
 
 type Modes = "history" | "benefits" | "products" | null;
 type Fruta = {
@@ -194,15 +188,15 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
       </AnimatePresence>
 
       {selectedMode === "products" && (
-        <div className="grid grid-cols-6 gap-2 ">
+        <div className="grid grid-cols-6 gap-2">
           <ProductoItem />
           <ProductoItem />
           <ProductoItem />
-          <div className="col-span-3  rounded-lg bg-red-800 p-4 text-lg flex flex-col justify-between hover:bg-red-900 cursor-pointer transition-all">
+          <div className="col-span-3 flex cursor-pointer flex-col justify-between rounded-lg bg-red-800 p-4 text-lg transition-all hover:bg-red-900">
             <p>Visita nuestra tienda para ver todos los productos.</p>
             <div className="flex flex-row items-center justify-between">
               <p>Tienda</p>
-              <ChevronRight className="stroke-white"/>
+              <ChevronRight className="stroke-white" />
             </div>
           </div>
         </div>
@@ -274,7 +268,7 @@ function CircleButton({
 
 function ProductoItem() {
   return (
-    <div className="group/maincard relative flex h-[120px] w-fit flex-col rounded-lg bg-red-200 p-3 transition-colors hover:bg-red-300 cursor-pointer">
+    <div className="group/maincard relative flex h-[120px] w-fit cursor-pointer flex-col rounded-lg bg-red-200 p-3 transition-colors hover:bg-red-300">
       <div className="absolute -left-2 -top-2 flex h-[45px] w-[45px] items-center justify-center rounded-full border-2 border-red-800 bg-red-700 text-lg font-bold text-white">
         70%
       </div>

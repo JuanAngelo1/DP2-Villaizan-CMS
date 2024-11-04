@@ -17,9 +17,11 @@ CREATE TABLE vi_usuario (
     usuarioactualizacion VARCHAR(50),
     resetToken VARCHAR(255) DEFAULT NULL, -- Campo para el token de restablecimiento de contraseña
     resetTokenExpiracion TIMESTAMP DEFAULT NULL, -- Campo para la fecha de expiración del token
+    imagenPerfil TEXT, -- Nuevo campo para la URL de la imagen de perfil, permite NULL y tipo TEXT
     CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
     CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id)
 );
+
 
 
 CREATE TABLE vi_rol (
@@ -67,6 +69,8 @@ CREATE TABLE vi_persona (
     numerodocumento VARCHAR(20),
     razoneliminacion VARCHAR(255),
     estado VARCHAR(50) NOT NULL,
+    sexo VARCHAR(25), -- Nuevo campo para el sexo de la persona
+    edad INT, -- Nuevo campo para la edad de la persona
     --trazabilidad
     estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
     desactivadoen TIMESTAMP,
