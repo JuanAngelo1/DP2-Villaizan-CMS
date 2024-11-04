@@ -77,11 +77,15 @@ export class UsuarioController {
     }
   }
 
-  
   @Post('loginGoogle')
-  async verifyCreateGoogleUser( @Body() data: GoogleUserDto, @Res() response: Response): Promise<any> {
+  async verifyCreateGoogleUser(
+    @Body() data: GoogleUserDto,
+    @Res() response: Response,
+  ): Promise<any> {
     try {
-      const existingUser = await this.usuarioService.findByEmailWithRole(data.email);
+      const existingUser = await this.usuarioService.findByEmailWithRole(
+        data.email,
+      );
       if (existingUser) {
         return response.status(201).json({
           status: 'Success',
@@ -90,7 +94,7 @@ export class UsuarioController {
         });
       }
 
-    const result = await this.usuarioService.createUserGoogle(data);
+      const result = await this.usuarioService.createUserGoogle(data);
       return response.status(201).json({
         status: 'Success',
         message: 'Usuario creado exitosamente',
@@ -105,8 +109,6 @@ export class UsuarioController {
       });
     }
   }
-
-
 
   @Get(':id')
   async getUsuarioByID(

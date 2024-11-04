@@ -10,7 +10,9 @@ async function AdminLayout({ children }: { children: React.ReactNode }) {
     redirect("/login?callbackUrl=/admin");
   }
 
-  //! If user doesnt have admin role, redirect to home
+  if (user.db_info.vi_rol.nombre !== "Administrador") {
+    redirect("/");
+  }
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-primary-foreground">

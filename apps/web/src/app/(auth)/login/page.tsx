@@ -1,6 +1,7 @@
 "use client";
 
 import { handleCredentialsSignIn, handleGoogleSignIn } from "@web/src/app/actions/authActions";
+import { KeySquare } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -9,11 +10,11 @@ import { Input } from "@repo/ui/components/input";
 import { Separator } from "@repo/ui/components/separator";
 import ErrorMessage from "../_components/ErrorMessage";
 import LogoBackHome from "../_components/LogoBackHome";
-import { KeySquare } from "lucide-react";
 
 function LoginPage() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
+  const code = searchParams.get("code");
   const callbackUrl = searchParams.get("callbackUrl");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +46,8 @@ function LoginPage() {
       </p>
       <Separator orientation="horizontal" className="mt-7 w-[460px]" />
       <div className="mt-7 flex w-[400px] flex-col gap-2">
-        {error === "CredentialsSignin" && <ErrorMessage message={"Correo o contraseña incorrecta"} />}
+        {/* {error === "CredentialsSignin" && <ErrorMessage message={error} />} */}
+        <ErrorMessage message={code} />
 
         <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} type="email" />
         <Input placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} type="password" />
@@ -70,7 +72,7 @@ function LoginPage() {
           <Separator orientation="horizontal" className="flex-1" />
         </div>
         <Button className="mt-2" variant={"outline"} onClick={() => onLoginGoogle()}>
-          <img src="google-logo.svg" className="w-5 h-5"/>
+          <img src="google-logo.svg" className="h-5 w-5" />
           <p>Inicia sesión con Google</p>
         </Button>
       </div>
