@@ -1,3 +1,10 @@
+export class ControlledError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ControlledError";
+  }
+}
+
 export type Response<T> = {
   data: {
     status: "Success" | "Error";
