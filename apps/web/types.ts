@@ -86,12 +86,29 @@ export type Usuario = {
   nombre: string;
   apellido: string;
   correo: string;
-  id_rol: string;
-  vi_rol: Rol;
-  creadoen: Date;
   imagenperfil: string;
-  //!TODO -> Añadir los campos faltantes
+  id_rol: string;
+  vi_rol?: Rol;
+  id_persona: string;
+  vi_persona?: Persona;
+  creadoen: Date;
 };
+
+export type Persona = {
+  id: string;
+  tipodocumento: string | null;
+  numerodocumento: string | null;
+  razoneliminacion: string | null;
+  sexo: string | null;
+  edad: number | null;
+  estado: string;
+  estaactivo: boolean;
+  desactivadoen: Date | null;
+  creadoen: Date;
+  actualizadoen: Date;
+  usuariocreacion: string;
+  usuarioactualizacion: string | null;
+}
 
 export type Comentario = {
   comentario: string;

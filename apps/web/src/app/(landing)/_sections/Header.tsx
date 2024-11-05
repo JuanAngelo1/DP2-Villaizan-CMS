@@ -1,6 +1,6 @@
 "use client";
 
-import { GlobeLock, KeySquare, Loader2, LogOut } from "lucide-react";
+import { KeySquare, Loader2, LogOut } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { cn } from "@repo/ui/lib/utils";
-import { handleSignOut } from "../../actions/authActions";
+import { handleSignOut } from "../../../../actions/authActions";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Header: React.FC = () => {
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
                 <p className="w-fit max-w-full truncate px-2 py-1 text-sm font-bold">
                   {session.user.db_info.nombre + " " + session.user.db_info.apellido}
                 </p>
-                {session.user.db_info.vi_rol.nombre === "Administrador" && (
+                {session.user.db_info.vi_rol?.nombre === "Administrador" && (
                   <Link
                     className={cn(buttonVariants({ variant: "ghost" }), "flex flex-row justify-start gap-2")}
                     href="/admin"
@@ -131,7 +131,7 @@ const Header: React.FC = () => {
                   <p className="text-xl font-bold leading-5">
                     {session.user.db_info.nombre + session.user.db_info.apellido}
                   </p>
-                  <p>{session.user.db_info.vi_rol.nombre}</p>
+                  <p>{session.user.db_info.vi_rol?.nombre}</p>
                 </section>
               </div>
             )}
@@ -156,7 +156,7 @@ const Header: React.FC = () => {
             >
               Publicaciones
             </Link>
-            {session?.user.db_info.vi_rol.nombre === "Administrador" && (
+            {session?.user.db_info.vi_rol?.nombre === "Administrador" && (
               <Link
                 className="w-full text-lg text-white hover:underline"
                 href={"/admin"}

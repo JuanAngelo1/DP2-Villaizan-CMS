@@ -24,16 +24,10 @@ const initUsuario: Usuario = {
   nombre: "",
   apellido: "",
   correo: "",
-  id_rol: "",
-  creadoen: new Date(),
   imagenperfil: "",
-  vi_rol: {
-    id: "10",
-    nombre: "Hola",
-    actualizadoen: new Date(),
-    eliminadoen: new Date(),
-    estaactivo: true,
-  },
+  id_rol: "",
+  id_persona: "",
+  creadoen: new Date(),
 };
 
 function Usuarios() {

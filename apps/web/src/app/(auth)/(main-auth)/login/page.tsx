@@ -1,15 +1,14 @@
 "use client";
 
-import { handleCredentialsSignIn, handleGoogleSignIn } from "@web/src/app/actions/authActions";
-import { KeySquare } from "lucide-react";
+import { handleCredentialsSignIn, handleGoogleSignIn } from "@web/actions/authActions";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Separator } from "@repo/ui/components/separator";
-import ErrorMessage from "../_components/ErrorMessage";
-import LogoBackHome from "../_components/LogoBackHome";
+import ErrorMessage from "../../_components/ErrorMessage";
+import LogoBackHome from "../../_components/LogoBackHome";
 
 function LoginPage() {
   const searchParams = useSearchParams();

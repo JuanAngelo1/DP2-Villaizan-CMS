@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { cn } from "@repo/ui/lib/utils";
-import { handleSignOut } from "../../actions/authActions";
+import { handleSignOut } from "../../../../actions/authActions";
 
 type sidebarItem = {
   path: string;

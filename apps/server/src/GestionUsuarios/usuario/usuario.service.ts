@@ -24,7 +24,8 @@ export class UsuarioService {
         id,
       },
       include: {
-        vi_rol: true
+        vi_rol: true,
+        vi_persona: true
       }
     });
   }
