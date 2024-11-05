@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
 import { UsuarioRepository } from './usuario.repository';
 import { GoogleUserDto } from './dto/google-user.dto';
+import { PersonaUpdateDTO } from './dto/persona.dto';
 
 @Injectable()
 export class UsuarioService {
@@ -168,6 +169,35 @@ export class UsuarioService {
       },
       data,
     });
+  }
+
+  async updatePersonaInfo(id: string, data: PersonaUpdateDTO): Promise<any> {
+
+    const usuario = await this.prisma.vi_usuario.findUnique({
+      where: {
+        id,
+      }
+    });
+
+    const persona= await this.prisma.vi_persona.update({
+      where: {
+        id: usuario.id_persona,
+      },
+      data: data,
+    });
+
+    const user = await this.prisma.vi_usuario.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        vi_persona: true,
+        vi_rol: true
+      }
+    });
+
+    return user;
+
   }
 
   async deleteUsuario(id: string): Promise<void> {
