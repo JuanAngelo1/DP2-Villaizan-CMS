@@ -16,6 +16,17 @@ class CustomError extends CredentialsSignin {
   }
 }
 
+function getCookieHostname() {
+  const hostname = new URL(process.env.NEXT_PUBLIC_APP_URL!).hostname;
+  const [subDomain] = hostname.split(".");
+
+  const cookieDomain = hostname.replace(`${subDomain}.`, "");
+  console.log("Cookie domain: ", cookieDomain);
+  return cookieDomain;
+}
+
+const domain = getCookieHostname();
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -78,7 +89,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       try {
         if (token) {
-          token.sub = user?.db_info?.id || token.sub
+          token.sub = user?.db_info?.id || token.sub;
           const user_id = token.sub;
 
           const response: Response<Usuario> = await axios.get(
@@ -113,8 +124,43 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/login",
-    error: "/login",
-    signOut: "/",
+    // signIn: "/login",
+    // error: "/login",
+    // signOut: "/",
+    signIn: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    error: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    signOut: `${process.env.NEXT_PUBLIC_APP_URL}`,
+  },
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+        path: "/",
+        domain,
+      },
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+        path: "/",
+        domain,
+      },
+    },
+    csrfToken: {
+      name: `next-auth.csrf-token`,
+      options: {
+        sameSite: "none",
+        secure: true,
+        httpOnly: true,
+        path: "/",
+        domain,
+      },
+    },
   },
 });
