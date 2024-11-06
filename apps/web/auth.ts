@@ -123,9 +123,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    signIn: "/login",
-    error: "/login",
-    signOut: "/",
+    // signIn: "/login",
+    // error: "/login",
+    // signOut: "/",
+    signIn: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    error: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    signOut: `${process.env.NEXT_PUBLIC_APP_URL}`,
   },
   cookies: {
     sessionToken: {
