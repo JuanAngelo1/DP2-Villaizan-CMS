@@ -141,9 +141,10 @@ export class PublicacionController {
     }
   }
 
-  @Put('actualizarVersion/:id') async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: UpdateVersionDto) {
+  @Put('actualizarVersion/:id') 
+  async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: UpdateVersionDto) {
     try {
-      const result= this.publicacionService.updateVersion(id, data);
+      const result= await this.publicacionService.updateVersion(id, data);
       return {
         status: 'Success',
         message: 'Versión actualizada correctamente',
@@ -158,11 +159,16 @@ export class PublicacionController {
         };
       }
   }
-  
 
+  @Put('publicar/:idPub/:idVer')
+  async publicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
+      return await this.publicacionService.publicarVersion(idPub,idVer);
+  }
 
-
-
+  @Put('despublicar/:idPub/:idVer')
+  async despublicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
+      return await this.publicacionService.despublicarVersion(idPub,idVer);
+  }
 
   @Put('archivar/:id')
   async archivarPublicacion(@Param('id', ParseIntPipe) id: number): Promise<any> {
@@ -196,6 +202,17 @@ export class PublicacionController {
               message: 'Error al desarchivada publicacion',
           };
       }
+  }
+
+
+  @Post('duplicar/:idPub/:idVer')
+  async duplicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
+      return await this.publicacionService.duplicarVersion(idPub,idVer);
+  }
+
+  @Get('slug/:slug')
+  async getPublicacionBySlug(@Param('slug') slug: string) {
+    return await this.publicacionService.getPublicacionBySlug(slug);
   }
 
 
@@ -251,7 +268,7 @@ export class PublicacionController {
     return publicaciones;
   }
 
-  @Delete(':id')
+  @Put('eliminarPublicacion/:id')
   async deletePublicacionByID(@Param('id',ParseIntPipe) id: number) {
     try {
       return await this.publicacionService.deletePublicacion(id);
@@ -260,6 +277,14 @@ export class PublicacionController {
     }
   }
 
+  @Put('eliminarVersion/:id')
+  async deleteVersionByID(@Param('id',ParseIntPipe) id: number) {
+    try {
+      return await this.publicacionService.deleteVersion(id);
+    } catch (error) {
+      throw new NotFoundException('Version no existe');
+    }
+  }
 
   @Get('estadosPublicacion')
   async listarEstadosPublicacion(): Promise<any> {
