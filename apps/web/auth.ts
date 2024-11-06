@@ -87,14 +87,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id as string;
-        token.name = user.name as string; 
-        token.email = user.email as string;
-      }
-      return token
-      // Se comento para probar el id en SSO, descomentar mas adelante
-      /*
       try {
         if (token) {
           token.sub = user?.db_info?.id || token.sub;
@@ -116,15 +108,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       } catch (error: any) {
         console.log("Error when fetching user data in JWT token: ", error.response);
         return null;
-      }*/
+      }
     },
     async session({ token, session }) {
-      session.user.id = token.id as string;
-      session.user.name = token.name as string;
-      session.user.email = token.email as string;
-      return session
-      // Se comento para probar el id en SSO, descomentar mas adelante
-      /*
       //@ts-ignore
       session.user.id = token.db_info.id;
       //@ts-ignore
@@ -133,7 +119,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.name = token.db_info.nombre;
       //@ts-ignore
       session.user.db_info = token.db_info;
-      */
 
       return session;
     },
