@@ -204,7 +204,6 @@ export class PublicacionController {
       }
   }
 
-
   @Post('duplicar/:idPub/:idVer')
   async duplicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
       return await this.publicacionService.duplicarVersion(idPub,idVer);
@@ -214,6 +213,12 @@ export class PublicacionController {
   async getPublicacionBySlug(@Param('slug') slug: string) {
     return await this.publicacionService.getPublicacionBySlug(slug);
   }
+
+  @Get('versionesPublicadas/:numero')
+  async getFirstsActivePublicaciones(@Param('numero', ParseIntPipe) numero: number) {
+    return await this.publicacionService.getFirstsActivePublicaciones(numero);
+  }
+
 
 
   @Get('versionesRecientes')
@@ -253,20 +258,7 @@ export class PublicacionController {
     }
   }
 
-  @Get('recienEditados/:numero')
-  async getFirstsEdited(@Param('numero') numero: string) {
-    const numeroParsed = parseInt(numero);
-    if (isNaN(numeroParsed) || numeroParsed <= 0) {
-      throw new BadRequestException(
-        'El parámetro debe ser un número entero positivo',
-      );
-    }
-    const publicaciones =
-      await this.publicacionService.getFirstsEditedPublicacion(numeroParsed);
-    if (!publicaciones || publicaciones.length === 0)
-      throw new BadRequestException('Publicación no existe');
-    return publicaciones;
-  }
+
 
   @Put('eliminarPublicacion/:id')
   async deletePublicacionByID(@Param('id',ParseIntPipe) id: number) {

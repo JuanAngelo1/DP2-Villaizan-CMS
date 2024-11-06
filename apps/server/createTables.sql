@@ -182,7 +182,7 @@ CREATE TABLE vi_version_publicacion (
     titulo VARCHAR(255) NOT NULL,
     urlImagen VARCHAR(255),
     descripcionSEO VARCHAR(255),
-    slug VARCHAR(255) UNIQUE,  -- Restricción UNIQUE para el campo slug
+    slug VARCHAR(255),  -- Restricción UNIQUE para el campo slug
     richtext TEXT,  -- Nuevo campo richtext
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,

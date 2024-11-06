@@ -750,26 +750,105 @@ export class PublicacionService {
   }
   
 
-  async getFirstsEditedPublicacion(numero: number) {
-      const publicaciones = await this.prisma.vi_publicacion.findMany({
-        take: numero,
-        select: {
-          id: true,
-          vi_version_publicacion: {
-            orderBy: {
-              fechaultimamodificacion: 'desc',  
-            },
-            take: 1,  
-            select: {
-              titulo: true,
-              slug: true,
-              fechaultimamodificacion: true,
-            }
-          }
-        }
+
+
+
+  
+  async getFirstsActivePublicaciones(numero: number): Promise<any> {
+    try {
+      // Buscar el estado "Publicación activa"
+      const estadoPublicado = await this.prisma.vi_estado_version.findFirst({
+        where: { nombre: 'Publicacion activa' },
       });
-      return publicaciones;
+  
+      if (!estadoPublicado) {
+        throw new Error('Estado "Publicacion activa" no encontrado');
+      }
+  
+      // Obtener las primeras `n` versiones de publicación con estado "Publicacion activa"
+      const versionesPublicadas = await this.prisma.vi_version_publicacion.findMany({
+        where: {
+          id_estado: estadoPublicado.id,  // Filtrar por estado "Publicacion activa"
+          estaactivo: true,  // Solo versiones activas
+        },
+        orderBy: {
+          fechaultimamodificacion: 'desc',  // Ordenar por fecha de última modificación
+        },
+        take: numero,  // Limitar los resultados a `numero`
+        include: {
+          vi_imagen_version: {
+            select: {
+              id: true,
+              urlimagen: true,
+              descripcion: true,
+              fechacreacion: true,
+            },
+          },
+          vi_publicacion_x_categoria: {
+            select: {
+              vi_categoria_publicacion: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  descripcion: true,
+                  colorfondo: true,
+                  colortexto: true,
+                  estaactivo: true,
+                },
+              },
+            },
+          },
+          vi_publicacion_x_etiqueta: {
+            select: {
+              vi_etiqueta_publicacion: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  descripcion: true,
+                  colorfondo: true,
+                  colortexto: true,
+                  estaactivo: true,
+                },
+              },
+            },
+          },
+        },
+      });
+  
+      // Estructurar la respuesta para simplificar las categorías y etiquetas
+      const resultado = versionesPublicadas.map(version => ({
+        id: version.id,
+        id_publicacion: version.id_publicacion,
+        id_estado: version.id_estado,
+        titulo: version.titulo,
+        urlimagen: version.urlimagen,
+        descripcion: version.descripcion,
+        slug: version.slug,
+        richtext: version.richtext,
+        fechacreacion: version.fechacreacion,
+        fechaultimamodificacion: version.fechaultimamodificacion,
+        estaactivo: version.estaactivo,
+        imagenes: version.vi_imagen_version,
+        categorias: version.vi_publicacion_x_categoria.map(categoria => categoria.vi_categoria_publicacion),
+        etiquetas: version.vi_publicacion_x_etiqueta.map(etiqueta => etiqueta.vi_etiqueta_publicacion),
+      }));
+  
+      return {
+        status: 'Success',
+        message: `Primeras ${numero} versiones con estado Publicacion activa`,
+        result: resultado,
+      };
+    } catch (error) {
+      console.error('Error al obtener las versiones activas:', error);
+      return {
+        status: 'Error',
+        message: 'Error al obtener las versiones activas',
+        result: null,
+      };
+    }
   }
+  
+  
 
   async getPublicacionesCantidadComentarios(): Promise<any[]> {
     const publicaciones = await this.prisma.vi_publicacion.findMany();
