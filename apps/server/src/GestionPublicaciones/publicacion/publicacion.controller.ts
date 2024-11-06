@@ -26,6 +26,82 @@ export class PublicacionController {
 
   //Metodos APIs
 
+  @Get()
+  async getAllPubs(@Req() request: Request, @Res() response: Response,): Promise<any> {
+    try {
+      const result = await this.publicacionService.getAllPublicaciones();
+      return response.status(200).json({
+        status: 'Success',
+        message: 'Publicaciones Encontradas',
+        result: result,
+      });
+    } catch (err) {
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Error al encontrar las publicaciones',
+        result: [],
+      });
+    }
+  }
+
+  @Get(':id')
+  async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getPublicacionByID(id);
+      return{
+        status: 'Success',
+        message: 'Publicación encontrada',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener publicacion por ID',
+        result: [],
+      };
+    }
+  }
+
+  @Get('versiones/:id')
+  async getVersionesbyID(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getAllVersiones(id);
+      return{
+        status: 'Success',
+        message: 'Versiones de la publicacion encontradas',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener las versiones de la publicacion',
+        result: [],
+      };
+    }
+  }
+
+  @Get('version/:id')
+  async getVersionbyID(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getVersionbyID(id);
+      return{
+        status: 'Success',
+        message: 'Version encontrada',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener la version',
+        result: [],
+      };
+    }
+  }
+
+
   @Get('versionesRecientes')
   async getPublicaciones() {
     try{
@@ -42,24 +118,6 @@ export class PublicacionController {
         message: 'Error al obtener publicaciones recientes',
         result: [],
       };
-    }
-  }
-
-  @Get()
-  async getAllPubs(@Req() request: Request, @Res() response: Response,): Promise<any> {
-    try {
-      const result = await this.publicacionService.getAllPublicaciones();
-      return response.status(200).json({
-        status: 'Success',
-        message: 'Publicaciones Encontradas',
-        result: result,
-      });
-    } catch (err) {
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al encontrar las publicaciones',
-        result: [],
-      });
     }
   }
 
@@ -81,43 +139,26 @@ export class PublicacionController {
     }
   }
 
-  @Post('crearPublicacion')
-  async createPublicacion(@Body() data: CreatePublicacionDto) {
-    try {
-      const result = await this.publicacionService.createPublicacion(data);
-      return {
-        status: 'Success',
-        message: 'Publicación creada exitosamente',
-        result: result,
-      };
-    } catch (err) {
-      console.error(err);
-      return {
-        status: 'Error',
-        message: 'Error al crear la publicacion',
-        result: [],
-      };
-    }
-  }
+  // @Post('crearPublicacion')
+  // async createPublicacion(@Body() data: CreatePublicacionDto) {
+  //   try {
+  //     const result = await this.publicacionService.createPublicacion(data);
+  //     return {
+  //       status: 'Success',
+  //       message: 'Publicación creada exitosamente',
+  //       result: result,
+  //     };
+  //   } catch (err) {
+  //     console.error(err);
+  //     return {
+  //       status: 'Error',
+  //       message: 'Error al crear la publicacion',
+  //       result: [],
+  //     };
+  //   }
+  // }
 
-  @Get('obtener/:id')
-  async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
-    try{
-      const result= await this.publicacionService.getPublicacionByID(id);
-      return{
-        status: 'Success',
-        message: 'Publicación encontrada',
-        result: result,
-      };
-    }catch(err){
-      console.error(err);
-      return{
-        status: 'Error',
-        message: 'Error al obtener publicacion por ID',
-        result: [],
-      };
-    }
-  }
+
 
   @Get('recienEditados/:numero')
   async getFirstsEdited(@Param('numero') numero: string) {

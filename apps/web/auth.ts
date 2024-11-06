@@ -88,7 +88,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       try {
         if (token) {
-          token.sub = user?.db_info?.id || token.sub;
+          token.sub = user?.db_info?.id || token.sub
           const user_id = token.sub;
 
           const response: Response<Usuario> = await axios.get(
@@ -123,12 +123,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   pages: {
-    // signIn: "/login",
-    // error: "/login",
-    // signOut: "/",
-    signIn: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
-    error: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
-    signOut: `${process.env.NEXT_PUBLIC_APP_URL}`,
+    signIn: "/login",
+    error: "/login",
+    signOut: "/",
   },
   cookies: {
     sessionToken: {

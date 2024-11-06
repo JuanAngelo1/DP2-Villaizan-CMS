@@ -24,140 +24,69 @@ export class PublicacionService {
     const publicaciones = await this.prisma.vi_publicacion.findMany({
       where: {
         estaactivo: true,
-      },
-      include: {
-        vi_publicacion_x_etiqueta: {
-          include: {
-            vi_etiqueta_publicacion: {
-              select: {
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-              },
-            },
-          },
-        },
-        vi_publicacion_x_categoria: { 
-          include: {
-            vi_categoria_publicacion: {
-              select: {
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-              },
-            },
-          },
-        },
-      },
+      }
     });
-  
-    // Mapeamos el resultado para cambiar los nombres de las claves
-    return publicaciones.map(publicacion => ({
-      ...publicacion,
-      etiquetas: publicacion.vi_publicacion_x_etiqueta.map(etiquetaRel => ({
-        nombre: etiquetaRel.vi_etiqueta_publicacion.nombre,
-        descripcion: etiquetaRel.vi_etiqueta_publicacion.descripcion,
-        colorfondo: etiquetaRel.vi_etiqueta_publicacion.colorfondo,
-        colortexto: etiquetaRel.vi_etiqueta_publicacion.colortexto,
-      })),
-      categorias: publicacion.vi_publicacion_x_categoria.map(categoriaRel => ({
-        nombre: categoriaRel.vi_categoria_publicacion.nombre,
-        descripcion: categoriaRel.vi_categoria_publicacion.descripcion,
-        colorfondo: categoriaRel.vi_categoria_publicacion.colorfondo,
-        colortexto: categoriaRel.vi_categoria_publicacion.colortexto,
-      })),
-      vi_publicacion_x_etiqueta: undefined,  // Eliminamos el campo original etiquetas
-      vi_publicacion_x_categoria: undefined, // Eliminamos el campo original categorias
-    }));
+    return publicaciones;
   }
   
-  async getPublicacionesCantidadComentarios(): Promise<any[]> {
-    const publicaciones = await this.prisma.vi_publicacion.findMany();
-
-    const publicacionesConCantidadComentarios = await Promise.all(
-        publicaciones.map(async (publicacion) => {
-            const cantidadComentarios = await this.prisma.vi_comentario.count({
-                where: {
-                    id_publicacion: publicacion.id,
-                },
-            });
-
-            return {
-                ...publicacion,
-                cantidadComentarios, // Agregamos la cantidad de comentarios
-            };
-        })
-    );
-
-    return publicacionesConCantidadComentarios;
-  }
-
   async getPublicacionByID(id: number): Promise<any> {
     const publicacion = await this.prisma.vi_publicacion.findUnique({
       where: {
         id: id,
       },
-      include: {
-        vi_publicacion_x_etiqueta: {
-          include: {
-            vi_etiqueta_publicacion: {
-              select: {
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-              },
-            },
-          },
-        },
-        vi_publicacion_x_categoria: {
-          include: {
-            vi_categoria_publicacion: {
-              select: {
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-              },
-            },
-          },
-        },
-        vi_version_publicacion: {  // Incluir vi_version_publicacion
+
+    });
+  
+    return publicacion;
+  }
+
+
+  async getAllVersiones(publicacionId: number) {
+    const versiones = await this.prisma.vi_version_publicacion.findMany({
+      where: {
+        id_publicacion: publicacionId,
+      },
+      orderBy: {
+        fechaultimamodificacion: 'desc',
+      },
+      select: {
+        id: true,
+        fechaultimamodificacion: true,
+        titulo: true,
+        descripcion: true,
+        slug: true,
+        fechapublicacion: true,
+        estaactivo: true,
+        vi_estado_version: {
           select: {
-            id: true,
-            id_estado: true,
-            titulo: true,
-            urlimagen: true,
-            descripcionseo: true,
-            slug: true,
-            richtext: true, // Incluir el nuevo campo richtext
-            fechacreacion: true,
-            fechaultimamodificacion: true,
-            estaactivo: true,
+            nombre: true,
           },
         },
       },
     });
   
-    return {
-      ...publicacion,
-      etiquetas: publicacion.vi_publicacion_x_etiqueta.map(etiquetaRel => ({
-        nombre: etiquetaRel.vi_etiqueta_publicacion.nombre,
-        descripcion: etiquetaRel.vi_etiqueta_publicacion.descripcion,
-        colorfondo: etiquetaRel.vi_etiqueta_publicacion.colorfondo,
-        colortexto: etiquetaRel.vi_etiqueta_publicacion.colortexto,
-      })),
-      categorias: publicacion.vi_publicacion_x_categoria.map(categoriaRel => ({
-        nombre: categoriaRel.vi_categoria_publicacion.nombre,
-        descripcion: categoriaRel.vi_categoria_publicacion.descripcion,
-        colorfondo: categoriaRel.vi_categoria_publicacion.colorfondo,
-        colortexto: categoriaRel.vi_categoria_publicacion.colortexto,
-      })),
-      vi_publicacion_x_etiqueta: undefined,  // Eliminamos el campo original
-      vi_publicacion_x_categoria: undefined, // Eliminamos el campo original
-    };
+    return versiones.map(version => ({
+      id: version.id,
+      fechaultimamodificacion: version.fechaultimamodificacion,
+      titulo: version.titulo,
+      descripcion: version.descripcion,
+      slug: version.slug,
+      fechapublicacion: version.fechapublicacion,
+      estaactivo: version.estaactivo,
+      estado: version.vi_estado_version.nombre, // Extraemos el nombre del estado directamente
+    }));
+  }
+  
+
+  async getVersionbyID(id: number): Promise<any> {
+    const version = await this.prisma.vi_version_publicacion.findUnique({
+      where: {
+        id: id,
+      },
+
+    });
+  
+    return version;
   }
 
   async getFirstsEditedPublicacion(numero: number) {
@@ -181,90 +110,112 @@ export class PublicacionService {
       return publicaciones;
   }
 
-  async createPublicacion(data: CreatePublicacionDto): Promise<any> {
-    try {
-        // Creación de la publicación
-        const nuevaPublicacion = await this.prisma.vi_publicacion.create({
-            data: {
-                id_tipo_publicacion: data.id_tipopublicacion,
-                id_usuario: data.id_usuario,
-                estaactivo: true,  // Publicación activa por defecto
-                archivado: false,  // No archivada por defecto
-            },
-        });
 
-        // Crear una versión asociada a la publicación, con estado "Borrador activo"
-        const estadoBorradorActivo = await this.prisma.vi_estado_version.findFirst({
-            where: { nombre: 'Borrador activo' }
-        });
+  async getPublicacionesCantidadComentarios(): Promise<any[]> {
+    const publicaciones = await this.prisma.vi_publicacion.findMany();
 
-        let nuevaVersionPublicacion;
-        if (estadoBorradorActivo) {
-            nuevaVersionPublicacion = await this.prisma.vi_version_publicacion.create({
-                data: {
-                    id_publicacion: nuevaPublicacion.id,
-                    id_estado: estadoBorradorActivo.id,  // Relacionar con el estado de "Borrador activo"
-                    titulo: data.titulo,
-                    urlimagen: data.urlimagen,
-                    descripcionseo: data.descripcionSEO,
-                    richtext: data.richtext,
-                    slug: data.slug,
-                    fechaultimamodificacion: new Date(),
-                    estaactivo: true,
+    const publicacionesConCantidadComentarios = await Promise.all(
+        publicaciones.map(async (publicacion) => {
+            const cantidadComentarios = await this.prisma.vi_comentario.count({
+                where: {
+                    id_publicacion: publicacion.id,
                 },
             });
-        } else {
-            console.error("Estado 'Borrador activo' no encontrado.");
-        }
 
-        // Relacionar las categorías
-        if (data.categorias && data.categorias.length > 0) {
-            for (const nombreCategoria of data.categorias) {
-                const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
-                    where: { nombre: nombreCategoria }
-                });
-                if (categoria) {
-                    await this.prisma.vi_publicacion_x_categoria.create({
-                        data: {
-                            id_publicacion: nuevaPublicacion.id,
-                            id_categoria_publicacion: categoria.id,  // Usamos el ID de la categoría encontrado
-                        },
-                    });
-                } else {
-                    console.error(`Categoría no encontrada: ${nombreCategoria}`);
-                }
-            }
-        }
+            return {
+                ...publicacion,
+                cantidadComentarios, // Agregamos la cantidad de comentarios
+            };
+        })
+    );
 
-        // Relacionar las etiquetas
-        if (data.etiquetas && data.etiquetas.length > 0) {
-            for (const nombreEtiqueta of data.etiquetas) {
-                const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
-                    where: { nombre: nombreEtiqueta },
-                });
-                if (etiqueta) {
-                    await this.prisma.vi_publicacion_x_etiqueta.create({
-                        data: {
-                            id_publicacion: nuevaPublicacion.id,
-                            id_etiqueta_publicacion: etiqueta.id,  // Usamos el ID de la etiqueta encontrado
-                        },
-                    });
-                } else {
-                    console.error(`Etiqueta no encontrada: ${nombreEtiqueta}`);
-                }
-            }
-        }
+    return publicacionesConCantidadComentarios;
+  }
 
-        // Retornar la publicación creada junto con la versión
-        return {
-            ...nuevaPublicacion,
-            version_publicacion: nuevaVersionPublicacion,  // Incluimos la versión de la publicación en el retorno
-        };
-    } catch (error) {
-        console.error('Error al crear la publicación:', error);
-        throw error;
-    }
-}
+//   async createPublicacion(data: CreatePublicacionDto): Promise<any> {
+//     try {
+//         // Creación de la publicación
+//         const nuevaPublicacion = await this.prisma.vi_publicacion.create({
+//             data: {
+//                 id_tipo_publicacion: data.id_tipopublicacion,
+//                 id_usuario: data.id_usuario,
+//                 estaactivo: true,  // Publicación activa por defecto
+//                 archivado: false,  // No archivada por defecto
+//             },
+//         });
+
+//         // Crear una versión asociada a la publicación, con estado "Borrador activo"
+//         const estadoBorradorActivo = await this.prisma.vi_estado_version.findFirst({
+//             where: { nombre: 'Borrador activo' }
+//         });
+
+//         let nuevaVersionPublicacion;
+//         if (estadoBorradorActivo) {
+//             nuevaVersionPublicacion = await this.prisma.vi_version_publicacion.create({
+//                 data: {
+//                     id_publicacion: nuevaPublicacion.id,
+//                     id_estado: estadoBorradorActivo.id,  // Relacionar con el estado de "Borrador activo"
+//                     titulo: data.titulo,
+//                     urlimagen: data.urlimagen,
+//                     descripcion: data.descripcionSEO,
+//                     richtext: data.richtext,
+//                     slug: data.slug,
+//                     fechaultimamodificacion: new Date(),
+//                     estaactivo: true,
+//                 },
+//             });
+//         } else {
+//             console.error("Estado 'Borrador activo' no encontrado.");
+//         }
+
+//         // Relacionar las categorías
+//         if (data.categorias && data.categorias.length > 0) {
+//             for (const nombreCategoria of data.categorias) {
+//                 const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
+//                     where: { nombre: nombreCategoria }
+//                 });
+//                 if (categoria) {
+//                     await this.prisma.vi_publicacion_x_categoria.create({
+//                         data: {
+//                             id_publicacion: nuevaPublicacion.id,
+//                             id_categoria_publicacion: categoria.id,  // Usamos el ID de la categoría encontrado
+//                         },
+//                     });
+//                 } else {
+//                     console.error(`Categoría no encontrada: ${nombreCategoria}`);
+//                 }
+//             }
+//         }
+
+//         // Relacionar las etiquetas
+//         if (data.etiquetas && data.etiquetas.length > 0) {
+//             for (const nombreEtiqueta of data.etiquetas) {
+//                 const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
+//                     where: { nombre: nombreEtiqueta },
+//                 });
+//                 if (etiqueta) {
+//                     await this.prisma.vi_publicacion_x_etiqueta.create({
+//                         data: {
+//                             id_publicacion: nuevaPublicacion.id,
+//                             id_etiqueta_publicacion: etiqueta.id,  // Usamos el ID de la etiqueta encontrado
+//                         },
+//                     });
+//                 } else {
+//                     console.error(`Etiqueta no encontrada: ${nombreEtiqueta}`);
+//                 }
+//             }
+//         }
+
+//         // Retornar la publicación creada junto con la versión
+//         return {
+//             ...nuevaPublicacion,
+//             version_publicacion: nuevaVersionPublicacion,  // Incluimos la versión de la publicación en el retorno
+//         };
+//     } catch (error) {
+//         console.error('Error al crear la publicación:', error);
+//         throw error;
+//     }
+// }
 
 
   async updatePublicacion(
@@ -358,7 +309,7 @@ export class PublicacionService {
                 titulo: true,
                 slug: true,
                 richtext: true,
-                descripcionseo: true,
+                descripcion: true,
                 fechaultimamodificacion: true,
                 id_estado: true,  // Podrías incluir el estado de la versión
                 estaactivo: true,
