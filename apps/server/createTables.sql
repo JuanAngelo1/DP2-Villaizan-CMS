@@ -182,7 +182,7 @@ CREATE TABLE vi_version_publicacion (
     titulo VARCHAR(255) NOT NULL,
     urlImagen VARCHAR(255),
     descripcionSEO VARCHAR(255),
-    slug VARCHAR(255),
+    slug VARCHAR(255) UNIQUE,  -- Restricción UNIQUE para el campo slug
     richtext TEXT,  -- Nuevo campo richtext
     fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -190,6 +190,7 @@ CREATE TABLE vi_version_publicacion (
     CONSTRAINT fk_publicacion FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
     CONSTRAINT fk_estado_version FOREIGN KEY (id_estado) REFERENCES vi_estado_version(id)
 );
+
 
 CREATE TABLE vi_preguntas_frecuentes (
     id SERIAL PRIMARY KEY,
