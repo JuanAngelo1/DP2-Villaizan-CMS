@@ -18,7 +18,9 @@ import { PublicacionService } from './publicacion.service';
 import { vi_publicacion } from '@prisma/client';
 import { Request, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreatePublicacionDto } from './dto/pub.dto';
+import { VersionDto } from './dto/pub.dto';
+import { PublicacionDto } from './dto/publicacion.dto';
+import { UpdateVersionDto } from './dto/update-version.dto';
 
 @Controller('publicaciones')
 export class PublicacionController {
@@ -101,6 +103,101 @@ export class PublicacionController {
     }
   }
 
+  @Post('crearPublicacion')
+  async createPublicacion(@Body() data: PublicacionDto) {
+    try {
+      const result = await this.publicacionService.createOnlyPublicacion(data);
+      return {
+        status: 'Success',
+        message: 'Publicación creada exitosamente',
+        result: result,
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        status: 'Error',
+        message: 'Error al crear la publicacion',
+        result: [],
+      };
+    }
+  }
+
+  @Post('crearVersion')
+  async createVersion(@Body() data: VersionDto) {
+    try {
+      const result = await this.publicacionService.createVersion(data);
+      return {
+        status: 'Success',
+        message: 'Version creada exitosamente',
+        result: result,
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        status: 'Error',
+        message: 'Error al crear la version',
+        result: [],
+      };
+    }
+  }
+
+  @Put('actualizarVersion/:id') async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: UpdateVersionDto) {
+    try {
+      const result= this.publicacionService.updateVersion(id, data);
+      return {
+        status: 'Success',
+        message: 'Versión actualizada correctamente',
+        result: result,
+      };
+    } catch (err) {
+        console.error(err);
+        return {
+          status: 'Error',
+          message: 'Error al actualizar la version',
+          result: [],
+        };
+      }
+  }
+  
+
+
+
+
+
+  @Put('archivar/:id')
+  async archivarPublicacion(@Param('id', ParseIntPipe) id: number): Promise<any> {
+      try {
+          const publicacion = await this.publicacionService.archivarPublicacion(id);
+          return {
+              status: 'Success',
+              message: 'Publicacion archivada correctamente',
+              result: publicacion,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al archivar publicacion',
+          };
+      }
+  }
+
+  @Put('desarchivar/:id')
+  async desarchivarPublicacion(@Param('id', ParseIntPipe) id: number): Promise<any> {
+      try {
+          const publicacion = await this.publicacionService.desarchivarPublicacion(id);
+          return {
+              status: 'Success',
+              message: 'Publicacion desarchivada correctamente',
+              result: publicacion,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al desarchivada publicacion',
+          };
+      }
+  }
+
 
   @Get('versionesRecientes')
   async getPublicaciones() {
@@ -139,27 +236,6 @@ export class PublicacionController {
     }
   }
 
-  // @Post('crearPublicacion')
-  // async createPublicacion(@Body() data: CreatePublicacionDto) {
-  //   try {
-  //     const result = await this.publicacionService.createPublicacion(data);
-  //     return {
-  //       status: 'Success',
-  //       message: 'Publicación creada exitosamente',
-  //       result: result,
-  //     };
-  //   } catch (err) {
-  //     console.error(err);
-  //     return {
-  //       status: 'Error',
-  //       message: 'Error al crear la publicacion',
-  //       result: [],
-  //     };
-  //   }
-  // }
-
-
-
   @Get('recienEditados/:numero')
   async getFirstsEdited(@Param('numero') numero: string) {
     const numeroParsed = parseInt(numero);
@@ -184,34 +260,6 @@ export class PublicacionController {
     }
   }
 
-  @Put(':id')
-  async updatePublicacion(
-    @Param('id',ParseIntPipe) id: number,
-    @Body() data: vi_publicacion,
-  ) {
-    try {
-      return this.publicacionService.updatePublicacion(id, data);
-    } catch (error) {
-      throw new NotFoundException('Publicacion no existe');
-    }
-  }
-  
-  @Post('cambiarEstadoArchivado/:id')
-  async cambiarEstadoArchivado(@Param('id', ParseIntPipe) id: number, @Body('archivado') archivado: boolean): Promise<any> {
-      try {
-          const publicacion = await this.publicacionService.cambiarEstadoArchivado(id, archivado);
-          return {
-              status: 'Success',
-              message: 'Estado de archivado actualizado correctamente',
-              result: publicacion,
-          };
-      } catch (error) {
-          return {
-              status: 'Error',
-              message: 'Error al actualizar el estado de archivado',
-          };
-      }
-  }
 
   @Get('estadosPublicacion')
   async listarEstadosPublicacion(): Promise<any> {
@@ -246,28 +294,5 @@ export class PublicacionController {
           };
       }
   }
-
-  @Get('versiones/:id')
-  async getVersionesByPublicacionId(@Param('id',ParseIntPipe) id: number) {
-    try{
-      const result= await this.publicacionService.getVersionesByPublicacionId(id);
-      return{
-        status: 'Success',
-        message: 'Versiones encontradas',
-        result: result,
-      };
-    }catch(err){
-      console.error(err);
-      return{
-        status: 'Error',
-        message: 'Error al obtener versiones por ID',
-        result: [],
-      };
-    }
-
-  }
-
-
-
 
 }
