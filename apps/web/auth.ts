@@ -21,7 +21,6 @@ function getCookieHostname() {
   const [subDomain] = hostname.split(".");
 
   const cookieDomain = hostname.replace(`${subDomain}.`, "");
-  console.log("Cookie domain: ", cookieDomain);
   return cookieDomain;
 }
 
@@ -133,7 +132,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   cookies: {
     sessionToken: {
-      name: `__Secure-next-auth.session-token`,
+      name: domain === "localhost" ? 'authjs.session-token' : `__Secure-next-auth.session-token`,
       options: {
         sameSite: "none",
         secure: true,
@@ -143,7 +142,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
     callbackUrl: {
-      name: `__Secure-next-auth.callback-url`,
+      name: domain === "localhost" ? 'authjs.callback-url' : `__Secure-next-auth.callback-url`,
       options: {
         sameSite: "none",
         secure: true,
@@ -153,7 +152,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
     csrfToken: {
-      name: `next-auth.csrf-token`,
+      name: domain === "localhost" ? 'authjs.csrf-token' : `next-auth.csrf-token`,
       options: {
         sameSite: "none",
         secure: true,
