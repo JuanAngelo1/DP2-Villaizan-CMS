@@ -413,66 +413,78 @@ export class PublicacionService {
   }
 
   async publicarVersion(id_publicacion: number, id_version: number): Promise<any> {
-      try {
+    try {
         const estadoPublicado = await this.prisma.vi_estado_version.findFirst({
-          where: { nombre: 'Publicacion activa' } 
+            where: { nombre: 'Publicacion activa' }
         });
-        
+
         const estadoBorrador = await this.prisma.vi_estado_version.findFirst({
-          where: { nombre: 'Borrador' }
+            where: { nombre: 'Borrador' }
         });
-    
+
         if (!estadoPublicado || !estadoBorrador) {
-          return {
-            status: 'Error',
-            message: 'Estado "Publicacion activa" o "Borrador" no encontrado',
-            result: [],
-          };
-        }
-    
-        // Verificar si ya existe una versión de la publicación con estado "Actual"
-        const publicacionActual = await this.prisma.vi_version_publicacion.findFirst({
-          where: {
-            id_estado: estadoPublicado.id,
-            id_publicacion: id_publicacion,
-          },
-        });
-    
-        if(publicacionActual && publicacionActual.id==id_version){
-          return {
-            status:'Error',
-            message:'Esta versión ya fue publicada',
-            result: [],
-          }
+            return {
+                status: 'Error',
+                message: 'Estado "Publicacion activa" o "Borrador" no encontrado',
+                result: [],
+            };
         }
 
-        if (publicacionActual) {
-          return {
-            status: 'Error',
-            message: 'Ya existe una versión previamente publicada',
-            result: [],
-          };
-        }
-    
-        const versionActualizada = await this.prisma.vi_version_publicacion.update({
-          where: { id: id_version },
-          data: {
-            id_estado: estadoPublicado.id,
-            fechaultimamodificacion: new Date(),
-          },
+        // Verificar si ya existe una versión publicada de esta publicación
+        const publicacionActual = await this.prisma.vi_version_publicacion.findFirst({
+            where: {
+                id_estado: estadoPublicado.id,
+                id_publicacion: id_publicacion,
+            },
         });
-    
+
+        // Verificar si la versión a publicar ya está activa
+        if (publicacionActual && publicacionActual.id === id_version) {
+            return {
+                status: 'Error',
+                message: 'Esta versión ya fue publicada',
+                result: [],
+            };
+        }
+
+        // Verificar si ya existe una versión con el mismo slug y estado "Publicacion activa"
+        const versionConMismoSlug = await this.prisma.vi_version_publicacion.findFirst({
+            where: {
+                slug: publicacionActual?.slug,
+                id_estado: estadoPublicado.id,
+                NOT: { id: id_version }, // Excluir la versión actual
+            },
+        });
+
+        if (versionConMismoSlug) {
+            return {
+                status: 'Error',
+                message: `El slug "${versionConMismoSlug.slug}" ya está en uso por otra versión activa. Use un slug diferente.`,
+                result: [],
+            };
+        }
+
+        // Si no hay conflictos, publicar la versión
+        const versionActualizada = await this.prisma.vi_version_publicacion.update({
+            where: { id: id_version },
+            data: {
+                id_estado: estadoPublicado.id,
+                fechaultimamodificacion: new Date(),
+            },
+        });
+
         return {
-          status: 'Success',
-          message: 'Versión publicada correctamente',
-          result: versionActualizada,
+            status: 'Success',
+            message: 'Versión publicada correctamente',
+            result: versionActualizada,
         };
-        
-      } catch (error) {
+
+    } catch (error) {
         console.error('Error al cambiar el estado a "Publicacion activa":', error);
         throw error;
-      }
-  }
+    }
+}
+
     
   async despublicarVersion(id_publicacion: number, id_version: number): Promise<any> {
     try {

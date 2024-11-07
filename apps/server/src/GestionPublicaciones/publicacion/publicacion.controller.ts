@@ -46,23 +46,9 @@ export class PublicacionController {
     }
   }
 
-  @Get(':id')
-  async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
-    try{
-      const result= await this.publicacionService.getPublicacionByID(id);
-      return{
-        status: 'Success',
-        message: 'Publicación encontrada',
-        result: result,
-      };
-    }catch(err){
-      console.error(err);
-      return{
-        status: 'Error',
-        message: 'Error al obtener publicacion por ID',
-        result: [],
-      };
-    }
+  @Get('publicadas')
+  async getVersionesPublicadas() {
+    return await this.publicacionService.getVersionesActivas();
   }
 
   @Get('versiones/:id')
@@ -98,6 +84,25 @@ export class PublicacionController {
       return{
         status: 'Error',
         message: 'Error al obtener la version',
+        result: [],
+      };
+    }
+  }
+
+  @Get(':id')
+  async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getPublicacionByID(id);
+      return{
+        status: 'Success',
+        message: 'Publicación encontrada',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener publicacion por ID',
         result: [],
       };
     }
@@ -209,20 +214,13 @@ export class PublicacionController {
       return await this.publicacionService.duplicarVersion(idPub,idVer);
   }
 
-  @Get('slug/:slug')
-  async getPublicacionBySlug(@Param('slug') slug: string) {
-    return await this.publicacionService.getPublicacionBySlug(slug);
-  }
+
 
   @Get('versionesPublicadas/:numero')
   async getFirstsActivePublicaciones(@Param('numero', ParseIntPipe) numero: number) {
     return await this.publicacionService.getFirstsActivePublicaciones(numero);
   }
 
-  // @Get('publicadas')
-  // async getVersionesPublicadas() {
-  //   return await this.publicacionService.getVersionesActivas();
-  // }
 
   @Put('actualizarPublicacion/:id') 
   async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: PublicacionDto) {
