@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
+import { AspectRatio } from "@repo/ui/components/aspect-ratio";
 import DateTimePicker from "@repo/ui/components/date-time-picker";
 import { Input } from "@repo/ui/components/input";
 import { Label } from "@repo/ui/components/label";
@@ -14,11 +15,13 @@ import { Separator } from "@repo/ui/components/separator";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import MainContent from "../../../_components/general_components/MainContent";
+import Image from "next/image";
 
 interface VersionPublicacion {
   id: number;
   fechaultimamodificacion: string;
   titulo: string;
+  urlimagen: string;
   descripcion: string;
   slug: string;
   richtext: string;
@@ -102,6 +105,8 @@ function NuevoVersionPage() {
     }
   }
 
+  console.log(version);
+
   const handleUnpublishVersion = async () => {
     try {
       const response: Response<VersionPublicacion> = await axios.put(
@@ -148,10 +153,11 @@ function NuevoVersionPage() {
                 <h3 className="text-lg font-semibold">Información del contenido</h3>
                 {/* Título */}
                 <div>
-                  <Label className="flex flex-row gap-1">
+                  <Label className="flex flex-row gap-1" htmlFor="titulo">
                     Título <p className="text-red-500">*</p>
                   </Label>
                   <Input
+                    id="titulo"
                     placeholder="Ej. Nuevo sabor de helado"
                     value={version.titulo}
                     onChange={(e) => setVersion({ ...version, titulo: e.target.value })}
@@ -159,10 +165,11 @@ function NuevoVersionPage() {
                 </div>
                 {/* Slug */}
                 <div>
-                  <Label className="flex flex-row gap-1">
+                  <Label className="flex flex-row gap-1" htmlFor="slug">
                     Slug <p className="text-red-500">*</p>
                   </Label>
                   <Input
+                    id="slug"
                     placeholder="Ej. nuevo-sabor-helado"
                     value={version?.slug}
                     onChange={(e) => setVersion({ ...version, slug: e.target.value })}
@@ -170,18 +177,32 @@ function NuevoVersionPage() {
                 </div>
                 {/* Descripción */}
                 <div>
-                  <Label className="flex flex-row gap-1">
+                  <Label className="flex flex-row gap-1" htmlFor="descripcion">
                     Descripción <p className='text-red-500'>*</p>
                   </Label>
                   <Input
+                    id="descripcion"
                     placeholder="Ej. Descubre nuestro nuevo sabor de helado"
                     value={version?.descripcion}
                     onChange={(e) => setVersion({ ...version, descripcion: e.target.value })}
                   />
                 </div>
+                {/* Imagen de portada */}
+                {version.urlimagen && (
+                  <div className="flex flex-col gap-2">
+                    <AspectRatio ratio={16 / 9} >
+                      <Image
+                        src={version.urlimagen}
+                        alt="Imagen de portada"
+                        fill
+                        className="rounded-md object-cover"
+                      />
+                    </AspectRatio>
+                  </div>  
+                )}
                 {/* Texto Enriquecido */}
                 <div>
-                  <Label className="flex flex-row gap-1">
+                  <Label className="flex flex-row gap-1" htmlFor="richtext">
                     Texto enriquecido <p className="text-red-500">*</p>
                   </Label>
                   <TextEditor
