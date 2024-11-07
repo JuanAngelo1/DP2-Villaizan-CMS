@@ -25,7 +25,7 @@ function SetViewOnSelect({ selectedPoint }) {
 
 export default function PuntoVentaMap({ puntos, selectedPoint, onDragMarker }) {
   return (
-    <MapContainer center={[-12.086, -77.070]} zoom={13} className="w-full h-full">
+    <MapContainer center={[-12.086, -77.070]} zoom={13} className="w-full h-[100%] z-1">
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {puntos.map((punto) => (
