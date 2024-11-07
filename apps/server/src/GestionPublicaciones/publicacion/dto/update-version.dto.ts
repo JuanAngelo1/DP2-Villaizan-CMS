@@ -5,8 +5,8 @@ export class UpdateVersionDto {
     fechapublicacion?: Date;
     slug?: string;
     richtext?: string;
-    categorias?: string[];  // Array de nombres de categorías
-    etiquetas?: string[];   // Array de nombres de etiquetas
+    categorias?: number[];  // Array de nombres de categorías
+    etiquetas?: number[];   // Array de nombres de etiquetas
     imagenes?: string[];     // Array de URLs de imágenes adicionales
   }
   

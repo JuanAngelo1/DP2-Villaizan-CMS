@@ -159,6 +159,7 @@ export class PublicacionService {
     };
   }
   
+
   async createOnlyPublicacion(data: PublicacionDto): Promise<any> {
     try{
 
@@ -208,9 +209,11 @@ export class PublicacionService {
   
       // Relacionar las categorías
       if (data.categorias && data.categorias.length > 0) {
-        for (const nombreCategoria of data.categorias) {
-          const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
-            where: { nombre: nombreCategoria },
+        for (const idCategoria of data.categorias) {
+          const categoria = await this.prisma.vi_categoria_publicacion.findUnique({
+            where: {
+              id: Number(idCategoria)
+            },
           });
           if (categoria) {
             await this.prisma.vi_publicacion_x_categoria.create({
@@ -220,16 +223,16 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Categoría no encontrada: ${nombreCategoria}`);
+            console.error(`Categoría no encontrada.`);
           }
         }
       }
   
       // Relacionar las etiquetas
       if (data.etiquetas && data.etiquetas.length > 0) {
-        for (const nombreEtiqueta of data.etiquetas) {
-          const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
-            where: { nombre: nombreEtiqueta },
+        for (const idEtiqueta of data.etiquetas) {
+          const etiqueta = await this.prisma.vi_etiqueta_publicacion.findUnique({
+            where: { id: Number(idEtiqueta) },
           });
           if (etiqueta) {
             await this.prisma.vi_publicacion_x_etiqueta.create({
@@ -239,7 +242,7 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Etiqueta no encontrada: ${nombreEtiqueta}`);
+            console.error(`Etiqueta no encontrada.`);
           }
         }
       }
@@ -329,9 +332,9 @@ export class PublicacionService {
         });
   
         // Agregar las nuevas categorías
-        for (const nombreCategoria of data.categorias) {
+        for (const idCategoria of data.categorias) {
           const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
-            where: { nombre: nombreCategoria },
+            where: { id: Number(idCategoria) },
           });
           if (categoria) {
             await this.prisma.vi_publicacion_x_categoria.create({
@@ -341,7 +344,7 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Categoría no encontrada: ${nombreCategoria}`);
+            console.error(`Categoría no encontrada.`);
           }
         }
       }
@@ -354,9 +357,9 @@ export class PublicacionService {
         });
   
         // Agregar las nuevas etiquetas
-        for (const nombreEtiqueta of data.etiquetas) {
+        for (const idEtiqueta of data.etiquetas) {
           const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
-            where: { nombre: nombreEtiqueta },
+            where: { id: Number(idEtiqueta) },
           });
           if (etiqueta) {
             await this.prisma.vi_publicacion_x_etiqueta.create({
@@ -366,7 +369,7 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Etiqueta no encontrada: ${nombreEtiqueta}`);
+            console.error(`Etiqueta no encontrada.`);
           }
         }
       }
