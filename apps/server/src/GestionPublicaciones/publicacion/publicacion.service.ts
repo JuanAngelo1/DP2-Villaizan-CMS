@@ -91,6 +91,7 @@ export class PublicacionService {
         fechaultimamodificacion: true,
         titulo: true,
         descripcion: true,
+        urlimagen:true,
         slug: true,
         fechapublicacion: true,
         estaactivo: true,
