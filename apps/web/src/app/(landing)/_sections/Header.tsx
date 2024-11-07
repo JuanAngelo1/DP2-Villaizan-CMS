@@ -22,8 +22,9 @@ const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  /*
+  
   useEffect(() => {
+    console.log("Session: ", session);
     if (checkIfAuthenticated(session, status)) {
       setIsAuthenticated(true);
       console.log("User is authenticated");
@@ -34,7 +35,7 @@ const Header: React.FC = () => {
       console.log("user id: ", session?.user?.id);
     }
   }, [session, status]);
-  */
+  
 
   return (
     <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 bg-[#D6CDA8] font-['Abhaya_Libre'] shadow-xl">
