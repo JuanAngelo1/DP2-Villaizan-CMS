@@ -15,6 +15,8 @@ export default function PuntoVentaForm({ selectedPoint, onSave, onCancel, onMapU
       setLat(selectedPoint.lat);
       setLng(selectedPoint.lng);
       setDireccion(selectedPoint.direccion);
+      setNota(selectedPoint.nota);
+      setNombre(selectedPoint.nombre);
     }
   }, [selectedPoint]);
 
@@ -34,7 +36,7 @@ export default function PuntoVentaForm({ selectedPoint, onSave, onCancel, onMapU
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-2">
       <div>
         <label className="text-sm font-medium">Nombre del Punto</label>
         <Input
@@ -62,14 +64,16 @@ export default function PuntoVentaForm({ selectedPoint, onSave, onCancel, onMapU
         </div>
       </div>
 
-      <div>
-        <label className="text-sm font-medium">Latitud</label>
-        <Input type="number" value={lat} readOnly />
-      </div>
+      <div className="flex space-x-4">
+        <div>
+          <label className="text-sm font-medium">Latitud</label>
+          <Input type="number" value={lat} readOnly />
+        </div>
 
-      <div>
-        <label className="text-sm font-medium">Longitud</label>
-        <Input type="number" value={lng} readOnly />
+        <div>
+          <label className="text-sm font-medium">Longitud</label>
+          <Input type="number" value={lng} readOnly />
+        </div>
       </div>
 
       <div>

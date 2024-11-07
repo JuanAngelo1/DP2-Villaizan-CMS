@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Separator } from "@repo/ui/components/separator";
-import ErrorMessage from "../../_components/ErrorMessage";
-import InputWithLabel from "../../_components/InputWithLabel";
-import LogoBackHome from "../../_components/LogoBackHome";
-import SuccessMessage from "../../_components/SuccessMessage";
+import ErrorMessage from "../../../_components/ErrorMessage";
+import InputWithLabel from "../../../_components/InputWithLabel";
+import LogoBackHome from "../../../_components/LogoBackHome";
+import SuccessMessage from "../../../_components/SuccessMessage";
 
 function RequestView() {
   const [isLoading, setIsLoading] = useState(false);

@@ -1,18 +1,25 @@
-"use client"
+"use server";
+
 // layout.tsx
-import { usePathname } from "next/navigation";
+import { auth } from "@web/auth";
+import { redirect } from "next/navigation";
 import React from "react";
-import Footer from "./_sections/Footer";
+import LandingContent from "./_components/LandingContent";
 import Header from "./_sections/Header";
 import "./landing.css";
 
-export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
-  const path = usePathname();
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  const user = session?.user;
+
+  if (user && (user.db_info.vi_persona?.sexo === null || user.db_info.vi_persona?.edad === null)) {
+    redirect("/ultimo-paso");
+  }
+
   return (
     <div className="flex min-h-dvh flex-col">
       <Header />
-      <main className="mt-[68px] flex flex-1 flex-col">{children}</main>
-      {path !== "/sabores" && <Footer />}
+      <LandingContent>{children}</LandingContent>
     </div>
   );
 }

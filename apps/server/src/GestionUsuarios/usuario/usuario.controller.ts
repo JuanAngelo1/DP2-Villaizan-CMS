@@ -19,6 +19,7 @@ import { vi_usuario } from '@prisma/client';
 import { Request, response, Response } from 'express';
 import { UsuarioDto } from './dto/usuario.dto';
 import { GoogleUserDto } from './dto/google-user.dto';
+import { PersonaUpdateDTO } from './dto/persona.dto';
 
 @Controller('usuario')
 export class UsuarioController {
@@ -172,6 +173,26 @@ export class UsuarioController {
       });
     }
   }
+
+
+  @Put('actualizarPersona/:id')
+  async updatePersona(@Param('id') id: string,@Body() data: PersonaUpdateDTO,@Res() response: Response):Promise<any>{
+    try {
+      const personaUpdated = await this.usuarioService.updatePersonaInfo(id, data);
+      return response.status(200).json({
+        status: 'Success',
+        message: 'Persona actualizada exitosamente',
+        result: personaUpdated,
+      });
+    } catch (error) {
+      return response.status(404).json({
+        status: 'Error',
+        message: 'Persona no existe',
+        result: [],
+      });
+  }
+}
+
 
   @Patch('/rol/:id')
   async updateRol(

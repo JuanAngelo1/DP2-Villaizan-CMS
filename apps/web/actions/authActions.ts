@@ -12,39 +12,42 @@ export async function handleCredentialsSignIn({
   password: string;
   redirectTo?: string | null;
 }) {
-  try {
-    await signIn("credentials", {
-      email,
-      password,
-      redirect: true,
-      redirectTo: redirectTo !== null && redirectTo !== undefined ? redirectTo : "/",
-    });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return {
-            message: "Invalid credentials",
-          };
-        default:
-          return {
-            message: "Something went wrong.",
-          };
-      }
-    }
-    throw error;
-  }
+  const result = await signIn("credentials", {
+    email,
+    password,
+    redirect: true,
+    redirectTo: redirectTo || "/",
+  });
+
+  // return result;
+
+  // if (result?.error === "CredentialsSignin") {
+  //   return {
+  //     error: result.code,
+  //   };
+  // }
+
+  // console.log("Redireccionando a -> ", redirectTo);
+  // window.location.replace(redirectTo || "/");
+  // return {
+  //   success: "Inicio de sesión exitoso.",
+  // };
 }
 
 export async function handleGoogleSignIn({ redirectTo }: { redirectTo?: string | null }) {
   try {
-    await signIn(
+    const result = await signIn(
       "google",
       {
-        redirectTo: redirectTo !== null && redirectTo !== undefined ? redirectTo : "/",
+        redirect: true,
+        redirectTo: redirectTo || "/",
       },
       { prompt: "login" }
     );
+
+    // console.log("Resultado desde el cliente -> ", result);
+    // window.location.replace(redirectTo || "/");
+    // console.log(result)
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

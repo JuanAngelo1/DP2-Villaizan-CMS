@@ -24,16 +24,10 @@ const initUsuario: Usuario = {
   nombre: "",
   apellido: "",
   correo: "",
-  id_rol: "",
-  creadoen: new Date(),
   imagenperfil: "",
-  vi_rol: {
-    id: "10",
-    nombre: "Hola",
-    actualizadoen: new Date(),
-    eliminadoen: new Date(),
-    estaactivo: true,
-  },
+  id_rol: "",
+  id_persona: "",
+  creadoen: new Date(),
 };
 
 function Usuarios() {
@@ -87,7 +81,7 @@ function Usuarios() {
         }
       );
 
-      if (response.data.status === "Error") throw new Error(response.data.message);
+      if (response.data.status === "Error") throw new ControlledError(response.data.message);
 
       const newUsuarios = usuarios.map((_usuario) => {
         if (_usuario.id === usuario.id) {
@@ -97,9 +91,17 @@ function Usuarios() {
       });
 
       setUsuarios(newUsuarios);
-      console.log(newUsuarios);
+      toast({
+        title: "Usuario actualizado",
+        description: `El usuario ${usuario.correo} ha sido actualizado correctamente`,
+      });
     } catch (error) {
-      console.error("Error al actualizar el rol:", error);
+      if (error instanceof ControlledError) {
+        toast({ title: "Error al actualizar el usuario", description: error.message });
+      } else {
+        console.error("Error al actualizar el usuario:", error);
+        toast({ title: "Ups! Algo salió mal.", description: "Error al actualizar el usuario" });
+      }
     }
   };
 
@@ -121,16 +123,23 @@ function Usuarios() {
   const deleteUsuario = async (usuario: Usuario | null) => {
     if (!usuario) return;
 
+    console.log(usuario)
+
     const response: Response<null> = await axios.delete(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/${usuario.id}`
     );
 
-    if (response.data.status === "Error") throw new Error(response.data.message);
+    if (response.data.status === "Error") throw new ControlledError(response.data.message);
 
     const newUsuarios = usuarios.filter((_usuario) => _usuario.id !== usuario.id);
     setUsuarios(newUsuarios);
 
     setDelUsuario(null);
+
+    toast({
+      title: "Usuario eliminado",
+      description: `El usuario ${usuario.correo || usuario.nombre} ha sido eliminado correctamente`,
+    });
   };
 
   const filteredUsuarios = useMemo(() => {

@@ -1,17 +1,15 @@
 "use client";
 
+import { Button, buttonVariants } from "@repo/ui/components/button";
+import { Separator } from "@repo/ui/components/separator";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button, buttonVariants } from "@repo/ui/components/button";
-import { Input } from "@repo/ui/components/input";
-import { Label } from "@repo/ui/components/label";
-import { Separator } from "@repo/ui/components/separator";
-import ErrorMessage from "../_components/ErrorMessage";
-import InputWithLabel from "../_components/InputWithLabel";
-import LogoBackHome from "../_components/LogoBackHome";
-import SuccessMessage from "../_components/SuccessMessage";
+import LogoBackHome from "../../_components/LogoBackHome";
+import InputWithLabel from "../../_components/InputWithLabel";
+import ErrorMessage from "../../_components/ErrorMessage";
+import SuccessMessage from "../../_components/SuccessMessage";
 
 function RegisterPage() {
   const router = useRouter();

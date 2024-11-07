@@ -14,6 +14,7 @@ export class PuntosVentaService {
             esactivo: true,
           },
           select: {
+            id: true,
             nombre: true,
             direccion: true,
             latitud: true,
