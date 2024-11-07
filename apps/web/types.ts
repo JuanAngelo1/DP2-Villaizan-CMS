@@ -58,18 +58,22 @@ export type TipoPublicacion = {
 
 export type VersionPublicacion = {
   id: number;
+  id_publicacion: number;
+  id_estado: number;
   titulo: string;
-  urlimagen?: string | null;
-  descripcionseo?: string | null;
-  slug?: string | null;
-  richtext: string;
+  urlimagen: string | null;
+  descripcion: string | null;
+  slug: string | null;
   fechacreacion: string;
   fechaultimamodificacion: string;
-  estaactivo?: boolean | null;
-  estado_version: EstadoVersion;
-  categorias: string[];
-  etiquetas: string[];
-  publicacion: Publicacion;
+  estaactivo: boolean | null;
+  richtext: string | null;
+  fechapublicacion: string | null;
+  categorias: Categoria[];
+  etiquetas: Etiqueta[];
+
+  vi_publicacion: Publicacion;
+  vi_estado_version: EstadoVersion;
 };
 
 export type EstadoVersion = {
