@@ -11,13 +11,11 @@ import { vi_estado_version } from '@prisma/client';
 import { vi_tipo_publicacion } from '@prisma/client';
 import { vi_version_publicacion } from '@prisma/client';
 
-import { v4 as uuidv4 } from 'uuid';
 import { VersionDto } from './dto/pub.dto';
 import { PublicacionDto } from './dto/publicacion.dto';
 import { GoogleDriveHelper } from '../../utils/google-drive.helper';
 import { UpdateVersionDto } from './dto/update-version.dto';
 
-import * as fs from 'fs';
 
 @Injectable()
 export class PublicacionService {
@@ -749,14 +747,8 @@ export class PublicacionService {
     }
   }
   
-
-
-
-
-  
   async getFirstsActivePublicaciones(numero: number): Promise<any> {
     try {
-      // Buscar el estado "Publicación activa"
       const estadoPublicado = await this.prisma.vi_estado_version.findFirst({
         where: { nombre: 'Publicacion activa' },
       });
@@ -765,16 +757,15 @@ export class PublicacionService {
         throw new Error('Estado "Publicacion activa" no encontrado');
       }
   
-      // Obtener las primeras `n` versiones de publicación con estado "Publicacion activa"
       const versionesPublicadas = await this.prisma.vi_version_publicacion.findMany({
         where: {
-          id_estado: estadoPublicado.id,  // Filtrar por estado "Publicacion activa"
-          estaactivo: true,  // Solo versiones activas
+          id_estado: estadoPublicado.id, 
+          estaactivo: true, 
         },
         orderBy: {
-          fechaultimamodificacion: 'desc',  // Ordenar por fecha de última modificación
+          fechaultimamodificacion: 'desc', 
         },
-        take: numero,  // Limitar los resultados a `numero`
+        take: numero,
         include: {
           vi_imagen_version: {
             select: {
@@ -848,7 +839,28 @@ export class PublicacionService {
     }
   }
   
-  
+
+  async updatePublicacion(id_version: number, data: PublicacionDto): Promise<any> {
+    try {
+      // Actualizar los datos principales de la versión
+      const pubActualizada = await this.prisma.vi_publicacion.update({
+        where: { id: id_version },
+        data: {
+          nombrereferencia: data.nombrereferencia,
+          id_tipo_publicacion: data.id_tipopublicacion,
+          descripcion: data.descripcion,
+          fechamodificacion: new Date()
+        },
+      });
+    
+    return pubActualizada;
+
+    } catch (error) {
+      console.error('Error al actualizar la publicacion:', error);
+      throw error;
+    }
+  }
+
 
   async getPublicacionesCantidadComentarios(): Promise<any[]> {
     const publicaciones = await this.prisma.vi_publicacion.findMany();

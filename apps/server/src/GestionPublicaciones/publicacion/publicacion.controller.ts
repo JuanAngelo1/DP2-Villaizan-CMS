@@ -142,7 +142,7 @@ export class PublicacionController {
   }
 
   @Put('actualizarVersion/:id') 
-  async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: UpdateVersionDto) {
+  async updateVersion( @Param('id',ParseIntPipe) id: number, @Body() data: UpdateVersionDto) {
     try {
       const result= await this.publicacionService.updateVersion(id, data);
       return {
@@ -219,6 +219,24 @@ export class PublicacionController {
     return await this.publicacionService.getFirstsActivePublicaciones(numero);
   }
 
+  @Put('actualizarPublicacion/:id') 
+  async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: PublicacionDto) {
+    try {
+      const result= await this.publicacionService.updatePublicacion(id, data);
+      return {
+        status: 'Success',
+        message: 'Publicacion actualizada correctamente',
+        result: result,
+      };
+    } catch (err) {
+        console.error(err);
+        return {
+          status: 'Error',
+          message: 'Error al actualizar la publicacion',
+          result: [],
+        };
+      }
+  }
 
 
   @Get('versionesRecientes')
