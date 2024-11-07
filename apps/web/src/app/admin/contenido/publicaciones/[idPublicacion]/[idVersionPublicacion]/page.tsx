@@ -105,8 +105,6 @@ function NuevoVersionPage() {
     }
   }
 
-  console.log(version);
-
   const handleUnpublishVersion = async () => {
     try {
       const response: Response<VersionPublicacion> = await axios.put(
@@ -190,6 +188,7 @@ function NuevoVersionPage() {
                 {/* Imagen de portada */}
                 {version.urlimagen && (
                   <div className="flex flex-col gap-2">
+                    <Label>Imagen de portada</Label>
                     <AspectRatio ratio={16 / 9} >
                       <Image
                         src={version.urlimagen}
