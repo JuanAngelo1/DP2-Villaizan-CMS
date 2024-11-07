@@ -433,6 +433,12 @@ export class PublicacionService {
             };
         }
 
+        const versionPublicar= await this.prisma.vi_version_publicacion.findUnique({
+          where:{
+            id:id_version
+          }
+        });
+
         // Verificar si ya existe una versión publicada de esta publicación
         const publicacionActual = await this.prisma.vi_version_publicacion.findFirst({
             where: {
@@ -453,7 +459,7 @@ export class PublicacionService {
         // Verificar si ya existe una versión con el mismo slug y estado "Publicacion activa"
         const versionConMismoSlug = await this.prisma.vi_version_publicacion.findFirst({
             where: {
-                slug: publicacionActual?.slug,
+                slug: versionPublicar.slug,
                 id_estado: estadoPublicado.id,
                 NOT: { id: id_version }, // Excluir la versión actual
             },
