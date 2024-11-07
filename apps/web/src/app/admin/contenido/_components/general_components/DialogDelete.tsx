@@ -9,6 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@repo/ui/components/dialog";
+import { useToast } from "@repo/ui/hooks/use-toast";
+import { ControlledError } from "@web/types";
 
 function DialogDelete({
   open,
@@ -23,6 +25,7 @@ function DialogDelete({
   title: string;
   description: string;
 }) {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const executeAction = async () => {
@@ -31,7 +34,12 @@ function DialogDelete({
       await onAction();
       onOpenChange(false);
     } catch (error) {
-      console.error(error);
+      if (error instanceof ControlledError) {
+        toast({ title: "Error al eliminar al usuario", description: error.message });
+      } else {
+        console.error("Error al eliminar al usuario:", error);
+        toast({ title: "Ups! Algo salió mal.", description: "Error al eliminar al usuario" });
+      }
     } finally {
       setIsLoading(false);
     }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { Button } from "@repo/ui/components/button";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
+import Link from "next/link";
 
 const Start: React.FC = () => {
   const animation: AnimationProps = {
@@ -28,9 +29,11 @@ const Start: React.FC = () => {
           <motion.h1 {...animation} className="text-4xl font-extrabold sm:text-5xl md:text-8xl">
             PALETAS
           </motion.h1>
-          <Button className="mt-3 bg-red-800 text-lg hover:bg-red-900" size={"lg"}>
-            Compra ahora
-          </Button>
+          <Link href={'https://heladosvillaizan.tech/'}>
+            <Button className="mt-3 bg-red-800 text-lg hover:bg-red-900" size={"lg"}>
+              Compra ahora
+            </Button>
+          </Link>
         </div>
         <Image
           src="/Popsicle-Main.png"

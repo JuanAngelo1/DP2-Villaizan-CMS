@@ -1,19 +1,40 @@
 "use client";
 
-import { GlobeLock, KeySquare, Loader2, LogOut } from "lucide-react";
+import { KeySquare, Loader2, LogOut } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { cn } from "@repo/ui/lib/utils";
-import { handleSignOut } from "../../actions/authActions";
+import { handleSignOut } from "../../../../actions/authActions";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
+
+function checkIfAuthenticated(session: any, status: string) {
+  if (status !== "loading") {
+    return session?.user?.id ? true : false;
+  }
+  return false;
+}
 
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  /*
+  useEffect(() => {
+    if (checkIfAuthenticated(session, status)) {
+      setIsAuthenticated(true);
+      console.log("User is authenticated");
+      console.log("user id: ", session?.user?.id);
+    } else {
+      setIsAuthenticated(false);
+      console.log("User is not authenticated");
+      console.log("user id: ", session?.user?.id);
+    }
+  }, [session, status]);
+  */
 
   return (
     <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 bg-[#D6CDA8] font-['Abhaya_Libre'] shadow-xl">
@@ -67,7 +88,7 @@ const Header: React.FC = () => {
                 <p className="w-fit max-w-full truncate px-2 py-1 text-sm font-bold">
                   {session.user.db_info.nombre + " " + session.user.db_info.apellido}
                 </p>
-                {session.user.db_info.vi_rol.nombre === "Administrador" && (
+                {session.user.db_info.vi_rol?.nombre === "Administrador" && (
                   <Link
                     className={cn(buttonVariants({ variant: "ghost" }), "flex flex-row justify-start gap-2")}
                     href="/admin"
@@ -131,7 +152,7 @@ const Header: React.FC = () => {
                   <p className="text-xl font-bold leading-5">
                     {session.user.db_info.nombre + session.user.db_info.apellido}
                   </p>
-                  <p>{session.user.db_info.vi_rol.nombre}</p>
+                  <p>{session.user.db_info.vi_rol?.nombre}</p>
                 </section>
               </div>
             )}
@@ -156,7 +177,7 @@ const Header: React.FC = () => {
             >
               Publicaciones
             </Link>
-            {session?.user.db_info.vi_rol.nombre === "Administrador" && (
+            {session?.user.db_info.vi_rol?.nombre === "Administrador" && (
               <Link
                 className="w-full text-lg text-white hover:underline"
                 href={"/admin"}

@@ -18,32 +18,15 @@ import { PublicacionService } from './publicacion.service';
 import { vi_publicacion } from '@prisma/client';
 import { Request, Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreatePublicacionDto } from './dto/pub.dto';
+import { VersionDto } from './dto/pub.dto';
+import { PublicacionDto } from './dto/publicacion.dto';
+import { UpdateVersionDto } from './dto/update-version.dto';
 
 @Controller('publicaciones')
 export class PublicacionController {
   constructor(private readonly publicacionService: PublicacionService) {}
 
   //Metodos APIs
-
-  @Get('versionesRecientes')
-  async getPublicaciones() {
-    try{
-      const result= await this.publicacionService.getPublicacionesConVersionesRecientes();
-      return{
-        status: 'Success',
-        message: 'Publicaciones encontradas',
-        result: result,
-      };
-    }catch(err){
-      console.error(err);
-      return{
-        status: 'Error',
-        message: 'Error al obtener publicaciones recientes',
-        result: [],
-      };
-    }
-  }
 
   @Get()
   async getAllPubs(@Req() request: Request, @Res() response: Response,): Promise<any> {
@@ -63,44 +46,55 @@ export class PublicacionController {
     }
   }
 
-  @Get('cantidadComentarios')
-  async getPublicacionesCantidadComentarios(@Req() request: Request, @Res() response: Response,): Promise<any> {
-    try {
-      const result = await this.publicacionService.getPublicacionesCantidadComentarios();
-      return response.status(200).json({
-        status: 'Success',
-        message: 'Publicaciones Encontradas',
-        result: result,
-      });
-    } catch (err) {
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al obtener la cantidad de comentarios',
-        result: [],
-      });
-    }
+  @Get('slug/:slug')
+  async getPublicionSlug(@Param('slug') slug: string) {
+      return await this.publicacionService.getPublicacionBySlug(slug);
   }
 
-  @Post('crearPublicacion')
-  async createPublicacion(@Body() data: CreatePublicacionDto) {
-    try {
-      const result = await this.publicacionService.createPublicacion(data);
-      return {
+  @Get('publicadas')
+  async getVersionesPublicadas() {
+    return await this.publicacionService.getVersionesActivas();
+  }
+
+  @Get('versiones/:id')
+  async getVersionesbyID(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getAllVersiones(id);
+      return{
         status: 'Success',
-        message: 'Publicación creada exitosamente',
+        message: 'Versiones de la publicacion encontradas',
         result: result,
       };
-    } catch (err) {
+    }catch(err){
       console.error(err);
-      return {
+      return{
         status: 'Error',
-        message: 'Error al crear la publicacion',
+        message: 'Error al obtener las versiones de la publicacion',
         result: [],
       };
     }
   }
 
-  @Get('obtener/:id')
+  @Get('version/:id')
+  async getVersionbyID(@Param('id',ParseIntPipe) id: number) {
+    try{
+      const result= await this.publicacionService.getVersionbyID(id);
+      return{
+        status: 'Success',
+        message: 'Version encontrada',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener la version',
+        result: [],
+      };
+    }
+  }
+
+  @Get(':id')
   async getPublicacionByID(@Param('id',ParseIntPipe) id: number) {
     try{
       const result= await this.publicacionService.getPublicacionByID(id);
@@ -119,22 +113,128 @@ export class PublicacionController {
     }
   }
 
-  @Get('recienEditados/:numero')
-  async getFirstsEdited(@Param('numero') numero: string) {
-    const numeroParsed = parseInt(numero);
-    if (isNaN(numeroParsed) || numeroParsed <= 0) {
-      throw new BadRequestException(
-        'El parámetro debe ser un número entero positivo',
-      );
+  @Post('crearPublicacion')
+  async createPublicacion(@Body() data: PublicacionDto) {
+    try {
+      const result = await this.publicacionService.createOnlyPublicacion(data);
+      return {
+        status: 'Success',
+        message: 'Publicación creada exitosamente',
+        result: result,
+      };
+    } catch (err) {
+      console.error(err);
+      return {
+        status: 'Error',
+        message: 'Error al crear la publicacion',
+        result: [],
+      };
     }
-    const publicaciones =
-      await this.publicacionService.getFirstsEditedPublicacion(numeroParsed);
-    if (!publicaciones || publicaciones.length === 0)
-      throw new BadRequestException('Publicación no existe');
-    return publicaciones;
   }
 
-  @Delete(':id')
+  @Post('crearVersion/:id')
+  async createVersion(@Param('id',ParseIntPipe) id: number, @Body() data: VersionDto) {
+    
+    return await this.publicacionService.createVersion(id,data);
+
+  }
+
+  @Put('actualizarVersion/:id') 
+  async updateVersion( @Param('id',ParseIntPipe) id: number, @Body() data: UpdateVersionDto) {
+    try {
+      const result= await this.publicacionService.updateVersion(id, data);
+      return {
+        status: 'Success',
+        message: 'Versión actualizada correctamente',
+        result: result,
+      };
+    } catch (err) {
+        console.error(err);
+        return {
+          status: 'Error',
+          message: 'Error al actualizar la version',
+          result: [],
+        };
+      }
+  }
+
+  @Put('publicar/:idPub/:idVer')
+  async publicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
+      return await this.publicacionService.publicarVersion(idPub,idVer);
+  }
+
+  @Put('despublicar/:idPub/:idVer')
+  async despublicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
+      return await this.publicacionService.despublicarVersion(idPub,idVer);
+  }
+
+  @Put('archivar/:id')
+  async archivarPublicacion(@Param('id', ParseIntPipe) id: number): Promise<any> {
+      try {
+          const publicacion = await this.publicacionService.archivarPublicacion(id);
+          return {
+              status: 'Success',
+              message: 'Publicacion archivada correctamente',
+              result: publicacion,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al archivar publicacion',
+          };
+      }
+  }
+
+  @Put('desarchivar/:id')
+  async desarchivarPublicacion(@Param('id', ParseIntPipe) id: number): Promise<any> {
+      try {
+          const publicacion = await this.publicacionService.desarchivarPublicacion(id);
+          return {
+              status: 'Success',
+              message: 'Publicacion desarchivada correctamente',
+              result: publicacion,
+          };
+      } catch (error) {
+          return {
+              status: 'Error',
+              message: 'Error al desarchivada publicacion',
+          };
+      }
+  }
+
+  @Post('duplicar/:idPub/:idVer')
+  async duplicarVersion(@Param('idPub',ParseIntPipe) idPub: number, @Param('idVer',ParseIntPipe) idVer: number ){
+      return await this.publicacionService.duplicarVersion(idPub,idVer);
+  }
+
+
+
+  @Get('versionesPublicadas/:numero')
+  async getFirstsActivePublicaciones(@Param('numero', ParseIntPipe) numero: number) {
+    return await this.publicacionService.getFirstsActivePublicaciones(numero);
+  }
+
+
+  @Put('actualizarPublicacion/:id') 
+  async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: PublicacionDto) {
+    try {
+      const result= await this.publicacionService.updatePublicacion(id, data);
+      return {
+        status: 'Success',
+        message: 'Publicacion actualizada correctamente',
+        result: result,
+      };
+    } catch (err) {
+        console.error(err);
+        return {
+          status: 'Error',
+          message: 'Error al actualizar la publicacion',
+          result: [],
+        };
+      }
+  }
+
+  @Put('eliminarPublicacion/:id')
   async deletePublicacionByID(@Param('id',ParseIntPipe) id: number) {
     try {
       return await this.publicacionService.deletePublicacion(id);
@@ -143,33 +243,13 @@ export class PublicacionController {
     }
   }
 
-  @Put(':id')
-  async updatePublicacion(
-    @Param('id',ParseIntPipe) id: number,
-    @Body() data: vi_publicacion,
-  ) {
+  @Put('eliminarVersion/:id')
+  async deleteVersionByID(@Param('id',ParseIntPipe) id: number) {
     try {
-      return this.publicacionService.updatePublicacion(id, data);
+      return await this.publicacionService.deleteVersion(id);
     } catch (error) {
-      throw new NotFoundException('Publicacion no existe');
+      throw new NotFoundException('Version no existe');
     }
-  }
-  
-  @Post('cambiarEstadoArchivado/:id')
-  async cambiarEstadoArchivado(@Param('id', ParseIntPipe) id: number, @Body('archivado') archivado: boolean): Promise<any> {
-      try {
-          const publicacion = await this.publicacionService.cambiarEstadoArchivado(id, archivado);
-          return {
-              status: 'Success',
-              message: 'Estado de archivado actualizado correctamente',
-              result: publicacion,
-          };
-      } catch (error) {
-          return {
-              status: 'Error',
-              message: 'Error al actualizar el estado de archivado',
-          };
-      }
   }
 
   @Get('estadosPublicacion')
@@ -206,27 +286,46 @@ export class PublicacionController {
       }
   }
 
-  @Get('versiones/:id')
-  async getVersionesByPublicacionId(@Param('id',ParseIntPipe) id: number) {
+
+
+
+
+  @Get('versionesRecientes')
+  async getPublicaciones() {
     try{
-      const result= await this.publicacionService.getVersionesByPublicacionId(id);
+      const result= await this.publicacionService.getPublicacionesConVersionesRecientes();
       return{
         status: 'Success',
-        message: 'Versiones encontradas',
+        message: 'Publicaciones encontradas',
         result: result,
       };
     }catch(err){
       console.error(err);
       return{
         status: 'Error',
-        message: 'Error al obtener versiones por ID',
+        message: 'Error al obtener publicaciones recientes',
         result: [],
       };
     }
-
   }
 
-
+  @Get('cantidadComentarios')
+  async getPublicacionesCantidadComentarios(@Req() request: Request, @Res() response: Response,): Promise<any> {
+    try {
+      const result = await this.publicacionService.getPublicacionesCantidadComentarios();
+      return response.status(200).json({
+        status: 'Success',
+        message: 'Publicaciones Encontradas',
+        result: result,
+      });
+    } catch (err) {
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Error al obtener la cantidad de comentarios',
+        result: [],
+      });
+    }
+  }
 
 
 }

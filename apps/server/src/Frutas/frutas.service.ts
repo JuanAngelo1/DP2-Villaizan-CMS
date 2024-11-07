@@ -47,7 +47,7 @@ export class FrutasService {
                               
                               vi_promocion: {
                                   where: {
-                                      estado: true,
+                                      estaactivo: true,
                                       fechainicio: { lte: new Date() },
                                       fechafin: { gte: new Date() },
                                   },
