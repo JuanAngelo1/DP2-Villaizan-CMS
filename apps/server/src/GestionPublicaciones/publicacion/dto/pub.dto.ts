@@ -1,10 +1,10 @@
 import { IsString } from 'class-validator';
 
 export class VersionDto {
-  id_publicacion: number;
+  id_publicacion?: number;
   titulo: string;
   urlimagen?: string;
-  descripcionSEO: string;
+  descripcion: string;
   fechapublicacion?: Date;
   slug:string;
   richtext: string;

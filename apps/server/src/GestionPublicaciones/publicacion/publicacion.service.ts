@@ -48,7 +48,7 @@ export class PublicacionService {
         estaactivo: true,
       },
       orderBy: {
-        fechaultimamodificacion: 'desc',
+        fechaultimamodificacion: 'asc',
       },
       select: {
         id: true,
@@ -174,7 +174,7 @@ export class PublicacionService {
     }
   }
 
-  async createVersion(data: VersionDto): Promise<any> {
+  async createVersion(id: number,data: VersionDto): Promise<any> {
     try {
       // Obtener el estado "Borrador" para asignarlo a la versión
       const estadoBorrador = await this.prisma.vi_estado_version.findFirst({
@@ -188,11 +188,11 @@ export class PublicacionService {
       // Crear la versión de la publicación
       const versionCreada = await this.prisma.vi_version_publicacion.create({
         data: {
-          id_publicacion: data.id_publicacion,
+          id_publicacion: id,
           id_estado: estadoBorrador.id,
           titulo: data.titulo,
           urlimagen: data.urlimagen,
-          descripcion: data.descripcionSEO,
+          descripcion: data.descripcion,
           richtext: data.richtext,
           slug: data.slug,
           fechaultimamodificacion: new Date(),
@@ -307,7 +307,7 @@ export class PublicacionService {
         data: {
           titulo: data.titulo,
           urlimagen: data.urlimagen,
-          descripcion: data.descripcionSEO,
+          descripcion: data.descripcion,
           richtext: data.richtext,
           slug: data.slug,
           fechaultimamodificacion: new Date(),
@@ -527,11 +527,15 @@ export class PublicacionService {
           result: [],
         }
       };
+
+      const estadoBorrador = await this.prisma.vi_estado_version.findFirst({
+        where: { nombre: 'Borrador' }
+      });
   
       const nuevaVersion = await this.prisma.vi_version_publicacion.create({
         data: {
           id_publicacion: id_publicacion,
-          id_estado: versionOriginal.id_estado,
+          id_estado: estadoBorrador.id,
           titulo: versionOriginal.titulo,
           urlimagen: versionOriginal.urlimagen,
           descripcion: versionOriginal.descripcion,
@@ -839,6 +843,99 @@ export class PublicacionService {
     }
   }
   
+
+  async getVersionesActivas(): Promise<any> {
+    try {
+      const estadoPublicado = await this.prisma.vi_estado_version.findFirst({
+        where: { nombre: 'Publicacion activa' },
+      });
+  
+      if (!estadoPublicado) {
+        throw new Error('Estado "Publicacion activa" no encontrado');
+      }
+  
+      const versionesPublicadas = await this.prisma.vi_version_publicacion.findMany({
+        where: {
+          id_estado: estadoPublicado.id, 
+          estaactivo: true, 
+        },
+        orderBy: {
+          fechaultimamodificacion: 'desc', 
+        },
+        include: {
+          vi_imagen_version: {
+            select: {
+              id: true,
+              urlimagen: true,
+              descripcion: true,
+              fechacreacion: true,
+            },
+          },
+          vi_publicacion_x_categoria: {
+            select: {
+              vi_categoria_publicacion: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  descripcion: true,
+                  colorfondo: true,
+                  colortexto: true,
+                  estaactivo: true,
+                },
+              },
+            },
+          },
+          vi_publicacion_x_etiqueta: {
+            select: {
+              vi_etiqueta_publicacion: {
+                select: {
+                  id: true,
+                  nombre: true,
+                  descripcion: true,
+                  colorfondo: true,
+                  colortexto: true,
+                  estaactivo: true,
+                },
+              },
+            },
+          },
+        },
+      });
+  
+      // Estructurar la respuesta para simplificar las categorías y etiquetas
+      const resultado = versionesPublicadas.map(version => ({
+        id: version.id,
+        id_publicacion: version.id_publicacion,
+        id_estado: version.id_estado,
+        titulo: version.titulo,
+        urlimagen: version.urlimagen,
+        descripcion: version.descripcion,
+        slug: version.slug,
+        richtext: version.richtext,
+        fechacreacion: version.fechacreacion,
+        fechaultimamodificacion: version.fechaultimamodificacion,
+        estaactivo: version.estaactivo,
+        imagenes: version.vi_imagen_version,
+        categorias: version.vi_publicacion_x_categoria.map(categoria => categoria.vi_categoria_publicacion),
+        etiquetas: version.vi_publicacion_x_etiqueta.map(etiqueta => etiqueta.vi_etiqueta_publicacion),
+      }));
+  
+      return {
+        status: 'Success',
+        message: `Versiones con estado Publicacion activa obtenidas exitosamente`,
+        result: resultado,
+      };
+    } catch (error) {
+      console.error('Error al obtener las versiones activas:', error);
+      return {
+        status: 'Error',
+        message: 'Error al obtener las versiones activas',
+        result: null,
+      };
+    }
+  }
+
+
 
   async updatePublicacion(id_version: number, data: PublicacionDto): Promise<any> {
     try {

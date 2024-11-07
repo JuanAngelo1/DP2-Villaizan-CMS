@@ -122,10 +122,10 @@ export class PublicacionController {
     }
   }
 
-  @Post('crearVersion')
-  async createVersion(@Body() data: VersionDto) {
+  @Post('crearVersion:/id')
+  async createVersion(@Param('id',ParseIntPipe) id: number, @Body() data: VersionDto) {
     try {
-      const result = await this.publicacionService.createVersion(data);
+      const result = await this.publicacionService.createVersion(id,data);
       return {
         status: 'Success',
         message: 'Version creada exitosamente',
@@ -219,6 +219,11 @@ export class PublicacionController {
     return await this.publicacionService.getFirstsActivePublicaciones(numero);
   }
 
+  // @Get('publicadas')
+  // async getVersionesPublicadas() {
+  //   return await this.publicacionService.getVersionesActivas();
+  // }
+
   @Put('actualizarPublicacion/:id') 
   async updatePublicacion( @Param('id',ParseIntPipe) id: number, @Body() data: PublicacionDto) {
     try {
@@ -237,46 +242,6 @@ export class PublicacionController {
         };
       }
   }
-
-
-  @Get('versionesRecientes')
-  async getPublicaciones() {
-    try{
-      const result= await this.publicacionService.getPublicacionesConVersionesRecientes();
-      return{
-        status: 'Success',
-        message: 'Publicaciones encontradas',
-        result: result,
-      };
-    }catch(err){
-      console.error(err);
-      return{
-        status: 'Error',
-        message: 'Error al obtener publicaciones recientes',
-        result: [],
-      };
-    }
-  }
-
-  @Get('cantidadComentarios')
-  async getPublicacionesCantidadComentarios(@Req() request: Request, @Res() response: Response,): Promise<any> {
-    try {
-      const result = await this.publicacionService.getPublicacionesCantidadComentarios();
-      return response.status(200).json({
-        status: 'Success',
-        message: 'Publicaciones Encontradas',
-        result: result,
-      });
-    } catch (err) {
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al obtener la cantidad de comentarios',
-        result: [],
-      });
-    }
-  }
-
-
 
   @Put('eliminarPublicacion/:id')
   async deletePublicacionByID(@Param('id',ParseIntPipe) id: number) {
@@ -329,5 +294,47 @@ export class PublicacionController {
           };
       }
   }
+
+
+
+
+
+  @Get('versionesRecientes')
+  async getPublicaciones() {
+    try{
+      const result= await this.publicacionService.getPublicacionesConVersionesRecientes();
+      return{
+        status: 'Success',
+        message: 'Publicaciones encontradas',
+        result: result,
+      };
+    }catch(err){
+      console.error(err);
+      return{
+        status: 'Error',
+        message: 'Error al obtener publicaciones recientes',
+        result: [],
+      };
+    }
+  }
+
+  @Get('cantidadComentarios')
+  async getPublicacionesCantidadComentarios(@Req() request: Request, @Res() response: Response,): Promise<any> {
+    try {
+      const result = await this.publicacionService.getPublicacionesCantidadComentarios();
+      return response.status(200).json({
+        status: 'Success',
+        message: 'Publicaciones Encontradas',
+        result: result,
+      });
+    } catch (err) {
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Error al obtener la cantidad de comentarios',
+        result: [],
+      });
+    }
+  }
+
 
 }

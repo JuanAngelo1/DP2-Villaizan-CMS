@@ -1,7 +1,7 @@
 export class UpdateVersionDto {
     titulo?: string;
     urlimagen?: string;
-    descripcionSEO?: string;
+    descripcion?: string;
     fechapublicacion?: Date;
     slug?: string;
     richtext?: string;
