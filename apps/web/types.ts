@@ -135,3 +135,12 @@ export type FAQ = {
   fechaultimamodificacion: Date;
   estaactivo: boolean;
 };
+
+export type PuntoVenta = {
+  id?: number;
+  nombre: string;
+  direccion: string;
+  lat: number;
+  lng: number;
+  nota?: string;
+};
