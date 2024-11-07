@@ -53,25 +53,28 @@ function NuevoVersionPage() {
     setLoading(true);
     try {
       const response: Response<VersionPublicacionReponse> = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/crearVersion`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/crearVersion/${idPublicacion}`,
         version
       );
+      if (response.data.status == "Error") {
+        throw new Error(response.data.message);
+      }
       toast({
         title: "Versión creada",
         description: "La versión de la publicación se creó correctamente.",
       });
       router.push(`/admin/contenido/publicaciones/${idPublicacion}/${response.data.result.id}`);
-    } catch (error) {
+    } catch (error : any) {
       toast({
         title: "Error en creación",
-        description: "Hubo un error al crear la versión de la publicación.",
+        description: error.message || "Ocurrió un error al crear la versión de la publicación.",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <MainContent title={version?.titulo || "[Titulo de publicacion]"}>
       <Separator />

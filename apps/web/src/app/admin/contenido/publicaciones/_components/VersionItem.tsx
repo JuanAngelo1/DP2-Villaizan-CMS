@@ -27,7 +27,7 @@ const VersionItem: React.FC<PublicacionItemProps> = ({ version_publicacion, onEd
           {version_publicacion.titulo || "(Sin titulo)"}
         </p>
         <p className="flex-1">/{version_publicacion.slug || "(Sin slug)"}</p>
-        <p className="flex-1">Últ. edición: {formatDate(version_publicacion?.ultimamodificacion)}</p>
+        <p className="flex-1">Últ. edición: {formatDate(version_publicacion?.fechaultimamodificacion)}</p>
         <div className="flex-1">
           <Badge className="w-fit" variant={'default'}>
             {version_publicacion.estado}

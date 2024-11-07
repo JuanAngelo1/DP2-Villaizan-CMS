@@ -70,7 +70,7 @@ function NuevoVersionPage() {
         title: "Versión actualizada",
         description: "La versión de la publicación ha sido actualizada con éxito.",
       });
-      router.refresh();
+      window.location.reload();
     } catch (error) {
       toast({
         title: "Error",
@@ -86,17 +86,17 @@ function NuevoVersionPage() {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/publicar/${idPublicacion}/${idVersionPublicacion}`
       );
       if(response.data.status == "Error") {
-        throw new Error("Error al publicar la versión");
+        throw new Error(response.data.message);
       }
       toast({
         title: "Versión publicada",
         description: "La versión de la publicación ha sido publicada con éxito.",
       });
-      router.refresh();
-    } catch (error) {
+      window.location.reload();
+    } catch (error : any) {
       toast({
         title: "Error",
-        description: "Hubo un error al publicar la versión. Verifique si existe una versión publicada en esta publicación.",
+        description: error.message || "Hubo un error al publicar la versión de la publicación.",
         variant: "destructive",
       });
     }
@@ -108,17 +108,17 @@ function NuevoVersionPage() {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/despublicar/${idPublicacion}/${idVersionPublicacion}`
       );
       if(response.data.status == "Error") {
-        throw new Error("Error al despublicar la versión");
+        throw new Error(response.data.message);
       }
       toast({
         title: "Versión despublicada",
         description: "La versión de la publicación ha sido despublicada con éxito.",
       });
-      router.refresh();
-    } catch (error) {
+      window.location.reload();
+    } catch (error : any) {
       toast({
         title: "Error",
-        description: "Hubo un error al despublicar la versión. Verifique si existe una versión publicada en esta publicación.",
+        description: error.message || "Hubo un error al despublicar la versión de la publicación.",
         variant: "destructive",
       });
     }
