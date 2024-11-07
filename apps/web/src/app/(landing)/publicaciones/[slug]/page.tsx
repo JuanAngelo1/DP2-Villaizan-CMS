@@ -1,10 +1,11 @@
 "use server";
 
-import { Categoria, Response, VersionPublicacion } from "@web/types";
+import { Categoria, ControlledError, Response, VersionPublicacion } from "@web/types";
 import axios from "axios";
 import { Slash } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,7 +17,6 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import MaxWidthWrapper from "../../_components/MaxWidthWrapper";
 import "./postStyles.css";
-import Image from "next/image";
 
 const blogContent = `
 <h1><strong><em>¡Descubre Nuestra Nueva Colección de Sabores!</em></strong></h1>
@@ -39,14 +39,11 @@ const blogContent = `
 `;
 
 function getHeadingContents(htmlString: string): string[] {
-  // List of heading tags in priority order
   const headingTags = ["h1", "h2", "h3"];
 
   for (const tag of headingTags) {
-    // Regular expression to capture the content inside the heading tag
     const regex = new RegExp(`<${tag}[^>]*>(.*?)</${tag}>`, "gi");
     const matches = Array.from(htmlString.matchAll(regex), (match) => {
-      // Remove any nested HTML tags inside the captured content
       const rawText = match[1].replace(/<[^>]*>/g, "").trim();
       return rawText;
     });
@@ -56,7 +53,6 @@ function getHeadingContents(htmlString: string): string[] {
     }
   }
 
-  // If no headings are found, return an empty array
   return [];
 }
 
@@ -66,9 +62,13 @@ async function fetchPublicationData(slug: string) {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/slug/${slug}`
     );
     console.log("Publicacion data -> ", response.data.result);
+
+    if(response.data.status !== "Success") throw new Error(response.data.message);
+
     return response.data.result;
   } catch (error) {
     console.log("Error fetching publication data -> ", error);
+    return null;
   }
 }
 
@@ -77,9 +77,7 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
 
   const publicacion = await fetchPublicationData(slug);
 
-  if (!publicacion) {
-    return <div>Publicación no encontrada</div>;
-  }
+  if (!publicacion) throw new Error("Publicación no encontrada");
 
   const headings = getHeadingContents(publicacion?.richtext || "");
 
@@ -110,9 +108,7 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
           <ContentTable headings={headings} />
 
           <section className="flex flex-col">
-            <CategoryDisplay
-              categories={publicacion.categorias}
-            />
+            <CategoryDisplay categories={publicacion.categorias} />
             <p className="text-5xl font-semibold">{publicacion.titulo}</p>
             <p className="italic">Fecha de publicación: 24 de octubre de 2024</p>
             <div
@@ -186,14 +182,20 @@ function CategoryDisplay({ categories, className }: { categories: Categoria[]; c
     <div className={cn("flex flex-row items-center gap-2", className)}>
       {categories.map((category, idx) => {
         if (idx === categories.length - 1) {
-          return <p className="cursor-pointer hover:underline">{category.nombre}</p>;
+          return (
+            <Link key={idx} className="cursor-pointer hover:underline" href={`/publicaciones?categoria=${category.id}`}>
+              {category.nombre}
+            </Link>
+          );
         }
 
         return (
-          <>
-            <p className="cursor-pointer hover:underline">{category.nombre}</p>
+          <Fragment key={idx}>
+            <Link className="cursor-pointer hover:underline" href={`/publicaciones?categoria=${category.id}`}>
+              {category.nombre}
+            </Link>
             <p>|</p>
-          </>
+          </Fragment>
         );
       })}
     </div>

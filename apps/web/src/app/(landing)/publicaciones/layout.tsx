@@ -1,10 +1,10 @@
 import { Suspense } from "react";
 
-function LayoutPublicacion({ children }: { children: React.ReactNode }) {
+function LayoutPublicaciones({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Suspense fallback="Cargando...">{children}</Suspense>
     </>
   );
 }
-export default LayoutPublicacion;
+export default LayoutPublicaciones;
