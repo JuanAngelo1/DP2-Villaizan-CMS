@@ -15,6 +15,7 @@ import { VersionDto } from './dto/pub.dto';
 import { PublicacionDto } from './dto/publicacion.dto';
 import { GoogleDriveHelper } from '../../utils/google-drive.helper';
 import { UpdateVersionDto } from './dto/update-version.dto';
+import { url } from 'inspector';
 
 
 @Injectable()
@@ -149,6 +150,7 @@ export class PublicacionService {
       slug: version.slug,
       richtext: version.richtext,
       fechapublicacion: version.fechapublicacion,
+      urlimagen: version.urlimagen,
       estaactivo: version.estaactivo,
       estado: version.vi_estado_version.nombre,  // Extraemos el nombre del estado directamente
       imagenes: version.vi_imagen_version,  // Incluimos las imágenes directamente
