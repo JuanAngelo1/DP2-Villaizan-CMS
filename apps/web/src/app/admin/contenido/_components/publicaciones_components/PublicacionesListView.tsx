@@ -14,7 +14,7 @@ import { cn } from "@repo/ui/lib/utils";
 import ContentFooter from "../general_components/ContentFooter";
 import MainContent from "../general_components/MainContent";
 import TopHeader from "../general_components/TopHeader";
-import PublicacionItem from "./PublicacionItem";
+import PublicacionItem from "../../publicaciones/_components/PublicacionItem";
 
 interface PublicacionesListViewProps {
   changeType: (type: string | null, id?: string | null) => void;
