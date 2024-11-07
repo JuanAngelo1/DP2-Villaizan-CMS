@@ -65,3 +65,7 @@ packages/lib/uploads
 
 # npmrc
 .npmrc
+
+# flask
+__pycache__/
+.venv/
