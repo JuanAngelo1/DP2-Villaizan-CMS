@@ -47,7 +47,23 @@ import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
     FrutasModule,
     PuntosVentaModule,
   ],
-  controllers: [UsuarioController, ArchivoController, RolController,PermisoController, FaqController,FrutasController, PuntosVentaController],
-  providers: [UsuarioService, ArchivoService,RolService,PermisoService,FaqService,FrutasService,PuntosVentaService],
+  controllers: [
+    UsuarioController,
+    ArchivoController,
+    RolController,
+    PermisoController,
+    FaqController,
+    FrutasController,
+    PuntosVentaController,
+  ],
+  providers: [
+    UsuarioService,
+    ArchivoService,
+    RolService,
+    PermisoService,
+    FaqService,
+    FrutasService,
+    PuntosVentaService,
+  ],
 })
 export class AppModule {}
