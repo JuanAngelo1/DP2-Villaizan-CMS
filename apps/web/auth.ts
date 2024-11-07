@@ -88,10 +88,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({ token, user }) {
       try {
-        if (user) {
-          token.id = user.id as string;
-        }
-
         if (token) {
           token.sub = user?.db_info?.id || token.sub
           const user_id = token.sub;
@@ -115,14 +111,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async session({ token, session }) {
-      if (token.id) {
-        session.user.id = token.id as string;
-      } else {
-        //@ts-ignore
-        session.user.id = token.db_info.id as string;
-      }
+      //console.log("OPCION A Token id: ", token.id);
+      //console.log("OPCION B Token id: ", token.db_info);
       //@ts-ignore
-      //session.user.id = token.db_info.id;
+      session.user.id = token.db_info.id;
       //@ts-ignore
       session.user.email = token.db_info.email;
       //@ts-ignore
