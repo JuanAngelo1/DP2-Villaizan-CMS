@@ -24,14 +24,16 @@ function LoginPage() {
     try {
       setIsLoading(true);
       const result = await handleCredentialsSignIn({ email, password, redirectTo: callbackUrl });
+      console.log("Resultado desde el cliente -> ", result);
     } catch (error) {
-      console.log("An unexpected error ocurred. Please try again.");
+      console.log("An unexpected error ocurred. Please try again. -> ", error);
     }
   };
 
   const onLoginGoogle = async () => {
     try {
-      const result = handleGoogleSignIn({ redirectTo: callbackUrl });
+      const result = await handleGoogleSignIn({ redirectTo: callbackUrl });
+      console.log("Resultado desde el cliente -> ", result);
     } catch (error) {
       console.log("An unexpected error ocurred. Please try again.");
     }

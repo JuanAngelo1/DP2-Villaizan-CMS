@@ -16,6 +16,19 @@ class CustomError extends CredentialsSignin {
   }
 }
 
+class InvalidLoginError extends CredentialsSignin {
+  code: string;
+
+  constructor(message = "Invalid identifier or password") {
+    super(message);
+    this.code = message;
+  }
+}
+
+class UnknownLoginError extends CredentialsSignin {
+  code = "Ocurrio un error inesperado. Intenta de nuevo.";
+}
+
 function getCookieHostname() {
   const hostname = new URL(process.env.NEXT_PUBLIC_APP_URL!).hostname;
   const [subDomain] = hostname.split(".");
@@ -42,18 +55,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const data = response.data;
 
           if (data.status !== "Success") {
-            throw new CustomError(data.message);
+            throw new InvalidLoginError(data.message);
           }
 
           return {
             db_info: data.result,
           };
         } catch (error) {
-          if (error instanceof CustomError) {
-            throw new CustomError(error.code);
+          if (error instanceof InvalidLoginError) {
+            throw new InvalidLoginError(error.code);
           }
-          console.log("See the error: ", error);
-          return null;
+
+          throw new UnknownLoginError();
         }
       },
     }),
@@ -89,7 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       try {
         if (token) {
-          token.sub = user?.db_info?.id || token.sub
+          token.sub = user?.db_info?.id || token.sub;
           const user_id = token.sub;
 
           const response: Response<Usuario> = await axios.get(
@@ -123,18 +136,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      return url;
+    },
   },
   pages: {
-    // signIn: "/login",
-    // error: "/login",
-    // signOut: "/",
-    signIn: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
-    error: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
-    signOut: `${process.env.NEXT_PUBLIC_APP_URL}`,
+    signIn: "/login",
+    error: "/login",
+    signOut: "/",
+    // signIn: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    // error: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
+    // signOut: `${process.env.NEXT_PUBLIC_APP_URL}`,
   },
   cookies: {
     sessionToken: {
-      name: domain === "localhost" ? 'authjs.session-token' : `__Secure-next-auth.session-token`,
+      name: domain === "localhost" ? "authjs.session-token" : `__Secure-next-auth.session-token`,
       options: {
         sameSite: "none",
         secure: true,
@@ -144,7 +161,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
     callbackUrl: {
-      name: domain === "localhost" ? 'authjs.callback-url' : `__Secure-next-auth.callback-url`,
+      name: domain === "localhost" ? "authjs.callback-url" : `__Secure-next-auth.callback-url`,
       options: {
         sameSite: "none",
         secure: true,
@@ -154,7 +171,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     },
     csrfToken: {
-      name: domain === "localhost" ? 'authjs.csrf-token' : `next-auth.csrf-token`,
+      name: domain === "localhost" ? "authjs.csrf-token" : `next-auth.csrf-token`,
       options: {
         sameSite: "none",
         secure: true,
