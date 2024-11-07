@@ -111,8 +111,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async session({ token, session }) {
-      //console.log("OPCION A Token id: ", token.id);
-      //console.log("OPCION B Token id: ", token.db_info);
+      console.log("Token db_info: ", token.db_info);
       //@ts-ignore
       session.user.id = token.db_info.id;
       //@ts-ignore
