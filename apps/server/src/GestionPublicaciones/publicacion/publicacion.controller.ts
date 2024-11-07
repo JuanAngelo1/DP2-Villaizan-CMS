@@ -129,21 +129,9 @@ export class PublicacionController {
 
   @Post('crearVersion/:id')
   async createVersion(@Param('id',ParseIntPipe) id: number, @Body() data: VersionDto) {
-    try {
-      const result = await this.publicacionService.createVersion(id,data);
-      return {
-        status: 'Success',
-        message: 'Version creada exitosamente',
-        result: result,
-      };
-    } catch (err) {
-      console.error(err);
-      return {
-        status: 'Error',
-        message: 'Error al crear la version',
-        result: [],
-      };
-    }
+    
+    return await this.publicacionService.createVersion(id,data);
+
   }
 
   @Put('actualizarVersion/:id') 
