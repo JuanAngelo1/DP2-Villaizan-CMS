@@ -25,7 +25,10 @@ export class PublicacionService {
     const publicaciones = await this.prisma.vi_publicacion.findMany({
       where: {
         estaactivo: true,
-      }
+      },
+      orderBy: {
+        fechamodificacion: 'desc',
+      },
     });
     return publicaciones;
   }
@@ -48,7 +51,7 @@ export class PublicacionService {
         estaactivo: true,
       },
       orderBy: {
-        fechaultimamodificacion: 'asc',
+        fechaultimamodificacion: 'desc',
       },
       select: {
         id: true,

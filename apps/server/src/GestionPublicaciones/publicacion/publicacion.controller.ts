@@ -127,7 +127,7 @@ export class PublicacionController {
     }
   }
 
-  @Post('crearVersion:/id')
+  @Post('crearVersion/:id')
   async createVersion(@Param('id',ParseIntPipe) id: number, @Body() data: VersionDto) {
     try {
       const result = await this.publicacionService.createVersion(id,data);
