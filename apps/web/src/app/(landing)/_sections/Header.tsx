@@ -4,16 +4,37 @@ import { KeySquare, Loader2, LogOut } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { cn } from "@repo/ui/lib/utils";
 import { handleSignOut } from "../../../../actions/authActions";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
+function checkIfAuthenticated(session: any, status: string) {
+  if (status !== "loading") {
+    return session?.user?.id ? true : false;
+  }
+  return false;
+}
+
 const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  /*
+  useEffect(() => {
+    if (checkIfAuthenticated(session, status)) {
+      setIsAuthenticated(true);
+      console.log("User is authenticated");
+      console.log("user id: ", session?.user?.id);
+    } else {
+      setIsAuthenticated(false);
+      console.log("User is not authenticated");
+      console.log("user id: ", session?.user?.id);
+    }
+  }, [session, status]);
+  */
 
   return (
     <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 bg-[#D6CDA8] font-['Abhaya_Libre'] shadow-xl">

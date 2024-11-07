@@ -24,7 +24,8 @@ function getCookieHostname() {
   return cookieDomain;
 }
 
-const domain = getCookieHostname();
+//const domain = getCookieHostname();
+const domain = process.env.NEXT_PUBLIC_APP_URL?.includes("localhost") ? "localhost" : getCookieHostname();
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -110,6 +111,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async session({ token, session }) {
+      //console.log("OPCION A Token id: ", token.id);
+      //console.log("OPCION B Token id: ", token.db_info);
       //@ts-ignore
       session.user.id = token.db_info.id;
       //@ts-ignore
