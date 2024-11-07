@@ -127,7 +127,13 @@ const Nosotros: React.FC = () => {
               tradiciones locales.
             </p>
           </div>
-          <img className="h-[400px] rounded-lg object-cover shadow-lg" src="/nosotros/vision.jpg"></img>
+          <Image
+            alt="Mision"
+            height={100}
+            width={100}
+            className="h-[400px] w-auto rounded-lg object-cover shadow-lg"
+            src="/nosotros/vision.jpg"
+          ></Image>
         </div>
 
         <div className="flex h-dvh w-full flex-col items-center justify-center gap-10 text-left lg:flex-row lg:gap-5">
@@ -141,7 +147,13 @@ const Nosotros: React.FC = () => {
               un entorno sostenible y responsable con el medio ambiente.
             </p>
           </div>
-          <img className="h-[400px] rounded-lg object-cover shadow-lg" src="/nosotros/vision.jpg"></img>
+          <Image
+            alt="Mision"
+            height={100}
+            width={100}
+            className="h-[400px] max-w-[500px] w-auto rounded-lg object-cover shadow-lg"
+            src="/publicaciones/imagen3.png"
+          ></Image>
         </div>
       </MaxWidthWrapper>
     </section>
