@@ -89,8 +89,8 @@ const MapComponent: React.FC = () => {
     <section className="bg-gradient-to-b min-h-[500px] p-6" id="mapa">
       <div className="max-w-7xl mx-auto space-y-4">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">🍦 Heladerías Villaizan</h2>
-          <p>Encuentra tu heladería más cercana</p>
+          <h2 className="text-3xl font-bold mb-2">🍦 Paletas Villaizan</h2>
+          <p>Encuentra tu paletería más cercana</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-2xl overflow-hidden">
@@ -98,7 +98,7 @@ const MapComponent: React.FC = () => {
             <div className="h-[600px] w-full flex items-center justify-center bg-gray-50">
               <div className="text-center space-y-3">
                 <div className="animate-bounce text-4xl">🍦</div>
-                <p className="text-gray-600 animate-pulse">Cargando heladerías más cercanas...</p>
+                <p className="text-gray-600 animate-pulse">Cargando paleterías más cercanas...</p>
               </div>
             </div>
           ) : location ? (
