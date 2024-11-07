@@ -46,6 +46,11 @@ export class PublicacionController {
     }
   }
 
+  @Get('slug/:slug')
+  async getPublicionSlug(@Param('slug') slug: string) {
+      return await this.publicacionService.getPublicacionBySlug(slug);
+  }
+
   @Get('publicadas')
   async getVersionesPublicadas() {
     return await this.publicacionService.getVersionesActivas();
