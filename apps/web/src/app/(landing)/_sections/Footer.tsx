@@ -6,13 +6,13 @@ import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#D6CDA8] px-4 py-8 font-['Abhaya_Libre'] text-black">
+    <footer className="bg-red-800 text-white px-4 py-8 font-['Abhaya_Libre']">
       <MaxWidthWrapper className="flex flex-col gap-4">
         <div className="flex flex-col">
-          <div className="sm:mb-3 mb-5 flex flex-col md:flex-row items-center justify-between sm:gap-0 gap-3">
+          <div className="mb-5 flex flex-col items-center justify-between gap-3 sm:mb-3 sm:gap-0 md:flex-row">
             <h2 className="text-2xl font-semibold">Heladería Villaizan</h2>
 
-            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-6">
+            <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-6">
               <SocialLink
                 href="https://www.facebook.com/@VillaizanArtesanal"
                 image="/facebook-logo.png"
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             con nosotros!
           </p>
         </div>
-        <Separator className="bg-black" />
+        <Separator className="bg-white" />
         <p className="text-center text-sm text-inherit">
           &copy; {new Date().getFullYear()} Heladería Villaizan. Todos los derechos reservados.
         </p>
