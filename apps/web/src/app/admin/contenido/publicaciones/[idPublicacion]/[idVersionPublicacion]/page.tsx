@@ -1,7 +1,7 @@
 "use client";
 
 import TextEditor from "@web/src/app/_components/TextEditor";
-import { Response } from "@web/types";
+import { Categoria, Etiqueta, Response } from "@web/types";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -16,6 +16,7 @@ import { Skeleton } from "@repo/ui/components/skeleton";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import MainContent from "../../../_components/general_components/MainContent";
 import Image from "next/image";
+import { MultiSelect } from "@repo/ui/components/multi-select";
 
 interface VersionPublicacion {
   id: number;
@@ -29,8 +30,8 @@ interface VersionPublicacion {
   estaactivo: boolean;
   estado: string;
   imagenes: string[];
-  categorias: string[];
-  etiquetas: string[];
+  categorias: number[];
+  etiquetas: number[];
 }
 
 function NuevoVersionPage() {
@@ -38,6 +39,8 @@ function NuevoVersionPage() {
   const { idPublicacion, idVersionPublicacion } = useParams();
   const router = useRouter();
   const [version, setVersion] = useState<VersionPublicacion | null>(null);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -47,6 +50,16 @@ function NuevoVersionPage() {
         const response: Response<VersionPublicacion> = await axios.get(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/version/${idVersionPublicacion}`
         );
+        const responseEtiquetas: Response<Etiqueta[]> = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/etiqueta`);
+        if (responseEtiquetas.data.status == "Error") {
+          throw new Error(responseEtiquetas.data.message);
+        }
+        const responseCategorias: Response<Categoria[]> = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/categoria`);
+        if (responseCategorias.data.status == "Error") {
+          throw new Error(responseCategorias.data.message);
+        }
+        setCategorias(responseCategorias.data.result);
+        setEtiquetas(responseEtiquetas.data.result);
         setVersion(response.data.result);
       } catch (error) {
         toast({
@@ -69,6 +82,9 @@ function NuevoVersionPage() {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/actualizarVersion/${idVersionPublicacion}`,
         version
       );
+      if (response.data.status == "Error") {
+        throw new Error(response.data.message);
+      }
       toast({
         title: "Versión actualizada",
         description: "La versión de la publicación ha sido actualizada con éxito.",
@@ -126,6 +142,8 @@ function NuevoVersionPage() {
       });
     }
   }
+
+  console.log(version);
 
   return (
     <>
@@ -233,73 +251,35 @@ function NuevoVersionPage() {
                     </Button>
                   </div>
                   {/* Categorías */}
-                  {/* <div className="flex flex-col">
-                    <Label>Categorías</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant={"outline"}>
-                          {pub?.categorias.length > 0 ? pub.categorias.join(", ") : "Elegir categorías"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-72">
-                        <Command>
-                          <CommandInput placeholder="Buscar categorías..." />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron categorías.</CommandEmpty>
-                            <CommandGroup>
-                              {["Noticias", "Eventos", "Blog", "Productos"].map((categoria) => (
-                                <CommandItem
-                                  key={categoria}
-                                  onSelect={() => {
-                                    const updatedCategorias = pub?.categorias.includes(categoria)
-                                      ? pub.categorias.filter((cat) => cat !== categoria)
-                                      : [...(pub?.categorias || []), categoria];
-                                    setPub({ ...pub, categorias: updatedCategorias });
-                                  }}
-                                >
-                                  {categoria}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </div> */}
+                  {version?.categorias && categorias && (
+                    <div className="flex flex-col">
+                      <Label>Categorías</Label>
+                      <MultiSelect
+                        options={categorias.map((categoria) => ({ value: categoria.id.toString(), label: categoria.nombre })) || []}
+                        onValueChange={(values) => setVersion({ ...version, categorias : values.map((value) => Number(value)) }) }
+                        defaultValue={version.categorias.map((id) => id.toString())}
+                        placeholder="Selecciona categorias"
+                        variant="inverted"
+                        animation={2}
+                        maxCount={3}
+                      />
+                    </div>
+                  )}
+                  
                   {/* Etiquetas */}
-                  {/* <div className="flex flex-col">
+                  <div className="flex flex-col">
                     <Label>Etiquetas</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant={"outline"}>
-                          {pub?.etiquetas.length > 0 ? pub.etiquetas.join(", ") : "Elegir etiquetas"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-72">
-                        <Command>
-                          <CommandInput placeholder="Buscar etiquetas..." />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron etiquetas.</CommandEmpty>
-                            <CommandGroup>
-                              {["Etiqueta 1", "Etiqueta 2", "Etiqueta 3"].map((etiqueta) => (
-                                <CommandItem
-                                  key={etiqueta}
-                                  onSelect={() => {
-                                    const updatedEtiquetas = pub?.etiquetas.includes(etiqueta)
-                                      ? pub.etiquetas.filter((tag) => tag !== etiqueta)
-                                      : [...(pub?.etiquetas || []), etiqueta];
-                                    setPub({ ...pub, etiquetas: updatedEtiquetas });
-                                  }}
-                                >
-                                  {etiqueta}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </div> */}
+                    <MultiSelect
+                      options={etiquetas.map((etiqueta) => ({ value: etiqueta.id.toString(), label: etiqueta.nombre })) || []}
+                      onValueChange={(values) => setVersion({ ...version, etiquetas: values.map((value) => Number(value)) })}
+                      defaultValue={version.etiquetas.map((id) => id.toString())}
+                      placeholder="Selecciona etiquetas"
+                      variant="inverted"
+                      animation={2}
+                      maxCount={3}
+                    />
+                  </div>
+
                   {/* Fecha de Publicación */}
                   <div className="flex flex-col">
                     <Label>Fecha de publicación</Label>

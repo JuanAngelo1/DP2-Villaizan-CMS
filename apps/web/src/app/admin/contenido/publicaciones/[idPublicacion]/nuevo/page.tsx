@@ -26,8 +26,8 @@ interface VersionPublicacion {
   fechapublicacion: string;
   slug?: string;
   richtext: string;
-  categorias: Categoria[];
-  etiquetas: Etiqueta[];
+  categorias: number[];
+  etiquetas: number[];
   imagenes: string[];
 }
 
@@ -90,6 +90,7 @@ function NuevoVersionPage() {
     let imagenUploaded = true;
     try {
       // Logica para guardar y obtener la url de la imagen de portada
+      // para categorias y etiquetas, se envia un array de ids
       let updatedVersion = { ...version };
       if (imagen.file) {
         const formData = new FormData();
@@ -129,6 +130,8 @@ function NuevoVersionPage() {
       setLoading(false);
     }
   };
+
+  console.log("Version", version);
 
   return (
     <MainContent title={version?.titulo || "[Titulo de publicacion]"}>
@@ -223,82 +226,31 @@ function NuevoVersionPage() {
         {/* Información Adicional */}
         <div className="flex w-full flex-col gap-8 lg:w-1/4">
           <div className="flex flex-col gap-4 *:gap-2">
-            {/* Estado */}
-            {/* <div className="flex flex-col">
-                    <Label>Estado</Label>
-                    <Badge variant={"secondary"} className="w-fit">
-                      {version?.estado || "Borrador"}
-                    </Badge>
-                  </div> */}
             {/* Categorías */}
+            <div className="flex flex-col">
+              <Label>Categorías</Label>
+              <MultiSelect
+                options={categorias.map((categoria) => ({ value: categoria.id, label: categoria.nombre })) || []}
+                onValueChange={(values) => setVersion({ ...version, categorias: values.map((value) => Number(value)) })}
+                placeholder="Selecciona categorias"
+                variant="inverted"
+                animation={2}
+                maxCount={3}
+              />
+            </div>
             
-            {/* <div className="flex flex-col">
-                    <Label>Categorías</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant={"outline"}>
-                          {pub?.categorias.length > 0 ? pub.categorias.join(", ") : "Elegir categorías"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-72">
-                        <Command>
-                          <CommandInput placeholder="Buscar categorías..." />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron categorías.</CommandEmpty>
-                            <CommandGroup>
-                              {["Noticias", "Eventos", "Blog", "Productos"].map((categoria) => (
-                                <CommandItem
-                                  key={categoria}
-                                  onSelect={() => {
-                                    const updatedCategorias = pub?.categorias.includes(categoria)
-                                      ? pub.categorias.filter((cat) => cat !== categoria)
-                                      : [...(pub?.categorias || []), categoria];
-                                    setPub({ ...pub, categorias: updatedCategorias });
-                                  }}
-                                >
-                                  {categoria}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </div> */}
             {/* Etiquetas */}
-            {/* <div className="flex flex-col">
-                    <Label>Etiquetas</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant={"outline"}>
-                          {pub?.etiquetas.length > 0 ? pub.etiquetas.join(", ") : "Elegir etiquetas"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-72">
-                        <Command>
-                          <CommandInput placeholder="Buscar etiquetas..." />
-                          <CommandList>
-                            <CommandEmpty>No se encontraron etiquetas.</CommandEmpty>
-                            <CommandGroup>
-                              {["Etiqueta 1", "Etiqueta 2", "Etiqueta 3"].map((etiqueta) => (
-                                <CommandItem
-                                  key={etiqueta}
-                                  onSelect={() => {
-                                    const updatedEtiquetas = pub?.etiquetas.includes(etiqueta)
-                                      ? pub.etiquetas.filter((tag) => tag !== etiqueta)
-                                      : [...(pub?.etiquetas || []), etiqueta];
-                                    setPub({ ...pub, etiquetas: updatedEtiquetas });
-                                  }}
-                                >
-                                  {etiqueta}
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </div> */}
+            <div className="flex flex-col">
+              <Label>Etiquetas</Label>
+              <MultiSelect
+                options={etiquetas.map((etiqueta) => ({ value: etiqueta.id, label: etiqueta.nombre })) || []}
+                onValueChange={(values) => setVersion({ ...version, etiquetas: values.map((value) => Number(value)) })}
+                placeholder="Selecciona etiquetas"
+                variant="inverted"
+                animation={2}
+                maxCount={3}
+              />
+            </div>
             {/* Fecha de Publicación */}
             <div className="flex flex-col">
               <Label>Fecha de publicación</Label>
@@ -308,26 +260,6 @@ function NuevoVersionPage() {
                 placeholder="Seleccionar fecha y hora"
               />
             </div>
-            {/* Fecha de Creación (Deshabilitada) */}
-            {/* <div className="flex flex-col">
-                    <Label>Fecha de creación</Label>
-                    <DateTimePicker
-                      date={version?.fecha_creacion}
-                      setDate={(newDate: string) => setVersion({ ...version, fecha_creacion: newDate })}
-                      placeholder="Fecha de creación"
-                      disabled
-                    />
-                  </div> */}
-            {/* Última Actualización (Deshabilitada) */}
-            {/* <div className="flex flex-col">
-                    <Label>Última actualización</Label>
-                    <DateTimePicker
-                      date={version?.fecha_actualizacion}
-                      setDate={(newDate: string) => setVersion({ ...version, fecha_actualizacion: newDate })}
-                      placeholder="Fecha de actualización"
-                      disabled
-                    />
-                  </div> */}
           </div>
 
           {/* Botones de Acción */}
