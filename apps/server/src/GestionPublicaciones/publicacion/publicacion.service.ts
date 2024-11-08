@@ -92,7 +92,7 @@ export class PublicacionService {
         fechaultimamodificacion: true,
         titulo: true,
         descripcion: true,
-        urlimagen:true,
+        urlimagen: true,
         slug: true,
         fechapublicacion: true,
         estaactivo: true,
@@ -114,7 +114,7 @@ export class PublicacionService {
           select: {
             vi_categoria_publicacion: {
               select: {
-                id: true
+                id: true,
               },
             },
           },
@@ -123,7 +123,7 @@ export class PublicacionService {
           select: {
             vi_etiqueta_publicacion: {
               select: {
-                id: true
+                id: true,
               },
             },
           },
@@ -131,7 +131,7 @@ export class PublicacionService {
       },
     });
   
-    // Reestructuramos el resultado para simplificar el formato de categorías y etiquetas
+    // Reestructuramos el resultado para simplificar el formato de categorías y etiquetas con solo IDs
     return {
       id: version.id,
       fechaultimamodificacion: version.fechaultimamodificacion,
@@ -144,10 +144,11 @@ export class PublicacionService {
       estaactivo: version.estaactivo,
       estado: version.vi_estado_version.nombre,  // Extraemos el nombre del estado directamente
       imagenes: version.vi_imagen_version,  // Incluimos las imágenes directamente
-      categorias: version.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion),  // Extraemos las categorías directamente
-      etiquetas: version.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion),  // Extraemos las etiquetas directamente
+      categorias: version.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion.id),  // Extraemos solo los IDs de las categorías
+      etiquetas: version.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion.id),  // Extraemos solo los IDs de las etiquetas
     };
   }
+  
   
 
   async createOnlyPublicacion(data: PublicacionDto): Promise<any> {
