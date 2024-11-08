@@ -312,6 +312,12 @@ export class PublicacionService {
           fechapublicacion: data.fechapublicacion,
         },
       });
+
+      if(data.categorias.length==0){
+        await this.prisma.vi_publicacion_x_categoria.deleteMany({
+          where: { id_version: id_version },
+        });
+      }
   
       // Actualizar las categorías asociadas
       if (data.categorias && data.categorias.length > 0) {
@@ -337,8 +343,14 @@ export class PublicacionService {
           }
         }
       }
-  
       // Actualizar las etiquetas asociadas
+
+      if(data.etiquetas.length==0){
+        await this.prisma.vi_publicacion_x_etiqueta.deleteMany({
+          where: { id_version: id_version },
+        });
+      }
+
       if (data.etiquetas && data.etiquetas.length > 0) {
         // Eliminar etiquetas existentes
         await this.prisma.vi_publicacion_x_etiqueta.deleteMany({
