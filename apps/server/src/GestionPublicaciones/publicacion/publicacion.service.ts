@@ -752,6 +752,7 @@ export class PublicacionService {
           fechacreacion: versionPublicada.fechacreacion,
           fechaultimamodificacion: versionPublicada.fechaultimamodificacion,
           richtext: versionPublicada.richtext,
+          urlimagen: versionPublicada.urlimagen,
           estado: versionPublicada.vi_estado_version.nombre,
           imagenes: versionPublicada.vi_imagen_version,
           categorias: versionPublicada.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion),
