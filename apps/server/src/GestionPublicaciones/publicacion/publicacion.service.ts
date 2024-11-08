@@ -148,8 +148,6 @@ export class PublicacionService {
       etiquetas: version.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion.id),  // Extraemos solo los IDs de las etiquetas
     };
   }
-  
-  
 
   async createOnlyPublicacion(data: PublicacionDto): Promise<any> {
     try{
@@ -689,6 +687,7 @@ export class PublicacionService {
           descripcion: true,
           fechacreacion: true,
           fechaultimamodificacion: true,
+          urlimagen: true,
           richtext: true,
           vi_estado_version: {
             select: {
