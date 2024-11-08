@@ -480,6 +480,14 @@ export class PublicacionService {
             };
         }
 
+        if(publicacionActual){
+          return {
+            status: 'Error',
+            message: 'Ya existe una versión publicada.',
+            result: [],
+        };
+        }
+
         // Si no hay conflictos, publicar la versión
         const versionActualizada = await this.prisma.vi_version_publicacion.update({
             where: { id: id_version },
