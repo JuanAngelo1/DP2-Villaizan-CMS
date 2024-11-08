@@ -114,12 +114,7 @@ export class PublicacionService {
           select: {
             vi_categoria_publicacion: {
               select: {
-                id: true,
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-                estaactivo: true,
+                id: true
               },
             },
           },
@@ -128,12 +123,7 @@ export class PublicacionService {
           select: {
             vi_etiqueta_publicacion: {
               select: {
-                id: true,
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-                estaactivo: true,
+                id: true
               },
             },
           },
