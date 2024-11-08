@@ -111,7 +111,7 @@ const Header: React.FC = () => {
           ) : (
             <Link
               href="/login"
-              className={cn(buttonVariants({ variant: "link" }), "text-lg font-bold")}
+              className={cn(buttonVariants({ variant: "link" }), "text-lg font-bold text-white")}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Iniciar sesión
