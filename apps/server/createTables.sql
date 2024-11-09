@@ -96,13 +96,25 @@ CREATE TABLE vi_comentario (
     id SERIAL PRIMARY KEY,
     comentario TEXT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	estadoaprobacion BOOLEAN DEFAULT FALSE NOT NULL,
-	nombreautor VARCHAR(255) NOT NULL,
-	estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
- 	id_usuario VARCHAR(50),  -- Relación con la tabla Usuario
-    id_publicacion INT,  -- Relación con la tabla Publicacion
+    estadoaprobacion BOOLEAN DEFAULT FALSE NOT NULL,
+    nombreautor VARCHAR(255) NOT NULL,
+	fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
+    id_usuario VARCHAR(50),        -- Relación con la tabla Usuario
+    id_publicacion INT,            -- Relación con la tabla Publicacion
+    id_sentimiento INT,            -- Relación con la tabla Sentimiento
     CONSTRAINT fk_usuario_comentario FOREIGN KEY (id_usuario) REFERENCES vi_usuario(id),
-    CONSTRAINT fk_publicacion_comentario FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id)  -- Relación con Publicacion
+    CONSTRAINT fk_publicacion_comentario FOREIGN KEY (id_publicacion) REFERENCES vi_publicacion(id),
+    CONSTRAINT fk_sentimiento_comentario FOREIGN KEY (id_sentimiento) REFERENCES vi_sentimiento(id) -- Nueva relación con Sentimiento
+);
+
+CREATE TABLE vi_sentimiento (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    estaactivo BOOLEAN DEFAULT TRUE NOT NULL,
+    colorfondo VARCHAR(20),
+    colortexto VARCHAR(20)
 );
 
 

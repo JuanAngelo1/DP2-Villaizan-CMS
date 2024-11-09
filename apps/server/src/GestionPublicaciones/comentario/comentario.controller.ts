@@ -42,7 +42,7 @@ export class ComentarioController {
             return response.status(500).json({
                 status: "Error",
                 message: "Error al crear el comentario",
-                result: [],
+                result: err,
             });
         }
     }
