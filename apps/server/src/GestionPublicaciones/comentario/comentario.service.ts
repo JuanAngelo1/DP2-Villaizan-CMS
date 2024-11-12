@@ -30,10 +30,10 @@ export class ComentarioService {
               return {
                 id: comentario.id,
                 comentario: comentario.comentario,
-                fecha: comentario.fecha,
                 estadoaprobacion: comentario.estadoaprobacion,
                 nombreautor: comentario.nombreautor,
                 estaactivo: comentario.estaactivo,
+                fechacreacion: comentario.fechacreacion,
                 usuario, 
                 publicacion 
               };
@@ -56,7 +56,7 @@ export class ComentarioService {
       return {
           id: comentario.id,
           comentario: comentario.comentario,
-          fecha: comentario.fecha,
+          fechacreacion: comentario.fechacreacion,
           estadoaprobacion: comentario.estadoaprobacion,
           nombreautor: comentario.nombreautor,
           estaactivo: comentario.estaactivo,
@@ -76,17 +76,17 @@ export class ComentarioService {
             },
           });
 
-        const response = await firstValueFrom(
-            this.httpService.post('http://127.0.0.1:8080/clasificar-sentimiento', {
-              comentario: data.comentario,
-            }),
-          );
+        // const response = await firstValueFrom(
+        //     this.httpService.post('http://127.0.0.1:8080/clasificar-sentimiento', {
+        //       comentario: data.comentario,
+        //     }),
+        //   );
 
-        const nombreSentimiento = response.data.sentiment;
+        // const nombreSentimiento = response.data.sentiment;
         
         const sentimiento= await this.prisma.vi_sentimiento.findFirst({
           where: {
-            nombre: nombreSentimiento
+            nombre: "Positivo"
           },
         });
 

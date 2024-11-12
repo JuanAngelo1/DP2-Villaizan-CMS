@@ -694,7 +694,7 @@ export class PublicacionService {
       if (!estadoPublicado) {
         throw new Error('Estado "Publicacion activa" no encontrado');
       }
-  
+
       const versionPublicada = await this.prisma.vi_version_publicacion.findFirst({
         where: {
           slug: slug,
@@ -703,6 +703,7 @@ export class PublicacionService {
         },
         select: {
           id: true,
+          id_publicacion: true,
           titulo: true,
           descripcion: true,
           fechacreacion: true,
@@ -760,13 +761,53 @@ export class PublicacionService {
           result: null,
         };
       }
-  
+
+      const publicacion= await this.prisma.vi_publicacion.findFirst({
+        where: {
+          id: versionPublicada.id_publicacion,
+        },
+      });
+
+      const comentarios= await this.prisma.vi_comentario.findMany({
+        where:{
+          id_publicacion: publicacion.id,
+        },
+        select:{
+          id:true,
+          comentario:true,
+          fechacreacion:true,
+          fechaultimamodificacion:true,
+          estaactivo:true,
+          id_publicacion:true,
+          id_sentimiento:true,
+          vi_usuario:{
+            select:{
+              nombre: true,
+              apellido: true,
+              imagenperfil: true,
+          },
+        }
+      }
+      });
+
+      const usuario= await this.prisma.vi_usuario.findFirst({
+        where:{
+          id: publicacion.id_usuario,
+        },
+        select:{
+          nombre: true,
+          apellido: true,
+          imagenperfil: true,
+        },
+      });
+
       // Reestructuramos el resultado para simplificar el formato de categorías y etiquetas
       return {
         status: 'Success',
         message: 'Versión publicada encontrada',
         result: {
           id: versionPublicada.id,
+          id_publicacion: versionPublicada.id_publicacion,
           titulo: versionPublicada.titulo,
           descripcion: versionPublicada.descripcion,
           fechacreacion: versionPublicada.fechacreacion,
@@ -777,6 +818,7 @@ export class PublicacionService {
           imagenes: versionPublicada.vi_imagen_version,
           categorias: versionPublicada.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion),
           etiquetas: versionPublicada.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion),
+          comentarios: comentarios,
         },
       };
     } catch (error) {

@@ -2112,7 +2112,6 @@ model vi_combo_x_producto {
 model vi_comentario {
   id                      Int             @id @default(autoincrement())
   comentario              String
-  fecha                   DateTime        @default(now()) @db.Timestamp(6)
   estadoaprobacion        Boolean         @default(false)
   nombreautor             String          @db.VarChar(255)
   fechacreacion           DateTime        @default(now()) @db.Timestamp(6)
