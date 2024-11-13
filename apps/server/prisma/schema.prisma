@@ -2112,7 +2112,7 @@ model vi_combo_x_producto {
 model vi_comentario {
   id                      Int             @id @default(autoincrement())
   comentario              String
-  estadoaprobacion        Boolean         @default(false)
+  estadoaprobacion        Boolean?
   nombreautor             String          @db.VarChar(255)
   fechacreacion           DateTime        @default(now()) @db.Timestamp(6)
   fechaultimamodificacion DateTime        @default(now()) @db.Timestamp(6)
@@ -2741,13 +2741,16 @@ model vi_publicacion_x_etiqueta {
 }
 
 model vi_puntos_producto {
-  id_puntosproducto Int         @id @default(autoincrement())
-  id_producto       String      @db.VarChar(50)
-  cantidadpuntos    Int
-  estado            Boolean     @default(true)
-  fechaactivo       DateTime    @default(now()) @db.Timestamp(6)
-  fechainactivo     DateTime?   @db.Timestamp(6)
-  vi_producto       vi_producto @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto_puntos")
+  id_puntosproducto    Int         @id @default(autoincrement())
+  id_producto          String      @db.VarChar(50)
+  cantidadpuntos       Int
+  estaactivo           Boolean     @default(true)
+  creadoen             DateTime    @default(now()) @db.Timestamp(6)
+  desactivadoen        DateTime?   @db.Timestamp(6)
+  actualizadoen        DateTime?   @default(now()) @db.Timestamp(6)
+  usuarioactualizacion String?     @db.VarChar(255)
+  usuariocreacion      String      @db.VarChar(255)
+  vi_producto          vi_producto @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto_puntos")
 }
 
 model vi_puntosventa {
@@ -2765,11 +2768,12 @@ model vi_recompensa_puntos {
   id_producto          String      @db.VarChar(50)
   puntosnecesarios     Int
   stockdisponible      Int
-  estado               Boolean     @default(true)
+  estaactivo           Boolean     @default(true)
   creadoen             DateTime?   @default(now()) @db.Timestamp(6)
   actualizadoen        DateTime?   @default(now()) @db.Timestamp(6)
   usuariocreacion      String?     @db.VarChar(255)
   usuarioactualizacion String?     @db.VarChar(255)
+  desactivadoen        DateTime?   @db.Timestamp(6)
   vi_producto          vi_producto @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto_recompensa")
 }
 

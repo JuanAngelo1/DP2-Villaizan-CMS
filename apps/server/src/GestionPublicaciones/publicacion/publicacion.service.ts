@@ -788,7 +788,10 @@ export class PublicacionService {
               imagenperfil: true,
           },
         }
-      }
+      },
+      orderBy:{
+        fechacreacion: 'desc',
+      },
       });
 
       const usuario= await this.prisma.vi_usuario.findFirst({

@@ -98,7 +98,6 @@ export class ComentarioService {
                 comentario: data.comentario,
                 estaactivo: true,
                 id_sentimiento: sentimiento.id,
-                estadoaprobacion: data.estadoaprobacion,
                 nombreautor: `${usuario.nombre} ${usuario.apellido}`,
             }
         });
