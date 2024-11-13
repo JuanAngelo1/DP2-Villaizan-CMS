@@ -493,7 +493,7 @@ export class PublicacionService {
             where: { id: id_version },
             data: {
                 id_estado: estadoPublicado.id,
-                fechaultimamodificacion: new Date(),
+                fechapublicacion: new Date(),
             },
         });
 
@@ -706,6 +706,7 @@ export class PublicacionService {
           id_publicacion: true,
           titulo: true,
           descripcion: true,
+          fechapublicacion: true,
           fechacreacion: true,
           fechaultimamodificacion: true,
           urlimagen: true,
@@ -814,6 +815,7 @@ export class PublicacionService {
           id_publicacion: versionPublicada.id_publicacion,
           titulo: versionPublicada.titulo,
           descripcion: versionPublicada.descripcion,
+          fechapublicacion: versionPublicada.fechapublicacion,
           fechacreacion: versionPublicada.fechacreacion,
           fechaultimamodificacion: versionPublicada.fechaultimamodificacion,
           richtext: versionPublicada.richtext,
