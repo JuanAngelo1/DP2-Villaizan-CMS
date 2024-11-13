@@ -77,38 +77,38 @@ const Nosotros: React.FC = () => {
           <div className="embla mt-20 h-[50%] w-full overflow-hidden" ref={emblaRef}>
             <EmblaContainer className="">
               <EmblaSlide className="">
-                <img
+                <Image
                   src="/nosotros/aboutus1.jpg"
                   alt="Paletas Villaizan"
-                  width={200}
-                  height={200}
+                  width={1000}
+                  height={1000}
                   className="h-full w-auto rounded-lg object-cover"
                 />
               </EmblaSlide>
               <EmblaSlide className="">
-                <img
+                <Image
                   src="/nosotros/aboutus5.jpg"
                   alt="Paletas Villaizan"
-                  width={200}
-                  height={200}
+                  width={1000}
+                  height={1000}
                   className="h-full w-auto rounded-lg object-cover"
                 />
               </EmblaSlide>
               <EmblaSlide className="">
-                <img
+                <Image
                   src="/nosotros/aboutus6.jpg"
                   alt="Paletas Villaizan"
-                  width={200}
-                  height={200}
+                  width={1000}
+                  height={1000}
                   className="h-full w-auto rounded-lg object-cover"
                 />
               </EmblaSlide>
               <EmblaSlide className="">
-                <img
+                <Image
                   src="/nosotros/aboutus7.jpg"
                   alt="Paletas Villaizan"
-                  width={200}
-                  height={200}
+                  width={1000}
+                  height={1000}
                   className="h-full w-auto rounded-lg object-cover"
                 />
               </EmblaSlide>
@@ -129,8 +129,8 @@ const Nosotros: React.FC = () => {
           </div>
           <Image
             alt="Mision"
-            height={100}
-            width={100}
+            height={1000}
+            width={1000}
             className="h-[400px] w-auto rounded-lg object-cover shadow-lg"
             src="/nosotros/vision.jpg"
           ></Image>
@@ -149,8 +149,8 @@ const Nosotros: React.FC = () => {
           </div>
           <Image
             alt="Mision"
-            height={100}
-            width={100}
+            height={1000}
+            width={1000}
             className="h-[400px] max-w-[500px] w-auto rounded-lg object-cover shadow-lg"
             src="/publicaciones/imagen3.png"
           ></Image>

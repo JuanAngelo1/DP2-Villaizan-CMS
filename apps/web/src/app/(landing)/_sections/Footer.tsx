@@ -47,7 +47,7 @@ function SocialLink({ href, image, label }: { href: string; image: string; label
       href={href}
       className="flex h-fit w-fit flex-row items-end gap-2 hover:underline"
     >
-      <Image height={4} width={4} alt="logo" src={image} className="h-5 w-5 shrink-0 rounded" />
+      <Image height={50} width={50} alt="logo" src={image} className="h-5 w-5 shrink-0 rounded" />
       <p className="font-semibold leading-[17px]">{label}</p>
     </a>
   );

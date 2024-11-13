@@ -24,7 +24,7 @@ function PublicacionesView({
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <div className="mt-2 font-['Abhaya_Libre']">
+    <div className="mt-4 font-['Abhaya_Libre']">
       <div className="flex flex-row gap-8">
         <div className="flex flex-col">
           <h2 className="text-2xl font-semibold">Navega por categorias</h2>
@@ -34,7 +34,11 @@ function PublicacionesView({
               return (
                 <li key={categoria.id}>
                   <Link
-                    href={`/publicaciones?categoria=${categoria.nombre}`}
+                    href={
+                      p_categoria === categoria.nombre
+                        ? "/publicaciones"
+                        : `/publicaciones?categoria=${categoria.nombre}`
+                    }
                     className={cn(
                       "text-lg hover:underline",
 
@@ -52,14 +56,19 @@ function PublicacionesView({
             })}
           </ul>
         </div>
+
         <div className="flex flex-1 flex-col gap-3">
           <SearchPub searchTerm={searchTerm} setSearchTerm={(term) => setSearchTerm(term)} />
           {publicaciones
-            .filter(
-              (publicacion) =>
-                publicacion.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                (publicacion.descripcion?.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                  publicacion.categorias.some((_categoria) => _categoria.nombre === p_categoria))
+            .filter((publicacion) =>
+              (publicacion.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                publicacion.descripcion?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+              publicacion.categorias.length >= 1 &&
+              p_categoria !== null
+                ? publicacion.categorias.some((_categoria) => _categoria.nombre === p_categoria)
+                : p_categoria === null
+                  ? true
+                  : false
             )
             .map((publicacion) => {
               return <PublicationCard key={publicacion.id} publicacion={publicacion} />;
@@ -80,10 +89,10 @@ function PublicationCard({ publicacion }: { publicacion: VersionPublicacion }) {
       <div className="h-[100px] w-[200px] overflow-hidden rounded-lg border">
         <Image
           src={publicacion.urlimagen || "/publicaciones/publicacion-placeholder.png"}
-          height={100}
-          width={100}
+          height={1000}
+          width={1000}
           alt="Publicación"
-          className="h-full w-full rounded-lg transition-all group-hover/card:scale-110"
+          className="h-full w-full rounded-lg object-cover transition-all group-hover/card:scale-110"
         />
       </div>
       <section className="flex flex-col justify-center gap-1">
@@ -112,7 +121,7 @@ function PublicationCard({ publicacion }: { publicacion: VersionPublicacion }) {
               return (
                 <span
                   key={etiqueta.id}
-                  className="rounded-full px-3 py-[1.5px] text-base"
+                  className="rounded-md text-sm px-2"
                   style={{ backgroundColor: etiqueta.colorfondo, color: etiqueta.colortexto }}
                 >
                   {etiqueta.nombre}

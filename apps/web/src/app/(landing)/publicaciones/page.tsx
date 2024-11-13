@@ -2,6 +2,16 @@
 
 import { Categoria, ControlledError, Response, VersionPublicacion } from "@web/types";
 import axios from "axios";
+import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@repo/ui/components/breadcrumb";
+import { cn } from "@repo/ui/lib/utils";
 import MaxWidthWrapper from "./../_components/MaxWidthWrapper";
 import PublicacionesView from "./_components/PublicacionesView";
 
@@ -54,7 +64,13 @@ async function PublicacionesPage() {
   return (
     <section className="py-12">
       <MaxWidthWrapper className="flex flex-col">
-        <h1 className="font-['Abhaya_Libre'] text-4xl font-bold sm:text-5xl md:text-7xl">Publicaciones</h1>
+        <PublicationsBreadcrumb className="" />
+        <h1 className="mt-1 font-['Abhaya_Libre'] text-4xl font-semibold leading-3 sm:text-5xl md:text-6xl">
+          Publicaciones
+        </h1>
+        <p className="text-muted-foreground font-['Abhaya_Libre']">
+          Enterate de las nuevas novedades dentro de la magia de nuestros helados
+        </p>
         <PublicacionesView publicaciones={publicaciones} categorias={categorias} />
       </MaxWidthWrapper>
     </section>
@@ -62,3 +78,24 @@ async function PublicacionesPage() {
 }
 
 export default PublicacionesPage;
+
+function PublicationsBreadcrumb({ className }: { className: string }) {
+  return (
+    <Breadcrumb className={cn("font-['Abhaya_Libre']", className)}>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/" className="text-base">
+              Inicio
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+
+        <BreadcrumbItem>
+          <BreadcrumbPage className="text-base">Publicaciones</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}

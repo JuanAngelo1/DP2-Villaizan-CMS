@@ -1,12 +1,13 @@
 "use server";
 
 import { auth } from "@web/auth";
-import { Categoria, Comentario, ControlledError, Response, VersionPublicacion } from "@web/types";
+import { Categoria, Comentario, ControlledError, Etiqueta, Response, VersionPublicacion } from "@web/types";
 import { formatDDMMAAAA_HHSS, formatDate } from "@web/utils/date";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
+import { AspectRatio } from "@repo/ui/components/aspect-ratio";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -104,8 +105,8 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
             <div className="absolute bottom-[-70px] left-4 right-4 top-[70px] overflow-hidden rounded-xl">
               <Image
                 src={publicacion.urlimagen}
-                width={100}
-                height={100}
+                width={1000}
+                height={1000}
                 alt="Post Cover Image"
                 className="h-full w-full rounded-xl object-cover"
               />
@@ -115,18 +116,18 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
       )}
 
       <MaxWidthWrapper
-        className={cn("pb-16 pt-4 font-['Abhaya_Libre']", publicacion.urlimagen ? "mt-[75px]" : "mt-[40px]")}
+        className={cn("pb-16 pt-4 font-['Abhaya_Libre']", publicacion.urlimagen ? "mt-[85px]" : "mt-[40px]")}
       >
         {!publicacion.urlimagen && <PublicationBreadcrumb publicacion={publicacion} className="" />}
         <div className={cn("flex flex-row gap-10", !publicacion.urlimagen && "pt-4")}>
           <ContentTable headings={headings} />
 
           <section className="flex flex-1 flex-col">
-            <CategoryDisplay categories={publicacion.categorias} />
-            <p className="text-5xl font-semibold">{publicacion.titulo}</p>
-            <p className="italic">
+            <p className="italic leading-[15px]">
               Fecha de publicación: {formatDDMMAAAA_HHSS(publicacion.fechapublicacion || undefined)}
             </p>
+            <p className="text-5xl font-semibold">{publicacion.titulo}</p>
+            <CategoryDisplay categories={publicacion.categorias} tags={publicacion.etiquetas} />
             <div
               className="mt-4 flex flex-col gap-2"
               dangerouslySetInnerHTML={{ __html: publicacion.richtext || "" }}
@@ -183,7 +184,7 @@ function CommentDisplay({ comentario }: { comentario: Comentario }) {
           className="absolute -left-4 -top-[1px] h-10 w-10 rounded-full"
         />
         <p className="">
-          <span className="font-semibold">{comentario.vi_usuario?.nombre || "Renzo Pinto"}</span>
+          <span className="font-semibold">{comentario.vi_usuario?.nombre || "Usuario"}</span>
           <span className="text-muted-foreground"> comentó el {formatDate(comentario.fechacreacion)}</span>
         </p>
       </div>
@@ -247,14 +248,22 @@ function ContentTable({ headings }: { headings: string[] }) {
   );
 }
 
-function CategoryDisplay({ categories, className }: { categories: Categoria[]; className?: string }) {
+function CategoryDisplay({
+  categories,
+  tags,
+  className,
+}: {
+  categories: Categoria[];
+  tags: Etiqueta[];
+  className?: string;
+}) {
   return (
-    <div className={cn("flex flex-row items-center gap-2", className)}>
+    <div className={cn("flex flex-row items-center gap-1", className)}>
       {categories.map((category, idx) => {
         if (idx === categories.length - 1) {
           return (
             <Link
-              key={idx}
+              key={category.id}
               className="cursor-pointer hover:underline"
               href={`/publicaciones?categoria=${category.id}`}
             >
@@ -264,11 +273,37 @@ function CategoryDisplay({ categories, className }: { categories: Categoria[]; c
         }
 
         return (
-          <Fragment key={idx}>
+          <Fragment key={category.id}>
             <Link className="cursor-pointer hover:underline" href={`/publicaciones?categoria=${category.id}`}>
               {category.nombre}
             </Link>
-            <p>|</p>
+            <p>,</p>
+          </Fragment>
+        );
+      })}
+      <p className="mx-2"> | </p>
+      {tags.map((tag, idx) => {
+        if (idx === tags.length - 1) {
+          return (
+            <p
+              key={tag.id}
+              className="rounded-md px-2 py-0"
+              style={{ backgroundColor: tag.colorfondo, color: tag.colortexto }}
+            >
+              {tag.nombre}
+            </p>
+          );
+        }
+
+        return (
+          <Fragment key={tag.id}>
+            <p
+              className="rounded-md px-2 py-0"
+              style={{ backgroundColor: tag.colorfondo, color: tag.colortexto }}
+            >
+              {tag.nombre}
+            </p>
+            <p>,</p>
           </Fragment>
         );
       })}
