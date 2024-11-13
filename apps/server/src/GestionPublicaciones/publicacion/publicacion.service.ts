@@ -771,6 +771,7 @@ export class PublicacionService {
       const comentarios= await this.prisma.vi_comentario.findMany({
         where:{
           id_publicacion: publicacion.id,
+          estadoaprobacion: true,
         },
         select:{
           id:true,
