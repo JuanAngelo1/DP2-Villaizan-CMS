@@ -2,16 +2,9 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import Link from "next/link";
+import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@repo/ui/components/breadcrumb";
+import { PuntoVenta, Response } from "@web/types";
 import { Button } from "@repo/ui/components/button";
 import PuntoVentaForm from "./_components/PuntoVentaForm";
 import PuntoVentaList from "./_components/PuntoVentaList";
@@ -20,7 +13,6 @@ import PuntoVentaModal from "./_components/PuntoVentaModal";
 
 const PuntoVentaMap = dynamic(() => import("./_components/PuntoVentaMap"), { ssr: false });
 
-// Datos mockeados de San Miguel, Lima
 const mockPuntosDeVenta = [
   {
     id: 1,
@@ -54,62 +46,97 @@ export default function PuntosVentaPage() {
   const [address, setAddress] = useState("");
 
   useEffect(() => {
-    async function fetchPuntos() {
-      try {
-        const response = await fetch("/api/puntos-venta");
-        if (!response.ok) throw new Error("API no disponible");
-        const data = await response.json();
-        setPuntos(data);
-      } catch (error) {
-        console.warn("Usando datos mockeados debido a un error en la API:", error);
-        setPuntos(mockPuntosDeVenta);
-      }
-    }
     fetchPuntos();
   }, []);
+
+  const fetchPuntos = async () => {
+    try {
+      const response: Response<PuntoVenta[]> = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa`);
+      if (response.data.status === "Error") throw new Error(response.data.message);
+
+      const puntos = response.data.result.map((punto) => ({
+        ...punto,
+        lat: punto.latitud,
+        lng: punto.longitud,
+      }));
+      
+      setPuntos(puntos);
+    } catch (error) {
+      console.warn("Usando datos mockeados debido a un error en la API:", error);
+      setPuntos(mockPuntosDeVenta);
+    }
+  };
 
   const handleAddPoint = () => {
     setCurrentEditPoint(null);
     setMarkerPosition({ lat: -12.086, lng: -77.07 });
-    setAddress(""); // Limpia la dirección para un nuevo punto
+    setAddress("");
     setIsEditing(true);
+  };
+
+  const handleSavePoint = async (updatedPoint: PuntoVenta) => {
+    try {
+      const newPoint = {
+        nombre: updatedPoint.nombre,
+        direccion: updatedPoint.direccion,
+        latitud: updatedPoint.lat,
+        longitud: updatedPoint.lng,
+        nota: updatedPoint.nota,
+      };
+
+      let response: Response<PuntoVenta>;
+
+      if (updatedPoint.id) {
+        response = await axios.put(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/actualizar/${updatedPoint.id}`,
+          newPoint
+        );
+      } else {
+        // Creación con POST
+        response = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/crear`,
+          newPoint
+        );
+      }
+
+      if (response.data.status === "Error") throw new Error(response.data.message);
+
+      await fetchPuntos();
+
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error al guardar el punto de venta:", error);
+    }
   };
 
   const handleEditPoint = (punto) => {
     setCurrentEditPoint(punto);
     setMarkerPosition({ lat: punto.lat, lng: punto.lng });
-    setAddress(punto.direccion || ""); // Establece la dirección existente para el punto en edición
+    setAddress(punto.direccion || "");
     setIsEditing(true);
   };
 
-  const handleSavePoint = (updatedPoint) => {
-    const finalPoint = {
-      ...updatedPoint,
-      direccion: address,
-      lat: markerPosition.lat,
-      lng: markerPosition.lng,
-      nota: updatedPoint.nota || "",
-    };
-    if (currentEditPoint) {
-      setPuntos((prevPuntos) => prevPuntos.map((p) => (p.id === finalPoint.id ? finalPoint : p)));
-    } else {
-      setPuntos((prevPuntos) => [...prevPuntos, { ...finalPoint, id: prevPuntos.length + 1 }]);
-    }
-    setIsEditing(false);
-    setCurrentEditPoint(null);
-    setMarkerPosition(null);
-    setAddress("");
-  };
-
-  const handleDeletePoint = (punto) => {
+  const handleDeletePoint = (punto: PuntoVenta) => {
     setCurrentEditPoint(punto);
     setModalOpen(true);
   };
 
-  const confirmDeletePoint = () => {
-    setPuntos((prevPuntos) => prevPuntos.filter((p) => p.id !== currentEditPoint.id));
-    setModalOpen(false);
-    setCurrentEditPoint(null);
+  const confirmDeletePoint = async () => {
+    if (currentEditPoint) {
+      try {
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/eliminar/${currentEditPoint.id}`);
+        if (response.data.status === "Error") throw new Error(response.data.message);
+
+        await fetchPuntos();
+        if (isEditing && currentEditPoint) {
+        setIsEditing(false); 
+        setCurrentEditPoint(null); 
+      }
+        setModalOpen(false);
+      } catch (error) {
+        console.error("Error al eliminar el punto de venta:", error);
+      }
+    }
   };
 
   // Actualiza la posición y realiza una geocodificación inversa
@@ -122,31 +149,21 @@ export default function PuntosVentaPage() {
   };
 
   return (
-    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[24px] lg:p-[32px]">
-      <Breadcrumb className="px-1 lg:px-0">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink asChild>
-              <Link href="/admin">Gestión de puntos de venta</Link>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <main className="flex h-full flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
-        <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[24px] lg:p-[32px]">
+    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[2px] lg:p-[2px]">
+      <main className="flex h-[95%] flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
+        <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-2 lg:gap-[24px] lg:p-[32px]">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Gestión de Puntos de Venta</h1>
           </div>
-
-          <div className="flex space-x-4 h-">
-            <div className="w-full rounded border p-4 shadow">
+          <div className="flex space-x-4 h-[95%]">
+            <div className="w-full p-2 shadow z-0">
               <PuntoVentaMap
                 puntos={puntos}
                 selectedPoint={markerPosition}
                 onDragMarker={updateMarkerPosition}
               />
             </div>
-            <div className="w-1/5 rounded border p-4 shadow">
+            <div className="w-[25%] rounded border p-4 shadow">
               <PuntoVentaList puntos={puntos} onEdit={handleEditPoint} onDelete={handleDeletePoint} />
               <div className="mt-4 w-full space-x-2 space-y-3">
                 <Button className="w-full gap-2" onClick={handleAddPoint}>
@@ -154,8 +171,8 @@ export default function PuntosVentaPage() {
                   <p className="hidden sm:block">Agregar</p>
                 </Button>
               </div>
-              {(
-                <div className="mt-4 rounded border p-4 shadow">
+              {isEditing && (
+                <div className="mt-2 p-4 shadow">
                   <h2 className="text-lg font-semibold">
                     {currentEditPoint ? "Editar Punto de Venta" : "Nuevo Punto de Venta"}
                   </h2>

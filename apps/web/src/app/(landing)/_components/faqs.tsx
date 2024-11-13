@@ -29,10 +29,10 @@ const Faqs: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-red-600 px-4 py-24 text-white" id="faqs">
+    <section className="bg-white px-4 py-24 text-black" id="faqs">
       <MaxWidthWrapper className="flex flex-col items-center">
-        <div className="flex w-full flex-col items-center justify-center gap-4">
-          <h1 className="flex text-center font-['Abhaya_Libre'] text-4xl sm:text-5xl md:text-7xl">
+        <div className="flex w-full flex-col items-center justify-center gap-4 py-24">
+          <h1 className="flex text-center font-['Abhaya_Libre'] font-semibold text-4xl sm:text-5xl md:text-7xl">
             Preguntas Frecuentes
           </h1>
           {/* Preguntas */}

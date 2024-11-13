@@ -1,12 +1,17 @@
-import { Injectable, ParseIntPipe } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { vi_comentario } from "@prisma/client"
 import { CreateComentarioDto } from './dto/comentario.dto';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ComentarioService {
 
-    constructor (private prisma: PrismaService) {}
+    constructor (
+      private prisma: PrismaService,
+      private readonly httpService: HttpService,
+    ) {}
 
     async getAllComentarios(): Promise<any[]> {
       const comentarios = await this.prisma.vi_comentario.findMany();
@@ -25,10 +30,10 @@ export class ComentarioService {
               return {
                 id: comentario.id,
                 comentario: comentario.comentario,
-                fecha: comentario.fecha,
                 estadoaprobacion: comentario.estadoaprobacion,
                 nombreautor: comentario.nombreautor,
                 estaactivo: comentario.estaactivo,
+                fechacreacion: comentario.fechacreacion,
                 usuario, 
                 publicacion 
               };
@@ -51,7 +56,7 @@ export class ComentarioService {
       return {
           id: comentario.id,
           comentario: comentario.comentario,
-          fecha: comentario.fecha,
+          fechacreacion: comentario.fechacreacion,
           estadoaprobacion: comentario.estadoaprobacion,
           nombreautor: comentario.nombreautor,
           estaactivo: comentario.estaactivo,
@@ -60,25 +65,50 @@ export class ComentarioService {
       };
     }
 
-    async createComentario(data: CreateComentarioDto): Promise<vi_comentario> {
-        const usuario = await this.prisma.vi_usuario.findUnique({
+    async createComentario(data: CreateComentarioDto): 
+    Promise<any> {
+        const usuario = await this.prisma.vi_usuario.
+        findUnique({
             where: { id: data.id_usuario }, 
             select: {
               nombre: true,
               apellido: true, 
             },
           });
+
+        // const response = await firstValueFrom(
+        //     this.httpService.post('http://127.0.0.1:8080/clasificar-sentimiento', {
+        //       comentario: data.comentario,
+        //     }),
+        //   );
+
+        // const nombreSentimiento = response.data.sentiment;
         
-        return this.prisma.vi_comentario.create({
+        const sentimiento= await this.prisma.vi_sentimiento.findFirst({
+          where: {
+            nombre: "Positivo"
+          },
+        });
+
+        
+        const comentario= await this.prisma.vi_comentario.create({
             data:{
                 id_usuario: data.id_usuario,
                 id_publicacion: data.id_publicacion,
                 comentario: data.comentario,
                 estaactivo: true,
-                estadoaprobacion: data.estadoaprobacion,
+                id_sentimiento: sentimiento.id,
                 nombreautor: `${usuario.nombre} ${usuario.apellido}`,
             }
         });
+        console.log(sentimiento)
+        
+        return{
+          ...comentario,
+          sentimiento: sentimiento.nombre,
+        }
+
+        
     }
 
     async updateComentario (id: number, data: vi_comentario): Promise<vi_comentario> {
@@ -114,6 +144,11 @@ export class ComentarioService {
             },
           },
         });
-      }
+    }
+
+    async verifyComentario(comentario: string): Promise<any>{
+      
+
+    }
 
 }

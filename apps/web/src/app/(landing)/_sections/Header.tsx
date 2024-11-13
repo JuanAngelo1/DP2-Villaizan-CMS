@@ -22,22 +22,18 @@ const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  /*
+  
   useEffect(() => {
     if (checkIfAuthenticated(session, status)) {
       setIsAuthenticated(true);
-      console.log("User is authenticated");
-      console.log("user id: ", session?.user?.id);
     } else {
       setIsAuthenticated(false);
-      console.log("User is not authenticated");
-      console.log("user id: ", session?.user?.id);
     }
   }, [session, status]);
-  */
+  
 
   return (
-    <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 bg-[#D6CDA8] font-['Abhaya_Libre'] shadow-xl">
+    <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 text-white bg-red-800 font-['Abhaya_Libre'] shadow-xl">
       <MaxWidthWrapper className="flex h-full items-center justify-between">
         {/* Logo */}
         <div className="absolute bottom-0 left-0 right-0 top-0 mr-4 flex flex-1 items-center justify-end md:mr-0 md:justify-center">
@@ -110,7 +106,7 @@ const Header: React.FC = () => {
           ) : (
             <Link
               href="/login"
-              className={cn(buttonVariants({ variant: "link" }), "text-lg font-bold")}
+              className={cn(buttonVariants({ variant: "link" }), "text-lg font-bold text-white")}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Iniciar sesión

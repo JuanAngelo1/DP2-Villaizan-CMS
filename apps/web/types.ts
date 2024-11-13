@@ -30,7 +30,7 @@ export type Categoria = {
 };
 
 export type Publicacion = {
-  id: string;
+  id: number;
   titulo: string;
   descripcion: string;
   urlImagen: string;
@@ -71,6 +71,7 @@ export type VersionPublicacion = {
   fechapublicacion: string | null;
   categorias: Categoria[];
   etiquetas: Etiqueta[];
+  comentarios?: Comentario[];
 
   vi_publicacion: Publicacion;
   vi_estado_version: EstadoVersion;
@@ -112,15 +113,17 @@ export type Persona = {
   actualizadoen: Date;
   usuariocreacion: string;
   usuarioactualizacion: string | null;
-}
+};
 
 export type Comentario = {
+  id: number;
   comentario: string;
   estadoaprobacion: boolean | null;
-  fecha: string;
-  id: number;
-  publicacion: Publicacion;
-  usuario: Usuario;
+  fechacreacion: string;
+  id_publicacion: string;
+  publicacion?: Publicacion;
+  id_usuario: string;
+  vi_usuario?: Usuario;
 };
 
 export type Rol = {
@@ -138,4 +141,13 @@ export type FAQ = {
   fechacreacion: Date;
   fechaultimamodificacion: Date;
   estaactivo: boolean;
+};
+
+export type PuntoVenta = {
+  id?: number;
+  nombre: string;
+  direccion: string;
+  lat: number;
+  lng: number;
+  nota?: string;
 };

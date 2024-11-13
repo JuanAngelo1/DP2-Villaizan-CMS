@@ -15,6 +15,7 @@ import { VersionDto } from './dto/pub.dto';
 import { PublicacionDto } from './dto/publicacion.dto';
 import { GoogleDriveHelper } from '../../utils/google-drive.helper';
 import { UpdateVersionDto } from './dto/update-version.dto';
+import { url } from 'inspector';
 
 
 @Injectable()
@@ -91,6 +92,7 @@ export class PublicacionService {
         fechaultimamodificacion: true,
         titulo: true,
         descripcion: true,
+        urlimagen: true,
         slug: true,
         fechapublicacion: true,
         estaactivo: true,
@@ -113,11 +115,6 @@ export class PublicacionService {
             vi_categoria_publicacion: {
               select: {
                 id: true,
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-                estaactivo: true,
               },
             },
           },
@@ -127,11 +124,6 @@ export class PublicacionService {
             vi_etiqueta_publicacion: {
               select: {
                 id: true,
-                nombre: true,
-                descripcion: true,
-                colorfondo: true,
-                colortexto: true,
-                estaactivo: true,
               },
             },
           },
@@ -139,7 +131,7 @@ export class PublicacionService {
       },
     });
   
-    // Reestructuramos el resultado para simplificar el formato de categorías y etiquetas
+    // Reestructuramos el resultado para simplificar el formato de categorías y etiquetas con solo IDs
     return {
       id: version.id,
       fechaultimamodificacion: version.fechaultimamodificacion,
@@ -148,14 +140,15 @@ export class PublicacionService {
       slug: version.slug,
       richtext: version.richtext,
       fechapublicacion: version.fechapublicacion,
+      urlimagen: version.urlimagen,
       estaactivo: version.estaactivo,
       estado: version.vi_estado_version.nombre,  // Extraemos el nombre del estado directamente
       imagenes: version.vi_imagen_version,  // Incluimos las imágenes directamente
-      categorias: version.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion),  // Extraemos las categorías directamente
-      etiquetas: version.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion),  // Extraemos las etiquetas directamente
+      categorias: version.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion.id),  // Extraemos solo los IDs de las categorías
+      etiquetas: version.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion.id),  // Extraemos solo los IDs de las etiquetas
     };
   }
-  
+
   async createOnlyPublicacion(data: PublicacionDto): Promise<any> {
     try{
 
@@ -205,9 +198,11 @@ export class PublicacionService {
   
       // Relacionar las categorías
       if (data.categorias && data.categorias.length > 0) {
-        for (const nombreCategoria of data.categorias) {
-          const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
-            where: { nombre: nombreCategoria },
+        for (const idCategoria of data.categorias) {
+          const categoria = await this.prisma.vi_categoria_publicacion.findUnique({
+            where: {
+              id: Number(idCategoria)
+            },
           });
           if (categoria) {
             await this.prisma.vi_publicacion_x_categoria.create({
@@ -217,16 +212,16 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Categoría no encontrada: ${nombreCategoria}`);
+            console.error(`Categoría no encontrada.`);
           }
         }
       }
   
       // Relacionar las etiquetas
       if (data.etiquetas && data.etiquetas.length > 0) {
-        for (const nombreEtiqueta of data.etiquetas) {
-          const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
-            where: { nombre: nombreEtiqueta },
+        for (const idEtiqueta of data.etiquetas) {
+          const etiqueta = await this.prisma.vi_etiqueta_publicacion.findUnique({
+            where: { id: Number(idEtiqueta) },
           });
           if (etiqueta) {
             await this.prisma.vi_publicacion_x_etiqueta.create({
@@ -236,7 +231,7 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Etiqueta no encontrada: ${nombreEtiqueta}`);
+            console.error(`Etiqueta no encontrada.`);
           }
         }
       }
@@ -317,6 +312,12 @@ export class PublicacionService {
           fechapublicacion: data.fechapublicacion,
         },
       });
+
+      if(data.categorias.length==0){
+        await this.prisma.vi_publicacion_x_categoria.deleteMany({
+          where: { id_version: id_version },
+        });
+      }
   
       // Actualizar las categorías asociadas
       if (data.categorias && data.categorias.length > 0) {
@@ -326,9 +327,9 @@ export class PublicacionService {
         });
   
         // Agregar las nuevas categorías
-        for (const nombreCategoria of data.categorias) {
+        for (const idCategoria of data.categorias) {
           const categoria = await this.prisma.vi_categoria_publicacion.findFirst({
-            where: { nombre: nombreCategoria },
+            where: { id: Number(idCategoria) },
           });
           if (categoria) {
             await this.prisma.vi_publicacion_x_categoria.create({
@@ -338,12 +339,18 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Categoría no encontrada: ${nombreCategoria}`);
+            console.error(`Categoría no encontrada.`);
           }
         }
       }
-  
       // Actualizar las etiquetas asociadas
+
+      if(data.etiquetas.length==0){
+        await this.prisma.vi_publicacion_x_etiqueta.deleteMany({
+          where: { id_version: id_version },
+        });
+      }
+
       if (data.etiquetas && data.etiquetas.length > 0) {
         // Eliminar etiquetas existentes
         await this.prisma.vi_publicacion_x_etiqueta.deleteMany({
@@ -351,9 +358,9 @@ export class PublicacionService {
         });
   
         // Agregar las nuevas etiquetas
-        for (const nombreEtiqueta of data.etiquetas) {
+        for (const idEtiqueta of data.etiquetas) {
           const etiqueta = await this.prisma.vi_etiqueta_publicacion.findFirst({
-            where: { nombre: nombreEtiqueta },
+            where: { id: Number(idEtiqueta) },
           });
           if (etiqueta) {
             await this.prisma.vi_publicacion_x_etiqueta.create({
@@ -363,7 +370,7 @@ export class PublicacionService {
               },
             });
           } else {
-            console.error(`Etiqueta no encontrada: ${nombreEtiqueta}`);
+            console.error(`Etiqueta no encontrada.`);
           }
         }
       }
@@ -473,12 +480,20 @@ export class PublicacionService {
             };
         }
 
+        if(publicacionActual){
+          return {
+            status: 'Error',
+            message: 'Ya existe una versión publicada.',
+            result: [],
+        };
+        }
+
         // Si no hay conflictos, publicar la versión
         const versionActualizada = await this.prisma.vi_version_publicacion.update({
             where: { id: id_version },
             data: {
                 id_estado: estadoPublicado.id,
-                fechaultimamodificacion: new Date(),
+                fechapublicacion: new Date(),
             },
         });
 
@@ -679,7 +694,7 @@ export class PublicacionService {
       if (!estadoPublicado) {
         throw new Error('Estado "Publicacion activa" no encontrado');
       }
-  
+
       const versionPublicada = await this.prisma.vi_version_publicacion.findFirst({
         where: {
           slug: slug,
@@ -688,10 +703,13 @@ export class PublicacionService {
         },
         select: {
           id: true,
+          id_publicacion: true,
           titulo: true,
           descripcion: true,
+          fechapublicacion: true,
           fechacreacion: true,
           fechaultimamodificacion: true,
+          urlimagen: true,
           richtext: true,
           vi_estado_version: {
             select: {
@@ -744,22 +762,69 @@ export class PublicacionService {
           result: null,
         };
       }
-  
+
+      const publicacion= await this.prisma.vi_publicacion.findFirst({
+        where: {
+          id: versionPublicada.id_publicacion,
+        },
+      });
+
+      const comentarios= await this.prisma.vi_comentario.findMany({
+        where:{
+          id_publicacion: publicacion.id,
+          estadoaprobacion: true,
+        },
+        select:{
+          id:true,
+          comentario:true,
+          fechacreacion:true,
+          fechaultimamodificacion:true,
+          estaactivo:true,
+          id_publicacion:true,
+          id_sentimiento:true,
+          vi_usuario:{
+            select:{
+              nombre: true,
+              apellido: true,
+              imagenperfil: true,
+          },
+        }
+      },
+      orderBy:{
+        fechacreacion: 'desc',
+      },
+      });
+
+      const usuario= await this.prisma.vi_usuario.findFirst({
+        where:{
+          id: publicacion.id_usuario,
+        },
+        select:{
+          nombre: true,
+          apellido: true,
+          imagenperfil: true,
+        },
+      });
+
       // Reestructuramos el resultado para simplificar el formato de categorías y etiquetas
       return {
         status: 'Success',
         message: 'Versión publicada encontrada',
         result: {
           id: versionPublicada.id,
+          id_publicacion: versionPublicada.id_publicacion,
           titulo: versionPublicada.titulo,
           descripcion: versionPublicada.descripcion,
+          fechapublicacion: versionPublicada.fechapublicacion,
           fechacreacion: versionPublicada.fechacreacion,
           fechaultimamodificacion: versionPublicada.fechaultimamodificacion,
           richtext: versionPublicada.richtext,
+          urlimagen: versionPublicada.urlimagen,
           estado: versionPublicada.vi_estado_version.nombre,
           imagenes: versionPublicada.vi_imagen_version,
           categorias: versionPublicada.vi_publicacion_x_categoria.map((item) => item.vi_categoria_publicacion),
           etiquetas: versionPublicada.vi_publicacion_x_etiqueta.map((item) => item.vi_etiqueta_publicacion),
+          comentarios: comentarios,
         },
       };
     } catch (error) {

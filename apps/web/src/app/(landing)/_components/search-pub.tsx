@@ -10,7 +10,7 @@ interface SearchPubProps {
 
 const SearchPub: React.FC<SearchPubProps> = ({ searchTerm, setSearchTerm }) => {
   return (
-    <div className="flex items-center rounded border border-gray-300 w-full">
+    <div className="flex items-center rounded-lg border border-gray-300 w-full">
       <Search className="ml-2 h-5 w-5 text-gray-400" />
       <Input
         type="text"

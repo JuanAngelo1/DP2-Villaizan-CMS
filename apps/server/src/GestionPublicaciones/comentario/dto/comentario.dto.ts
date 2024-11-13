@@ -4,5 +4,5 @@ export class CreateComentarioDto {
     id_usuario: string;
     id_publicacion: number;
     nombreautor?: string;
-    estaactivo: boolean;
+
 }

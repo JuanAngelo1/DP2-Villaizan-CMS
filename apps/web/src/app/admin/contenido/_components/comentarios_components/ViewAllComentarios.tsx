@@ -42,6 +42,9 @@ function ViewAllComentarios({ searchValue }: { searchValue: string }) {
         const response: Response<Comentario[]> = await axios.get(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/obtenerTodos`
         );
+
+        console.log("Comentarios: ", response.data.result);
+
         if (response.data.status === "Error") throw new Error(response.data.message);
 
         setComentarios(response.data.result);

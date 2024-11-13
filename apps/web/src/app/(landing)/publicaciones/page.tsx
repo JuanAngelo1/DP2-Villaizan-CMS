@@ -1,127 +1,101 @@
-// src/app/(landing)/_components/PublicacionesPage.tsx
-"use client";
+"use server";
 
-import { publicaciones } from "@web/src/app/data/publicaciones";
-import React, { useMemo, useState } from "react";
-import { Button } from "@repo/ui/components/button";
+import { Categoria, ControlledError, Response, VersionPublicacion } from "@web/types";
+import axios from "axios";
+import Link from "next/link";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@repo/ui/components/pagination";
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@repo/ui/components/breadcrumb";
+import { cn } from "@repo/ui/lib/utils";
 import MaxWidthWrapper from "./../_components/MaxWidthWrapper";
-import CardPublication from "./../_components/card-publication";
-import CategoriasDropdown from "./../_components/categorias-dropdown";
-import SearchPub from "./../_components/search-pub";
+import PublicacionesView from "./_components/PublicacionesView";
 
-const PublicacionesPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategorias, setSelectedCategorias] = useState<string[]>([]);
-
-  // Obtener todas las categorías únicas
-  const allCategorias = useMemo(() => {
-    const categoriasSet = new Set<string>();
-    publicaciones.forEach((pub) => pub.categorias.forEach((cat) => categoriasSet.add(cat)));
-    return Array.from(categoriasSet);
-  }, []);
-
-  // Función para manejar la selección de categorías
-  const toggleCategoria = (categoria: string) => {
-    setSelectedCategorias((prev) =>
-      prev.includes(categoria) ? prev.filter((c) => c !== categoria) : [...prev, categoria]
+async function getCategories() {
+  try {
+    const response: Response<Categoria[]> = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/categoria`
     );
-  };
 
-  // Filtrar publicaciones basado en búsqueda y filtros
-  const filteredPublicaciones = useMemo(() => {
-    return publicaciones.filter((pub) => {
-      const matchesSearch =
-        pub.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pub.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pub.etiquetas.some((et) => et.toLowerCase().includes(searchTerm.toLowerCase())); // Incluye etiquetas en la búsqueda
+    if (response.data.status === "Error") throw new ControlledError(response.data.message);
 
-      const matchesCategorias =
-        selectedCategorias.length === 0 || selectedCategorias.every((cat) => pub.categorias.includes(cat));
+    console.log("Categories data -> ", response.data.result);
+    return response.data.result;
+  } catch (error) {
+    if (error instanceof ControlledError) {
+      console.log("Error al cargar las categorias: ", error.message);
+    }
 
-      return matchesSearch && matchesCategorias;
-    });
-  }, [searchTerm, selectedCategorias]);
+    console.log("Error desconocido al cargar las categorias: ", error);
+  }
+}
+
+async function getPublications() {
+  try {
+    const response: Response<VersionPublicacion[]> = await axios.get(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/publicadas`
+    );
+
+    if (response.data.status === "Error") throw new ControlledError(response.data.message);
+
+    console.log("Publicacion data -> ", response.data.result);
+    return response.data.result;
+  } catch (error) {
+    if (error instanceof ControlledError) {
+      console.log("Error al cargar las publicaciones: ", error.message);
+    }
+
+    console.log("Error desconocido al cargar las publicaciones: ", error);
+  }
+}
+
+async function PublicacionesPage() {
+  const publicaciones = await getPublications();
+  const categorias = await getCategories();
+
+  if (!publicaciones || !categorias) {
+    return <p>Ups, algo salio mal. Intenta de nuevo.</p>;
+  }
 
   return (
     <section className="py-12">
-      <MaxWidthWrapper className="flex flex-col gap-8">
-        <div className="flex w-full flex-col gap-8 lg:flex-row">
-          {/* Contenido Principal */}
-          <div className="flex w-full flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <h1 className="font-bold md:text-7xl sm:text-5xl text-4xl font-['Abhaya_Libre']">Publicaciones</h1>
-              {/* Barra de Búsqueda, Dropdown de Categorías y Botón de Buscar */}
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <SearchPub searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <CategoriasDropdown
-                    categorias={allCategorias}
-                    selectedCategorias={selectedCategorias}
-                    toggleCategoria={toggleCategoria}
-                  />
-                  <Button
-                    className="w-full text-md sm:w-auto"
-                    onClick={() => {
-                      // Placeholder para futura integración de API
-                      console.log("Buscar publicaciones");
-                    }}
-                  >
-                    Buscar
-                  </Button>
-                </div>
-              </div>
-            </div>
-            {/* Listado de Publicaciones */}
-            <div className="mt-6 flex flex-col gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredPublicaciones.length > 0 ? (
-                filteredPublicaciones.map((pub) => <CardPublication key={pub.id} publication={pub} />)
-              ) : (
-                <p className="col-span-full text-center text-gray-500">No se encontraron publicaciones.</p>
-              )}
-            </div>
-            {/* Paginación */}
-            <div className="flex w-full flex-row justify-between">
-              <p className="text-sm text-gray-500">
-                Mostrando 1-10 de {filteredPublicaciones.length} publicaciones
-              </p>
-              <Pagination className="flex flex-row justify-end">
-                <PaginationPrevious>
-                  <PaginationLink href="#">Anterior</PaginationLink>
-                </PaginationPrevious>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationLink href="#">1</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">2</PaginationLink>
-                  </PaginationItem>
-                  <PaginationItem>
-                    <PaginationLink href="#">3</PaginationLink>
-                  </PaginationItem>
-                  <PaginationEllipsis />
-                  <PaginationItem>
-                    <PaginationLink href="#">10</PaginationLink>
-                  </PaginationItem>
-                </PaginationContent>
-                <PaginationNext>
-                  <PaginationLink href="#">Siguiente</PaginationLink>
-                </PaginationNext>
-              </Pagination>
-            </div>
-          </div>
-        </div>
+      <MaxWidthWrapper className="flex flex-col">
+        <PublicationsBreadcrumb className="" />
+        <h1 className="mt-1 font-['Abhaya_Libre'] text-4xl font-semibold leading-3 sm:text-5xl md:text-6xl">
+          Publicaciones
+        </h1>
+        <p className="text-muted-foreground font-['Abhaya_Libre']">
+          Enterate de las nuevas novedades dentro de la magia de nuestros helados
+        </p>
+        <PublicacionesView publicaciones={publicaciones} categorias={categorias} />
       </MaxWidthWrapper>
     </section>
   );
-};
+}
 
 export default PublicacionesPage;
+
+function PublicationsBreadcrumb({ className }: { className: string }) {
+  return (
+    <Breadcrumb className={cn("font-['Abhaya_Libre']", className)}>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink asChild>
+            <Link href="/" className="text-base">
+              Inicio
+            </Link>
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+
+        <BreadcrumbItem>
+          <BreadcrumbPage className="text-base">Publicaciones</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
