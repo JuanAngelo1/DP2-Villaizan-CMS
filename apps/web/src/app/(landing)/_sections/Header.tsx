@@ -24,15 +24,10 @@ const Header: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   useEffect(() => {
-    console.log("Session: ", session);
     if (checkIfAuthenticated(session, status)) {
       setIsAuthenticated(true);
-      console.log("User is authenticated");
-      console.log("user id: ", session?.user?.id);
     } else {
       setIsAuthenticated(false);
-      console.log("User is not authenticated");
-      console.log("user id: ", session?.user?.id);
     }
   }, [session, status]);
   

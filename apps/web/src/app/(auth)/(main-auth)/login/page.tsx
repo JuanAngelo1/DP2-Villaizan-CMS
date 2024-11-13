@@ -74,7 +74,7 @@ function LoginPage() {
         </div>
         <Button className="mt-2" variant={"outline"} onClick={() => onLoginGoogle()}>
           <img src="google-logo.svg" className="h-5 w-5" />
-          <p>Inicia sesión con Google</p>
+          <p className="text-sm">Inicia sesión con Google</p>
         </Button>
       </div>
     </div>

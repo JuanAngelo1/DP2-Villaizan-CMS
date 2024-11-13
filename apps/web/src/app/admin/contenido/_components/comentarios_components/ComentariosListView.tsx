@@ -1,20 +1,9 @@
-import usePagination from "@web/hooks/usePagination";
-import { Comentario, Response } from "@web/types";
-import { formatDate } from "@web/utils/date";
-import axios from "axios";
+import { Input } from "@repo/ui/components/input";
+import { Tabs, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button, buttonVariants } from "@repo/ui/components/button";
-import { CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
-import { Input } from "@repo/ui/components/input";
-import { Skeleton } from "@repo/ui/components/skeleton";
-import { Tabs, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
-import { cn } from "@repo/ui/lib/utils";
-import ContentFooter from "../general_components/ContentFooter";
-import MainContent from "../general_components/MainContent";
 import TopHeader from "../general_components/TopHeader";
-import ChipEstadoAprobacion from "./ChipEstadoAprobacion";
 import ViewAllComentarios from "./ViewAllComentarios";
 import ViewPerPostComentarios from "./ViewPerPostComentarios";
 

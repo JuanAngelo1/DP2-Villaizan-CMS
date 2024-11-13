@@ -1,11 +1,12 @@
 "use server";
 
-import { Categoria, ControlledError, Response, VersionPublicacion } from "@web/types";
+import { auth } from "@web/auth";
+import { Categoria, Comentario, ControlledError, Response, VersionPublicacion } from "@web/types";
+import { formatDDMMAAAA_HHSS, formatDate } from "@web/utils/date";
 import axios from "axios";
-import { Slash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, Suspense } from "react";
+import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,29 +15,39 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@repo/ui/components/breadcrumb";
+import { Button } from "@repo/ui/components/button";
+import { Textarea } from "@repo/ui/components/textarea";
 import { cn } from "@repo/ui/lib/utils";
 import MaxWidthWrapper from "../../_components/MaxWidthWrapper";
+import CommentBox from "./_components/CommentBox";
+import FacebookLogo from "./_components/FacebookLogo";
+import InstagramLogo from "./_components/InstagramLogo";
+import LinkedinLogo from "./_components/LinkedinLogo";
+import XLogo from "./_components/XLogo";
 import "./postStyles.css";
 
-const blogContent = `
-<h1><strong><em>¡Descubre Nuestra Nueva Colección de Sabores!</em></strong></h1>
-<p>El verano está a la vuelta de la esquina y en <strong>Heladería Dulce Tentación</strong> estamos emocionados de presentar nuestra <strong>nueva colección de sabores</strong> que seguramente encantarán a todos nuestros clientes. Ven y disfruta de una experiencia única con nuestras deliciosas propuestas.</p>
-<h1><strong>🌟 Nuevos Sabores Disponibles:</strong></h1>
-<p><strong>Mango Tropical:</strong> Una explosión de frescura con el auténtico sabor del mango maduro.</p>
-<p><strong>Chocolate Belga:</strong> Para los amantes del chocolate, un clásico enriquecido con cacao de alta calidad.</p>
-<p><strong>Frutos del Bosque:</strong> Una mezcla vibrante de fresas, arándanos y frambuesas.</p>
-<p><strong>Vainilla de Madagascar:</strong> Suave y aromático, perfecto para acompañar cualquier topping.</p>
-<h1><strong>🎉 Promociones Especiales de Lanzamiento:</strong></h1>
-<p>Durante el mes de lanzamiento, disfruta de las siguientes promociones:</p>
-<p><strong>2x1 en conos seleccionados:</strong> Elige cualquier dos conos de nuestros nuevos sabores y paga solo uno.</p>
-<p><strong>Tarjeta Fidelidad:</strong> Por cada compra, acumula puntos que podrás canjear por descuentos y productos gratis.</p>
-<p><strong>Sorteo Semanal:</strong> Participa automáticamente en nuestro sorteo de una cesta de productos exclusivos cada semana.</p>
-<h1><strong>📅 Próximos Eventos en la Heladería:</strong></h1>
-<p><strong>Taller de Creación de Sabores:</strong> El próximo 15 de noviembre, únete a nuestro taller donde podrás crear tu propio sabor de helado.</p>
-<p><strong>Noche de Degustación:</strong> El 25 de noviembre, te invitamos a una velada especial para probar todos nuestros nuevos sabores junto a música en vivo.</p>
-<h1><strong>📍 Visítanos:</strong></h1>
-<p>Nos encontramos en <strong>Calle Principal 123, Ciudad</strong>, de lunes a domingo de 12:00 PM a 10:00 PM. También puedes realizar pedidos en línea a través de nuestra página web <a target="_blank" rel="noopener noreferrer nofollow" href="http://www.dulcetentacion.com">www.dulcetentacion.com</a>.</p>
-`;
+const share_urls = [
+  {
+    name: "facebook",
+    logo: FacebookLogo,
+    href: "https://www.facebook.com/share.php?u=",
+  },
+  {
+    name: "x",
+    logo: XLogo,
+    href: "https://twitter.com/intent/tweet?url=",
+  },
+  {
+    name: "linkedin",
+    logo: LinkedinLogo,
+    href: "https://www.linkedin.com/shareArticle?url=",
+  },
+  {
+    name: "instagram",
+    logo: InstagramLogo,
+    href: "https://wa.me/?text=",
+  },
+];
 
 function getHeadingContents(htmlString: string): string[] {
   const headingTags = ["h1", "h2", "h3"];
@@ -61,9 +72,10 @@ async function fetchPublicationData(slug: string) {
     const response: Response<VersionPublicacion> = await axios.get(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/slug/${slug}`
     );
+
     console.log("Publicacion data -> ", response.data.result);
 
-    if(response.data.status !== "Success") throw new Error(response.data.message);
+    if (response.data.status !== "Success") throw new Error(response.data.message);
 
     return response.data.result;
   } catch (error) {
@@ -73,13 +85,15 @@ async function fetchPublicationData(slug: string) {
 }
 
 export default async function PublicacionPage({ params }: { params: Promise<{ slug: string }> }) {
+  const session = await auth();
+  const user = session?.user;
+
   const slug = (await params).slug;
 
   const publicacion = await fetchPublicationData(slug);
-
   if (!publicacion) throw new Error("Publicación no encontrada");
 
-  const headings = getHeadingContents(publicacion?.richtext || "");
+  const headings = getHeadingContents(publicacion.richtext || "");
 
   return (
     <div>
@@ -90,8 +104,8 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
             <div className="absolute bottom-[-70px] left-4 right-4 top-[70px] overflow-hidden rounded-xl">
               <Image
                 src={publicacion.urlimagen}
-                height={100}
                 width={100}
+                height={100}
                 alt="Post Cover Image"
                 className="h-full w-full rounded-xl object-cover"
               />
@@ -107,18 +121,74 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
         <div className={cn("flex flex-row gap-10", !publicacion.urlimagen && "pt-4")}>
           <ContentTable headings={headings} />
 
-          <section className="flex flex-col">
+          <section className="flex flex-1 flex-col">
             <CategoryDisplay categories={publicacion.categorias} />
             <p className="text-5xl font-semibold">{publicacion.titulo}</p>
-            <p className="italic">Fecha de publicación: 24 de octubre de 2024</p>
+            <p className="italic">
+              Fecha de publicación: {formatDDMMAAAA_HHSS(publicacion.fechapublicacion || undefined)}
+            </p>
             <div
               className="mt-4 flex flex-col gap-2"
               dangerouslySetInnerHTML={{ __html: publicacion.richtext || "" }}
             />
+
+            <section className="border-b-muted-foreground border-t-muted-foreground mt-8 flex h-fit w-full flex-row items-center justify-between border-b border-t py-4">
+              <p className="text-xl font-semibold">
+                <span className="w-10 text-red-700">{publicacion.comentarios?.length}</span> comentario (s)
+              </p>
+
+              <div className="flex items-center gap-4">
+                {share_urls.map((share_url, idx) => {
+                  const Logo = share_url.logo;
+                  return (
+                    <Logo
+                      key={idx}
+                      className="cursor-pointer transition-colors hover:fill-red-800"
+                      href={`${share_url.href}${process.env.NEXT_PUBLIC_APP_URL}/publicaciones/${slug}`}
+                    />
+                  );
+                })}
+              </div>
+            </section>
+
+            {user ? (
+              <CommentBox user={user} publicacion={publicacion} />
+            ) : (
+              <Link
+                href={`/login?callbackUrl=/publicaciones/${slug}`}
+                className="mt-5 flex w-full rounded-lg bg-red-100 p-3"
+              >
+                <p className="mx-auto cursor-pointer text-lg hover:underline">Inicia sesión para comentar</p>
+              </Link>
+            )}
+
+            <div className="mt-5 flex flex-col gap-3 pl-4">
+              {publicacion.comentarios?.map((comentario, idx) => {
+                return <CommentDisplay comentario={comentario} key={idx} />;
+              })}
+            </div>
           </section>
         </div>
       </MaxWidthWrapper>
     </div>
+  );
+}
+
+function CommentDisplay({ comentario }: { comentario: Comentario }) {
+  return (
+    <section className="relative flex w-full flex-col rounded-lg border">
+      <div className="bg-muted flex flex-row items-center gap-2 p-2 pl-[30px]">
+        <img
+          src={comentario.vi_usuario?.imagenperfil || "/default-profile.png"}
+          className="absolute -left-4 -top-[1px] h-10 w-10 rounded-full"
+        />
+        <p className="">
+          <span className="font-semibold">{comentario.vi_usuario?.nombre || "Renzo Pinto"}</span>
+          <span className="text-muted-foreground"> comentó el {formatDate(comentario.fechacreacion)}</span>
+        </p>
+      </div>
+      <div className="px-4 py-3">{comentario.comentario}</div>
+    </section>
   );
 }
 
@@ -183,7 +253,11 @@ function CategoryDisplay({ categories, className }: { categories: Categoria[]; c
       {categories.map((category, idx) => {
         if (idx === categories.length - 1) {
           return (
-            <Link key={idx} className="cursor-pointer hover:underline" href={`/publicaciones?categoria=${category.id}`}>
+            <Link
+              key={idx}
+              className="cursor-pointer hover:underline"
+              href={`/publicaciones?categoria=${category.id}`}
+            >
               {category.nombre}
             </Link>
           );
