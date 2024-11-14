@@ -29,7 +29,7 @@ import { PuntosVentaModule } from './PuntosVenta/puntos-venta.module';
 import { PuntosVentaController } from './PuntosVenta/puntos-venta.controller';
 import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
 import { SentimientosController } from './Sentimientos/sentimientos.controller';
-import { SentimientosModule } from './sentimientos/sentimientos.module';
+import { SentimientosModule } from './Sentimientos/sentimientos.module';
 import { SentimientosService } from './Sentimientos/sentimientos.service';
 
 @Module({
