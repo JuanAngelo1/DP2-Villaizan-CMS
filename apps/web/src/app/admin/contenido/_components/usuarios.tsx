@@ -47,7 +47,7 @@ function Usuarios() {
       try {
         setIsLoading(true);
         const response: Response<Usuario[]> = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios`
         );
         if (response.data.status === "Error") throw new ControlledError(response.data.message);
         setUsuarios(response.data.result);
@@ -75,7 +75,7 @@ function Usuarios() {
     try {
       console.log(usuario);
       const response: Response<null> = await axios.patch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/rol/${usuario.id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/rol/${usuario.id}`,
         {
           id_rol: usuario.id_rol,
         }
@@ -126,7 +126,7 @@ function Usuarios() {
     console.log(usuario)
 
     const response: Response<null> = await axios.delete(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/${usuario.id}`
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/${usuario.id}`
     );
 
     if (response.data.status === "Error") throw new ControlledError(response.data.message);
