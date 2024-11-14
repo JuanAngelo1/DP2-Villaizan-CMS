@@ -28,6 +28,9 @@ import { FrutasController } from './Frutas/frutas.controller';
 import { PuntosVentaModule } from './PuntosVenta/puntos-venta.module';
 import { PuntosVentaController } from './PuntosVenta/puntos-venta.controller';
 import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
+import { SentimientosController } from './Sentimientos/sentimientos.controller';
+import { SentimientosModule } from './Sentimientos/sentimientos.module';
+import { SentimientosService } from './Sentimientos/sentimientos.service';
 
 @Module({
   imports: [
@@ -46,6 +49,7 @@ import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
     FaqModule,
     FrutasModule,
     PuntosVentaModule,
+    SentimientosModule,
   ],
   controllers: [
     UsuarioController,
@@ -55,6 +59,7 @@ import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
     FaqController,
     FrutasController,
     PuntosVentaController,
+    SentimientosController,
   ],
   providers: [
     UsuarioService,
@@ -64,6 +69,7 @@ import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
     FaqService,
     FrutasService,
     PuntosVentaService,
+    SentimientosService,
   ],
 })
 export class AppModule {}

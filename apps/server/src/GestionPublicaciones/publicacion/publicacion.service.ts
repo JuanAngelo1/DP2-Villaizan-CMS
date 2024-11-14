@@ -508,8 +508,7 @@ export class PublicacionService {
         throw error;
     }
 }
-
-    
+   
   async despublicarVersion(id_publicacion: number, id_version: number): Promise<any> {
     try {
       const estadoBorrador = await this.prisma.vi_estado_version.findFirst({
@@ -1020,7 +1019,6 @@ export class PublicacionService {
       };
     }
   }
-
 
 
   async updatePublicacion(id_version: number, data: PublicacionDto): Promise<any> {

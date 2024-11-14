@@ -108,7 +108,7 @@ export class ComentarioController {
     }
   }
 
-  @Put(':id')
+  @Delete(':id')
   async softDeleteComentario(
     @Param('id', ParseIntPipe) id: number,
     @Res() response: Response,
