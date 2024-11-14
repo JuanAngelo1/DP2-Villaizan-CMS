@@ -26,6 +26,8 @@ function ComentarioCard({
     router.push(`${pathname}?${nextSearchParams}`);
   }
 
+  console.log("Comentario: ", comentario);
+
   return (
     <div
       onClick={handlePushToComment}
@@ -36,7 +38,7 @@ function ComentarioCard({
       <Cell className="text-center">
         <ChipEstadoAprobacion comentario={comentario} />
       </Cell>
-      <Cell className="text-end">{formatDate(comentario.fecha)}</Cell>
+      <Cell className="text-end">{formatDate(comentario.fechacreacion)}</Cell>
     </div>
   );
 }

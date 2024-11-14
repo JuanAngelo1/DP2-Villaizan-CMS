@@ -1,7 +1,7 @@
 import { toast } from '@repo/ui/hooks/use-toast';
-import { Comentario, ControlledError, Response } from '@web/types';
+import { Comentario, ControlledError, Response, Sentimiento } from '@web/types';
 import axios from 'axios';
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import SectionWrapper from '../../contenido/_components/general_components/SectionWrapper';
 import TopHeader from '../../contenido/_components/general_components/TopHeader';
 import { Input } from '@repo/ui/components/input';
@@ -9,14 +9,43 @@ import { cn } from '@repo/ui/lib/utils';
 import { buttonVariants } from '@repo/ui/components/button';
 import usePagination from '@web/hooks/usePagination';
 import MainContent from '../../contenido/_components/general_components/MainContent';
-import ComentariosTableHeader from './ComentariosTableHeader';
+import ComentariosTableHeader from './comentarios_components/ComentariosTableHeader';
 import { Skeleton } from '@repo/ui/components/skeleton';
-import ComentarioTableRow from './ComentarioTableRow';
+import ComentarioTableRow from './comentarios_components/ComentarioTableRow';
+import SheetComentario from './comentarios_components/SheetComentario';
+import DialogDelete from '../../contenido/_components/general_components/DialogDelete';
+import ContentFooter from '../../contenido/_components/general_components/ContentFooter';
+
+const initComentario: Comentario = {
+  id: 0,
+  comentario: "",
+  estadoaprobacion: true,
+  fechacreacion: "",
+  id_publicacion: 0,
+  id_usuario: "",
+  usuario: {
+    id: "",
+    nombre: "",
+    apellido: "",
+    correo: "",
+    imagenperfil: "",
+    id_rol: "",
+    id_persona: "",
+    creadoen: new Date(),
+  },
+  id_sentimiento: 0,
+}
 
 function Comentarios() {
   const [isLoading, setIsLoading] = useState(true);
   const [comentarios, setComentarios] = useState<Comentario[]>([]);
+  const [sentimientos, setSentimientos] = useState<Sentimiento[]>([]);
+  const [currentComentario, setCurrentComentario] = useState<Comentario>(initComentario);
+  const [isEditSheetOpen, setIsEditSheetOpen] = useState<boolean>(false);
+  const [delComentario, setDelComentario] = useState<Comentario | null>(null);
   const [search, setSearch] = useState<string>("");
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   useEffect(()=>{
     async function fetchData(){
@@ -28,13 +57,17 @@ function Comentarios() {
         if (response.data.status === "Error") throw new ControlledError(response.data.message);
         setComentarios(response.data.result);
 
-        console.log(response.data.result);
+        const responseSentimientos: Response<Sentimiento[]> = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/sentimientos`
+        )
+        if (responseSentimientos.data.status === "Error") throw new Error(responseSentimientos.data.message);
+        setSentimientos(responseSentimientos.data.result);
       } catch (error) {
         if(error instanceof ControlledError){
           toast({title: "Error al obtener los comentarios", description: error.message});
         }else{
           console.error("Error al obtener los comentarios", error);
-          toast({ title: "Ups! Algo salió mal.", description: "Error al obtener los comentarios" });
+          toast({ title: "Ups! Algo salió mal.", description: "Error al obtener los comentarios y sentimientos" });
         }
       }finally{
         setIsLoading(false);
@@ -42,15 +75,88 @@ function Comentarios() {
     }
 
     fetchData();
-  }, [])
+  }, []);
+
+  const updateSentimientoComentario = async (comentario: Comentario)=>{
+    try {
+      const response: Response<null> = await axios.patch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/sentimiento/${comentario.id}`,
+        {
+          id_sentimiento: comentario.id_sentimiento,
+        }
+      );
+
+      if(response.data.status === "Error") throw new ControlledError(response.data.message);
+
+      const newComentarios = comentarios.map((_comentario)=>{
+        if(_comentario.id === comentario.id){
+          return comentario;
+        }
+        return _comentario;
+      });
+
+      setComentarios(newComentarios);
+      toast({
+        title: "Sentimiento actualizado",
+        description: `Sentimiento del usuario ${comentario.usuario.nombre + comentario.usuario.apellido} ha sido actualizado exitosamente`
+      })
+    } catch (error) {
+      if(error instanceof ControlledError){
+        toast({title: "Error al actualizar el sentimiento", description: error.message});
+      }else{
+        console.error("Error al actualizar el sentimiento", error);
+        toast({title: "Ups! Algo salió mal.", description: "Error al actualizar el sentimiento"});
+      }
+    }
+  }
+
+  const sentimientoMap = useMemo(()=>{
+    return sentimientos.reduce(
+      (map, sentimiento) =>{
+        map[sentimiento.id] = sentimiento.nombre;
+        return map;
+      },
+      {} as Record<string, string>
+    );
+  },[sentimientos]);
+
+  const openEditSheet = useCallback((comentario: Comentario)=>{
+    setCurrentComentario(comentario);
+    setIsEditSheetOpen(true);
+  },[]);
+
+  const deleteComentario = async (comentario: Comentario | null)=>{
+    if(!comentario) return;
+
+    const response: Response<null> = await axios.delete(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/${comentario.id}`
+    );
+
+    if(response.data.status === "Error") throw new ControlledError(response.data.message);
+
+    const newComentarios = comentarios.filter((_comentario)=> _comentario.id !== comentario.id);
+    setComentarios(newComentarios);
+
+    setDelComentario(null);
+
+    toast({
+      title: "Comentario eliminado", 
+      description: `El comentario ha sido eliminado exitosamente.`
+    });
+
+  };
 
   const filteredComentarios = useMemo(()=>{
     return comentarios.filter(
       (comentario) =>
-        comentario.comentario?.toLowerCase().includes(search.toLowerCase())
+        comentario.comentario?.toLowerCase().includes(search.toLowerCase()) ||
+        comentario.usuario.nombre.toLowerCase().includes(search.toLowerCase()) ||
+        comentario.usuario.apellido.toLowerCase().includes(search.toLowerCase()) ||
+        sentimientoMap[comentario.id_sentimiento].toLowerCase().includes(search.toLowerCase())
     );
-  }, [comentarios, search]);
+  }, [comentarios, search, sentimientoMap]);
 
+  
   const {
     page,
     entriesPerPage,
@@ -70,7 +176,12 @@ function Comentarios() {
     <>
       <SectionWrapper>
         <TopHeader>
-          <Input placeholder='Buscar...'/>
+          <Input 
+            placeholder='Buscar...'
+            value={search}
+            onChange={(e)=> setSearch(e.target.value)}
+            className='flex-1 lg:w-fit'
+          />
           <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
             <p>Mostrando</p>
             <Input
@@ -116,15 +227,63 @@ function Comentarios() {
                 <section className="h-full space-y-2 overflow-y-scroll">
                   {currentPageItems.map((comentario)=>(
                     <ComentarioTableRow 
-                    _comentario={comentario}/>
+                      key = {comentario.id}
+                      _comentario={comentario}
+                      openEditSheet={openEditSheet}
+                      sentimientoName={sentimientoMap[comentario.id_sentimiento]}
+                      setComentarios={(newComentario)=>{
+                        const newComentarios = comentarios.map((comentario)=>{
+                          if(comentario.id === newComentario.id){
+                            return newComentario;
+                          }
+                          return comentario;
+                        });
+                        setComentarios(newComentarios);
+                      }}
+                      updateSentimiento = { (updatedSentimiento) => updateSentimientoComentario(updatedSentimiento)}
+                      sentimientos={sentimientos}
+                      setDelComentario={setDelComentario}
+                      setDeleteModalOpen={setDeleteModalOpen}
+                      />
                   ))}
                 </section>
+
+                <ContentFooter
+                  page={page}
+                  totalPages={totalPages}
+                  allFilteredItems={allFilteredItems}
+                  indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+                  indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
+                  prevPage={prevPage}
+                  nextPage={nextPage}
+                  itemName='comentarios'
+                />
               </>
             )}
         </MainContent>
+
+        <SheetComentario
+        open={isEditSheetOpen}
+        onOpenChange={setIsEditSheetOpen}
+        comentario={currentComentario}
+        setComentario={setCurrentComentario}
+        title="Editar comentario"
+        onAction = {()=> updateSentimientoComentario(currentComentario)}
+        sentimientos={sentimientos}
+        sentimientoMap={sentimientoMap}
+        />
+
+        <DialogDelete
+          open={deleteModalOpen}
+          onOpenChange={setDeleteModalOpen}
+          onAction={()=> deleteComentario(delComentario)}
+          title="¿Estás absolutamente seguro?"
+          description="Esta acción no se puede deshacer. Esto eliminará el comentario permanentemente."
+        />
+        
       </SectionWrapper>
     </>
   )
 }
 
-export default Comentarios
+export default Comentarios;

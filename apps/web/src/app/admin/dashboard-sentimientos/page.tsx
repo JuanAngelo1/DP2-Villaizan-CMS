@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DateFilter from "./_components/DateFilter";
 import ProductSelector from "./_components/ProductSelector";
 import SentimentLineChart from "./_components/SentimentLineChart";
@@ -8,6 +8,9 @@ import SentimentPieChart from "./_components/SentimentPieChart";
 import StaticWordCloud from "./_components/StaticWordCloud";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
 import Comentarios from "./_components/Comentarios";
+import axios from "axios";
+import { ControlledError, Response } from "@web/types";
+import { toast } from "@repo/ui/hooks/use-toast";
 
 interface DateRange {
   start: Date | null;
@@ -17,6 +20,34 @@ interface DateRange {
 const DashboardSentimientos = () => {
   const [dateRange, setDateRange] = useState<DateRange>({ start: null, end: null });
   const [selectedProduct, setSelectedProduct] = useState<string>("Paleta de Chocolate");
+  const [commentsCounter, setCommentsCounter] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchData(){
+      try {
+        setIsLoading(true);
+        const responseCommentsCounter: Response<number> = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/contarEntreFechas`,
+          { start: dateRange.start, end: dateRange.end}
+        )
+
+        if(responseCommentsCounter.data.status === "Error") throw new ControlledError(responseCommentsCounter.data.message);
+        setCommentsCounter(responseCommentsCounter.data.result);
+      } catch (error) {
+        if (error instanceof ControlledError) {
+          toast({ title: "Error al obtener obtener información del dashboard", description: error.message });
+        } else {
+          console.error("Error al obtener obtener información del dashboard", error);
+          toast({ title: "Ups! Algo salió mal.", description: "Error al obtener obtener información del dashboard" });
+        }
+      }finally{
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   return (
     <div className="p-6 space-y-6 w-full">
@@ -40,7 +71,7 @@ const DashboardSentimientos = () => {
               
               <div className="space-y-4">
                 <StatsCard title="Encuestas respondidas" value="252" />
-                <StatsCard title="Comentarios recibidos" value="112901" />
+                <StatsCard title="Comentarios recibidos" value={commentsCounter.toString()} />
                 <StatsCard title="Satisfacción general" value="55%" />
               </div>
             </div>

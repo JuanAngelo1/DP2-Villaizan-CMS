@@ -120,10 +120,11 @@ export type Comentario = {
   comentario: string;
   estadoaprobacion: boolean | null;
   fechacreacion: string;
-  id_publicacion: string;
+  id_publicacion: number;
   publicacion?: Publicacion;
   id_usuario: string;
   usuario: Usuario;
+  id_sentimiento: number;
 };
 
 export type Rol = {
@@ -151,3 +152,11 @@ export type PuntoVenta = {
   lng: number;
   nota?: string;
 };
+
+export type Sentimiento = {
+  id: number;
+  nombre: string;
+  estaactivo: boolean;
+  colorfondo: string;
+  colortexto: string;
+}

@@ -11,6 +11,9 @@ import {
   Req,
   Res,
   ParseIntPipe,
+  Patch,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { ComentarioService } from './comentario.service';
 import { vi_comentario } from '@prisma/client';
@@ -42,7 +45,7 @@ export class ComentarioController {
     }
   }
 
-  @Post('')
+  @Post()
   async createComentario(
     @Body() data: CreateComentarioDto,
     @Res() response: Response,
@@ -149,5 +152,62 @@ export class ComentarioController {
       message: 'Comentarios encontrados',
       result: comentariFound,
     });
+  }
+
+  @Patch('/sentimiento/:id')
+  async updateRol(
+    @Param('id', ParseIntPipe) id_comentario: number,
+    @Body('id_sentimiento', ParseIntPipe) id_sentimiento: number,
+  ) {
+    try {
+      const id_comentario_updated =
+        await this.comentarioService.updateSentimiento(
+          id_comentario,
+          id_sentimiento,
+        );
+      return {
+        status: 'Success',
+        message: 'Sentimiento actualizado',
+        result: id_comentario_updated,
+      };
+    } catch (e) {
+      console.log(e);
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: e.message,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Post('contarEntreFechas')
+  async contarComentariosEntreFechas(
+    @Body() data: { fechaInicio: string; fechaFin: string },
+  ): Promise<any> {
+    try {
+      console.log(data);
+      const result = await this.comentarioService.countComentariosBetweenDates(
+        new Date(data.fechaInicio),
+        new Date(data.fechaFin),
+      );
+      console.log(result); // Imprimiría el número de comentarios en ese rango de fechas.
+      return {
+        status: 'Success',
+        message: 'Comentarios',
+        result: result,
+      };
+    } catch (err) {
+      console.log(err);
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Error al obtener los comentarios',
+          result: [],
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
