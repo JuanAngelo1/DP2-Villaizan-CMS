@@ -21,7 +21,7 @@ import { UsuarioDto } from './dto/usuario.dto';
 import { GoogleUserDto } from './dto/google-user.dto';
 import { PersonaUpdateDTO } from './dto/persona.dto';
 
-@Controller('usuario')
+@Controller('usuarios')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
@@ -174,11 +174,17 @@ export class UsuarioController {
     }
   }
 
-
   @Put('actualizarPersona/:id')
-  async updatePersona(@Param('id') id: string,@Body() data: PersonaUpdateDTO,@Res() response: Response):Promise<any>{
+  async updatePersona(
+    @Param('id') id: string,
+    @Body() data: PersonaUpdateDTO,
+    @Res() response: Response,
+  ): Promise<any> {
     try {
-      const personaUpdated = await this.usuarioService.updatePersonaInfo(id, data);
+      const personaUpdated = await this.usuarioService.updatePersonaInfo(
+        id,
+        data,
+      );
       return response.status(200).json({
         status: 'Success',
         message: 'Persona actualizada exitosamente',
@@ -190,9 +196,8 @@ export class UsuarioController {
         message: 'Persona no existe',
         result: [],
       });
+    }
   }
-}
-
 
   @Patch('/rol/:id')
   async updateRol(

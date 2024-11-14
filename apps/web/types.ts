@@ -123,7 +123,7 @@ export type Comentario = {
   id_publicacion: string;
   publicacion?: Publicacion;
   id_usuario: string;
-  vi_usuario?: Usuario;
+  usuario: Usuario;
 };
 
 export type Rol = {

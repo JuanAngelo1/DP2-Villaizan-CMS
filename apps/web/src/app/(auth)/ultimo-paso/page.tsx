@@ -54,7 +54,7 @@ function LastStepPage() {
       setError(null);
 
       const response: Response<Usuario> = await axios.put(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/actualizarPersona/${session?.user.db_info.id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/actualizarPersona/${session?.user.db_info.id}`,
         {
           sexo: sexo,
           edad: parseInt(edad),

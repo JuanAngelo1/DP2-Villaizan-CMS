@@ -77,7 +77,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       try {
         if (user && account?.provider === "google") {
           const response: Response<Usuario> = await axios.post(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/loginGoogle`,
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/loginGoogle`,
             {
               email: user.email,
               nombre: profile?.given_name || user.name || "",
@@ -106,7 +106,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const user_id = token.sub;
 
           const response: Response<Usuario> = await axios.get(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/usuario/${user_id}`
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/${user_id}`
           );
 
           if (response.data.status !== "Success") {

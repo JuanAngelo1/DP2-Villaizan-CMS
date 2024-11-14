@@ -7,6 +7,7 @@ import StatsCard from "./_components/StatsCard";
 import SentimentPieChart from "./_components/SentimentPieChart";
 import StaticWordCloud from "./_components/StaticWordCloud";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
+import Comentarios from "./_components/Comentarios";
 
 interface DateRange {
   start: Date | null;
@@ -67,16 +68,14 @@ const DashboardSentimientos = () => {
         <TabsContent value="comentarios" >
           {/* Contenido para la pestaña de Comentarios */}
           <div className="p-4 bg-gray-100 rounded-lg w-full min-w-full">
-            <h2 className="text-lg font-bold">Comentarios</h2>
-            <p>Contenido para coemntarios</p>
+            <Comentarios/>
           </div>
         </TabsContent>
 
          <TabsContent value="encuestas">
           {/* Contenido para la pestaña de Encuestas */}
           <div className="p-4 w-full bg-gray-100 rounded-lg">
-            <h2 className="text-lg font-bold">Encuestas</h2>
-            <p>Contenido para encuestas</p>
+            
           </div>
         </TabsContent>
       </Tabs>
