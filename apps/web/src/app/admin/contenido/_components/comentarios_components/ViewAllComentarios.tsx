@@ -40,7 +40,7 @@ function ViewAllComentarios({ searchValue }: { searchValue: string }) {
       try {
         setIsLoading(true);
         const response: Response<Comentario[]> = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/obtenerTodos`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario`
         );
 
         console.log("Comentarios: ", response.data.result);

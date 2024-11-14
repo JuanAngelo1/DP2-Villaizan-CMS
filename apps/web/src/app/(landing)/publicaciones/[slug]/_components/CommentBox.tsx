@@ -26,7 +26,7 @@ function CommentBox({ user, publicacion }: { user: User; publicacion: VersionPub
     try {
       setIsLoading(true);
       const response: Response<Comentario> = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/crear`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario`,
         {
           comentario: comentario,
           id_usuario: id_usuario,

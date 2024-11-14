@@ -32,11 +32,13 @@ function ComentarioDetailView({ id }: { id: string }) {
     router.replace(`${pathname}?${nextSearchParams}`);
   };
 
+  
+
   const handleSetEstadoAprobacion = async (_comentario: Comentario, estado: boolean | null) => {
     try {
       setIsUpdating(true);
       const response: Response<Comentario> = await axios.put(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/actualizar/${id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/${id}`,
         { comentario: _comentario.comentario, estadoaprobacion: estado }
       );
       if (response.data.status === "Error") throw new Error(response.data.message);
@@ -54,11 +56,12 @@ function ComentarioDetailView({ id }: { id: string }) {
       try {
         setIsLoading(true);
         const response: Response<Comentario> = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/obtenerxId/${id}`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/${id}`
         );
         if (response.data.status === "Error") throw new Error(response.data.message);
 
         setComentario(response.data.result);
+        console.log("Comentario: ", response.data.result);
       } catch (error) {
         console.error("Ups! Algo salio mal -> ", error);
       } finally {
@@ -68,7 +71,7 @@ function ComentarioDetailView({ id }: { id: string }) {
 
     fetchData();
   }, []);
-
+  
   return (
     <Card className="flex h-auto flex-1 flex-col overflow-y-hidden">
       <CardHeader>
@@ -93,7 +96,7 @@ function ComentarioDetailView({ id }: { id: string }) {
                 </div>
               ) : (
                 <div className="flex flex-row items-center gap-1">
-                  <Input defaultValue={comentario?.publicacion.titulo} readOnly disabled={isUpdating} />
+                  <Input defaultValue={comentario?.publicacion?.titulo} readOnly disabled={isUpdating} />
                   <Button disabled={isUpdating}>Ver publicación</Button>
                 </div>
               )}
@@ -122,7 +125,7 @@ function ComentarioDetailView({ id }: { id: string }) {
                   <Skeleton className="w-40 text-sm text-transparent">.</Skeleton>
                 </div>
               ) : (
-                <Input defaultValue={formatDate(comentario?.fecha)} readOnly disabled={isUpdating} />
+                <Input defaultValue={formatDate(comentario?.fechacreacion)} readOnly disabled={isUpdating} />
               )}
             </div>
           </section>

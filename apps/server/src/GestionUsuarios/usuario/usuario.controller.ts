@@ -215,6 +215,7 @@ export class UsuarioController {
         result: usuarioUpdated,
       };
     } catch (e) {
+      console.log(e);
       throw new HttpException(
         {
           status: 'Error',
