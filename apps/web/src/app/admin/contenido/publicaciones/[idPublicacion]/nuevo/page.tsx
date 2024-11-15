@@ -1,11 +1,11 @@
 "use client";
 
+import React, { useEffect, useState, useRef } from "react";
 import TextEditor from "@web/src/app/_components/TextEditor";
 import { Categoria, Etiqueta, Response } from "@web/types";
 import axios from "axios";
 import { AsteriskIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import DateTimePicker from "@repo/ui/components/date-time-picker";
@@ -18,6 +18,8 @@ import { MultiSelect } from "@repo/ui/components/multi-select";
 import MainContent from "../../../_components/general_components/MainContent";
 import Image from "next/image";
 import { AspectRatio } from "@repo/ui/components/aspect-ratio";
+import RichTextEditor from "@web/src/app/_components/RichTextEditor";
+import { type Editor } from 'reactjs-tiptap-editor';
 
 interface VersionPublicacion {
   titulo: string;
@@ -59,6 +61,7 @@ function NuevoVersionPage() {
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [imagen, setImagen] = useState<Imagen>({ file: null });
   const [loading, setLoading] = useState(false);
+  const editorRef = useRef<{ editor: Editor | null }>(null);
 
   useEffect(() => {
     const fetchEtiquetasCategorias = async () => {
@@ -107,6 +110,11 @@ function NuevoVersionPage() {
           updatedVersion.urlimagen = responseImagen.data.result;
         }
       }
+
+      // logica para botener la informacion de richtext
+      if (editorRef.current?.editor) {
+        updatedVersion.richtext = editorRef.current.editor.getHTML();
+      }
     
       const response: Response<VersionPublicacionReponse> = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/crearVersion/${idPublicacion}`,
@@ -130,8 +138,6 @@ function NuevoVersionPage() {
       setLoading(false);
     }
   };
-
-  console.log("Version", version);
 
   return (
     <MainContent title={version?.titulo || "[Titulo de publicacion]"}>
@@ -210,14 +216,11 @@ function NuevoVersionPage() {
             </div>
           )}
           {/* Texto Enriquecido */}
-          <div>
+          <div className="w-full">
             <Label className="flex flex-row gap-1">
               Texto enriquecido <p className="text-red-500">*</p>
             </Label>
-            <TextEditor
-              content={version?.richtext}
-              onContentChange={(content: string) => setVersion({ ...version, richtext: content })}
-            />
+            <RichTextEditor refEditor={editorRef} />
           </div>
         </div>
 
