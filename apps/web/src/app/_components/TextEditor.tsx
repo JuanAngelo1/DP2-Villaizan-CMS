@@ -402,15 +402,19 @@ export default function TextEditor<T extends TextEditorProps>({ content, onConte
         </button>
       </BubbleMenu>
 
-      {/* Contenido del Editor */}
+      {/* Seccion izquierda de editor */}
       <DragHandle editor={editor}
       tippyOptions={{
         offset: [-2, 40],
         zIndex: 99,
       }}>
+        <div>
+            
         <Button variant={'ghost'} className="p-2">
           <GripVerticalIcon />
         </Button>
+
+        </div>
       </DragHandle>
 
       {/* Contenido del Editor */}

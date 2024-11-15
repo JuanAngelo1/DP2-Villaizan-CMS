@@ -1,10 +1,9 @@
 "use client";
 
-import TextEditor from "@web/src/app/_components/TextEditor";
+import React, { useEffect, useState, useRef } from "react";
 import { Categoria, Etiqueta, Response } from "@web/types";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import { AspectRatio } from "@repo/ui/components/aspect-ratio";
@@ -17,6 +16,8 @@ import { useToast } from "@repo/ui/hooks/use-toast";
 import MainContent from "../../../_components/general_components/MainContent";
 import Image from "next/image";
 import { MultiSelect } from "@repo/ui/components/multi-select";
+import RichTextEditor from "@web/src/app/_components/RichTextEditor";
+import { type Editor } from 'reactjs-tiptap-editor';
 
 interface VersionPublicacion {
   id: number;
@@ -42,6 +43,7 @@ function NuevoVersionPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [loading, setLoading] = useState(true);
+  const editorRef = useRef<{ editor: Editor | null }>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -78,9 +80,15 @@ function NuevoVersionPage() {
 
   const handleUpdateVersion = async () => {
     try {
+      let updatedVersion = { ...version };
+      if (editorRef.current?.editor && version) {
+        const richtext = editorRef.current.editor.getHTML();
+        setVersion({ ...version, richtext });
+        updatedVersion = { ...version, richtext };
+      }
       const response: Response<VersionPublicacion> = await axios.put(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/actualizarVersion/${idVersionPublicacion}`,
-        version
+        updatedVersion
       );
       if (response.data.status == "Error") {
         throw new Error(response.data.message);
@@ -222,9 +230,9 @@ function NuevoVersionPage() {
                   <Label className="flex flex-row gap-1" htmlFor="richtext">
                     Texto enriquecido <p className="text-red-500">*</p>
                   </Label>
-                  <TextEditor
-                    content={version?.richtext}
-                    onContentChange={(content: string) => setVersion({ ...version, richtext: content })}
+                  <RichTextEditor
+                    editorContent={version.richtext}
+                    refEditor={editorRef}
                   />
                 </div>
               </div>

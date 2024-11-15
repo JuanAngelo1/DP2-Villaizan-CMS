@@ -50,11 +50,12 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.10",
     "react-leaflet": "^4.2.1",
+    "reactjs-tiptap-editor": "^0.1.7",
     "sass": "^1.80.3",
+    "typewriter-effect": "^2.21.0",
     "y-prosemirror": "^1.2.12",
     "y-protocols": "^1.0.6",
     "yjs": "^13.6.20",
-    "typewriter-effect": "^2.21.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
