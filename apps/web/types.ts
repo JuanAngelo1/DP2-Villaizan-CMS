@@ -13,6 +13,11 @@ export type Response<T> = {
   };
 };
 
+export type ResponseModuloRedes<T> = {
+  data: T;
+  status: number;
+};
+
 export type Etiqueta = {
   id: string;
   nombre: string;
@@ -159,4 +164,13 @@ export type Sentimiento = {
   estaactivo: boolean;
   colorfondo: string;
   colortexto: string;
-}
+};
+
+export type Encuesta = {
+  id: number;
+  title: string;
+  description: string;
+  status: string;
+  start_date: Date;
+  end_date: Date;
+};
