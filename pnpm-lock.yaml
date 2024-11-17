@@ -254,10 +254,10 @@ importers:
         version: 4.1.0
       embla-carousel-auto-scroll:
         specifier: ^8.3.0
-        version: 8.3.1(embla-carousel@8.3.0)
+        version: 8.3.1
       embla-carousel-autoplay:
         specifier: ^8.3.0
-        version: 8.3.0(embla-carousel@8.3.0)
+        version: 8.3.0
       embla-carousel-react:
         specifier: ^8.3.0
         version: 8.3.0(react@18.3.1)
@@ -11377,13 +11377,9 @@ snapshots:
 
   electron-to-chromium@1.5.44: {}
 
-  embla-carousel-auto-scroll@8.3.1(embla-carousel@8.3.0):
-    dependencies:
-      embla-carousel: 8.3.0
+  embla-carousel-auto-scroll@8.3.1: {}
 
-  embla-carousel-autoplay@8.3.0(embla-carousel@8.3.0):
-    dependencies:
-      embla-carousel: 8.3.0
+  embla-carousel-autoplay@8.3.0: {}
 
   embla-carousel-react@8.3.0(react@18.3.1):
     dependencies:

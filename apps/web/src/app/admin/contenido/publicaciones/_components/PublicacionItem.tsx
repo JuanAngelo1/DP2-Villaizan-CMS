@@ -1,6 +1,6 @@
 // /apps/web/src/admin/contenido/_components/PublicacionItem.tsx
 import { formatDate } from "@web/utils/date";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, Pencil } from "lucide-react";
 import React from "react";
 import { Card, CardContent } from "@repo/ui/components/card";
 import {
@@ -34,7 +34,9 @@ const PublicacionItem: React.FC<PublicacionItemProps> = ({ publicacion, onEdit, 
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {onEdit ? (
-              <DropdownMenuItem onClick={() => onEdit(publicacion.id)}>Editar</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onEdit(publicacion.id)} className="flex gap-2">
+                <Pencil className="h-4 w-4" /> Editar
+              </DropdownMenuItem>
             ) : null}
             {onArchive ? (
               <DropdownMenuItem onClick={() => onArchive(publicacion.id)}>Archivar</DropdownMenuItem>
