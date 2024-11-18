@@ -7,12 +7,16 @@ import * as bcrypt from 'bcrypt';
 import { UsuarioRepository } from './usuario.repository';
 import { GoogleUserDto } from './dto/google-user.dto';
 import { PersonaUpdateDTO } from './dto/persona.dto';
+import axios from 'axios';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class UsuarioService {
   constructor(
     private prisma: PrismaService,
     private usuarioRepository: UsuarioRepository,
+    // private readonly httpService: HttpService, // Inyección de HttpService
   ) {}
 
   async getAllUsuarios(): Promise<vi_usuario[]> {
@@ -54,6 +58,7 @@ export class UsuarioService {
     const generatedPersonaId = `per-${uuidv4().split('-')[0]}`;
 
     let rol;
+    let idCrm;
 
     rol = await this.prisma.vi_rol.findFirst({
       where: {
@@ -69,6 +74,33 @@ export class UsuarioService {
       },
     });
 
+    const apiUrl = 'https://heladeria2.od2.vtiger.com/restapi/vtap/api/addContact';
+    const auth = {
+      username: 'dep2.crm@gmail.com',
+      password: '97FO4nsSpV6UneKW',
+    };
+
+
+    const response = await axios.post(
+        apiUrl,
+        {
+          Nombre: data.nombre,
+          Apellidos: data.apellido,
+          email: data.email,
+          Categoria: 'B2C',
+        },
+        {
+          auth,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+    idCrm = response.data.result.id; // Extraer el ID del CRM de la respuesta
+    console.log('ID del CRM:', idCrm);
+    
+
     const usuario = await this.prisma.vi_usuario.create({
       data: {
         id: generatedId,
@@ -79,6 +111,7 @@ export class UsuarioService {
         imagenperfil: data.imagenperfil,
         contrasena: 'google',
         usuariocreacion: '2A',
+        id_crm: idCrm,
         vi_rol: {
           connect: { id: rol.id }, 
         },
@@ -99,7 +132,8 @@ export class UsuarioService {
     });
 
     return new_google_usuario;
-  }
+  
+}
 
   async findByEmailWithRole(email: string): Promise<any> {
     // Busca al usuario por su correo e incluye el rol en la consulta

@@ -17,7 +17,9 @@ CREATE TABLE vi_usuario (
     usuarioactualizacion VARCHAR(50),
     resetToken VARCHAR(255) DEFAULT NULL, -- Campo para el token de restablecimiento de contraseña
     resetTokenExpiracion TIMESTAMP DEFAULT NULL, -- Campo para la fecha de expiración del token
-    imagenPerfil TEXT, -- Nuevo campo para la URL de la imagen de perfil, permite NULL y tipo TEXT
+    imagenPerfil TEXT, -- Campo para la URL de la imagen de perfil, permite NULL y tipo TEXT
+    id_crm VARCHAR(50), -- Campo adicional para integración CRM
+    puntosacumulados INTEGER, -- Campo adicional para acumulación de puntos
     CONSTRAINT fk_persona FOREIGN KEY (id_persona) REFERENCES vi_persona(id),
     CONSTRAINT fk_rol FOREIGN KEY (id_rol) REFERENCES vi_rol(id)
 );
