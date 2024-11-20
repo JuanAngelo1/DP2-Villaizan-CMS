@@ -1,10 +1,10 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import usePagination from "@web/hooks/usePagination";
 import axios from "axios";
-import { PlusIcon } from "lucide-react";
+import { ListFilterIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
 import { CardDescription, CardHeader, CardTitle } from "@repo/ui/components/card";
 import { Input } from "@repo/ui/components/input";
@@ -16,6 +16,11 @@ import MainContent from "../_components/general_components/MainContent";
 import TopHeader from "../_components/general_components/TopHeader";
 import PublicacionItem from "./_components/PublicacionItem";
 import { Response } from "@web/types";
+import { Switch } from "@repo/ui/components/switch";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@repo/ui/components/dropdown-menu";
+import { Label } from "@repo/ui/components/label";
+import DateTimePicker from "@repo/ui/components/date-time-picker";
+import { Separator } from "@repo/ui/components/separator";
 
 interface Publicacion {
   id: number;
@@ -33,6 +38,10 @@ function PublicacionesPage() {
   const { toast } = useToast();
   const [publicaciones, setPublicaciones] = useState<Publicacion[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    dateStart: "",
+    dateEnd: "",
+  });
 
   const router = useRouter();
   const {
@@ -72,6 +81,21 @@ function PublicacionesPage() {
     <>
       <TopHeader>
         <Input placeholder="Buscar..." className="flex-1 lg:w-fit" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild><Button variant={"outline"}><ListFilterIcon className="h-4 w-4"/> Filtros</Button></DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Estado</DropdownMenuLabel>
+            <div className="flex flex-row gap-2 justify-start p-2 items-center">
+              <Label>Archivado</Label>
+              <Switch />
+            </div>
+            <Separator className="my-2"/> 
+            <div className="flex flex-col gap-2 justify-start p-2 items-start">
+              <Label>Fecha de publicacion</Label>
+              <DateTimePicker date={filters.dateStart} setDate={(date) => setFilters({ ...filters, dateStart: date })} />
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button className="w-10 gap-2 sm:w-auto" onClick={() => router.push("/admin/contenido/publicaciones/nuevo")}>
           <PlusIcon className="h-4 w-4 shrink-0" />
           <p className="hidden sm:block">Crear</p>

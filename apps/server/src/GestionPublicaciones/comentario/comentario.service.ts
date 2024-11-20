@@ -78,13 +78,13 @@ export class ComentarioService {
       },
     });
 
-    // const response = await firstValueFrom(
-    //     this.httpService.post('http://127.0.0.1:8080/clasificar-sentimiento', {
-    //       comentario: data.comentario,
-    //     }),
-    //   );
+    const response = await firstValueFrom(
+        this.httpService.post('http://127.0.0.1:8080/clasificar-sentimiento', {
+          comentario: data.comentario,
+        }),
+      );
 
-    // const nombreSentimiento = response.data.sentiment;
+    const nombreSentimiento = response.data.sentiment;
 
     const sentimiento = await this.prisma.vi_sentimiento.findFirst({
       where: {

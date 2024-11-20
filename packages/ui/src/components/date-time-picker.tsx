@@ -105,7 +105,7 @@ export function DateTimePicker({
   }, [date]);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 w-fit">
       {label && <label className="text-sm font-medium">{label}</label>}
       <Popover>
         <PopoverTrigger asChild>

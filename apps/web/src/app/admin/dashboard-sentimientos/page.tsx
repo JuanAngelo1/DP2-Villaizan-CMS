@@ -29,22 +29,25 @@ const DashboardSentimientos = () => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const responseCommentsCounter: Response<number> = await axios.post(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/contarEntreFechas`,
-          { start: dateRange.start, end: dateRange.end }
-        );
+        const requestData = {
+          fechaInicio: dateRange.start?.toISOString(),
+          fechaFin: dateRange.end?.toISOString(),
+        };
+        const responseCommentsCounter: Response<number> = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/contarEntreFechas`, requestData);
 
-        if (responseCommentsCounter.data.status === "Error")
+        if (responseCommentsCounter.data.status === "Error") {
           throw new ControlledError(responseCommentsCounter.data.message);
+        }
+
         setCommentsCounter(responseCommentsCounter.data.result);
       } catch (error) {
         if (error instanceof ControlledError) {
-          toast({ title: "Error al obtener obtener información del dashboard", description: error.message });
+          toast({ title: "Error al obtener información del dashboard", description: error.message });
         } else {
-          console.error("Error al obtener obtener información del dashboard", error);
+          console.error("Error al obtener información del dashboard", error);
           toast({
             title: "Ups! Algo salió mal.",
-            description: "Error al obtener obtener información del dashboard",
+            description: "Error al obtener información del dashboard",
           });
         }
       } finally {
@@ -53,7 +56,9 @@ const DashboardSentimientos = () => {
     }
 
     fetchData();
-  }, []);
+  }, [dateRange, selectedProduct]);
+
+
 
   return (
     <div className="w-full space-y-6 p-6">

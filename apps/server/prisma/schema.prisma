@@ -2184,6 +2184,44 @@ model vi_detallepedido {
   vi_producto          vi_producto?  @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
 }
 
+model vi_detallepuntosacumulados {
+  id                   String              @id @db.VarChar(50)
+  id_puntosacumulados  String              @db.VarChar(50)
+  id_puntosproducto    Int
+  id_producto          String              @db.VarChar(50)
+  cantidad             Int
+  puntosporunidad      Int
+  subtotalpuntos       Int
+  estaactivo           Boolean             @default(true)
+  desactivadoen        DateTime?           @db.Timestamp(6)
+  creadoen             DateTime            @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime            @default(now()) @db.Timestamp(6)
+  usuariocreacion      String              @db.VarChar(50)
+  usuarioactualizacion String?             @db.VarChar(50)
+  vi_producto          vi_producto         @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+  vi_puntosacumulados  vi_puntosacumulados @relation(fields: [id_puntosacumulados], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puntosacumulados")
+  vi_puntos_producto   vi_puntos_producto  @relation(fields: [id_puntosproducto], references: [id_puntosproducto], onDelete: NoAction, onUpdate: NoAction, map: "fk_puntosproducto")
+}
+
+model vi_detalleredencion {
+  id                      String               @id @db.VarChar(50)
+  id_redencion            String               @db.VarChar(50)
+  id_recompensa           Int
+  id_producto             String               @db.VarChar(50)
+  puntosredencion         Int
+  cantidad                Int
+  subtotalpuntosredencion Int
+  estaactivo              Boolean              @default(true)
+  desactivadoen           DateTime?            @db.Timestamp(6)
+  creadoen                DateTime             @default(now()) @db.Timestamp(6)
+  actualizadoen           DateTime             @default(now()) @db.Timestamp(6)
+  usuariocreacion         String               @db.VarChar(50)
+  usuarioactualizacion    String?              @db.VarChar(50)
+  vi_producto             vi_producto          @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
+  vi_recompensa_puntos    vi_recompensa_puntos @relation(fields: [id_recompensa], references: [id_recompensa], onDelete: NoAction, onUpdate: NoAction, map: "fk_recompensa")
+  vi_redencion            vi_redencion         @relation(fields: [id_redencion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_redencion")
+}
+
 model vi_direccion {
   id                   String        @id @db.VarChar(50)
   calle                String        @db.VarChar(255)
@@ -2490,6 +2528,8 @@ model vi_pedido {
   entregadoen            DateTime?                @db.Timestamp(6)
   verificadoen           DateTime?                @db.Timestamp(6)
   urlevidencia           String?                  @db.VarChar(200)
+  pagado                 Boolean?                 @default(false)
+  pagadoen               DateTime?                @db.Timestamp(6)
   vi_detallepedido       vi_detallepedido[]
   vi_historialrepartidor vi_historialrepartidor[]
   vi_pago                vi_pago[]
@@ -2642,6 +2682,7 @@ model vi_producto {
   id_tipoproducto                 String?                           @db.VarChar(50)
   id_igv                          String?                           @db.VarChar(50)
   id_promocion                    String?                           @db.VarChar(50)
+  stockseguridad                  Int?
   vi_combo_x_producto             vi_combo_x_producto[]
   vi_detallepedido                vi_detallepedido[]
   vi_detallepuntosacumulados      vi_detallepuntosacumulados[]
@@ -2704,6 +2745,7 @@ model vi_promocion {
   usuarioactualizacion String?            @db.VarChar(50)
   estaactivo           Boolean            @default(true)
   esvalido             Boolean
+  id_crm               String?            @db.VarChar(50)
   vi_detallepedido     vi_detallepedido[]
   vi_notificacion      vi_notificacion[]
   vi_producto          vi_producto[]
@@ -2757,6 +2799,23 @@ model vi_puntos_producto {
   vi_producto                vi_producto                  @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto_puntos")
 }
 
+model vi_puntosacumulados {
+  id                         String                       @id @db.VarChar(50)
+  id_pedido                  String                       @db.VarChar(50)
+  id_usuario                 String                       @db.VarChar(50)
+  fechatransaccion           DateTime                     @default(now()) @db.Timestamp(6)
+  cantidadpuntosganados      Int
+  estaactivo                 Boolean                      @default(true)
+  desactivadoen              DateTime?                    @db.Timestamp(6)
+  creadoen                   DateTime                     @default(now()) @db.Timestamp(6)
+  actualizadoen              DateTime                     @default(now()) @db.Timestamp(6)
+  usuariocreacion            String                       @db.VarChar(50)
+  usuarioactualizacion       String?                      @db.VarChar(50)
+  vi_detallepuntosacumulados vi_detallepuntosacumulados[]
+  vi_pedido                  vi_pedido                    @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
+  vi_usuario                 vi_usuario                   @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
+}
+
 model vi_puntosventa {
   id        Int     @id @default(autoincrement())
   nombre    String  @db.VarChar(255)
@@ -2779,6 +2838,25 @@ model vi_recompensa_puntos {
   desactivadoen        DateTime?             @db.Timestamp(6)
   vi_detalleredencion  vi_detalleredencion[]
   vi_producto          vi_producto           @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto_recompensa")
+}
+
+model vi_redencion {
+  id                   String                @id @db.VarChar(50)
+  id_usuario           String                @db.VarChar(50)
+  puntoscanjeado       Int
+  fechageneracion      DateTime              @default(now()) @db.Timestamp(6)
+  fecharedencion       DateTime?             @db.Timestamp(6)
+  fechaexpiracion      DateTime?             @db.Timestamp(6)
+  codigo               String?               @db.VarChar(50)
+  estado               String?               @db.VarChar(20)
+  estaactivo           Boolean               @default(true)
+  desactivadoen        DateTime?             @db.Timestamp(6)
+  creadoen             DateTime              @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime              @default(now()) @db.Timestamp(6)
+  usuariocreacion      String                @db.VarChar(50)
+  usuarioactualizacion String?               @db.VarChar(50)
+  vi_detalleredencion  vi_detalleredencion[]
+  vi_usuario           vi_usuario            @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 /// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
@@ -2927,6 +3005,7 @@ model vi_usuario {
   resettokenexpiracion                                   DateTime?                            @db.Timestamp(6)
   imagenperfil                                           String?
   puntosacumulados                                       Int?
+  id_crm                                                 String?                              @db.VarChar(50)
   marketing_campaigns_campanausuario                     marketing_campaigns_campanausuario[]
   vi_comentario                                          vi_comentario[]
   vi_direccion                                           vi_direccion[]
@@ -2983,80 +3062,6 @@ model vi_version_publicacion {
   vi_publicacion_x_etiqueta  vi_publicacion_x_etiqueta[]
   vi_estado_version          vi_estado_version            @relation(fields: [id_estado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_version")
   vi_publicacion             vi_publicacion               @relation(fields: [id_publicacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_publicacion")
-}
-
-model vi_detallepuntosacumulados {
-  id                   String              @id @db.VarChar(50)
-  id_puntosacumulados  String              @db.VarChar(50)
-  id_puntosproducto    Int
-  id_producto          String              @db.VarChar(50)
-  cantidad             Int
-  puntosporunidad      Int
-  subtotalpuntos       Int
-  estaactivo           Boolean             @default(true)
-  desactivadoen        DateTime?           @db.Timestamp(6)
-  creadoen             DateTime            @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime            @default(now()) @db.Timestamp(6)
-  usuariocreacion      String              @db.VarChar(50)
-  usuarioactualizacion String?             @db.VarChar(50)
-  vi_producto          vi_producto         @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
-  vi_puntosacumulados  vi_puntosacumulados @relation(fields: [id_puntosacumulados], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puntosacumulados")
-  vi_puntos_producto   vi_puntos_producto  @relation(fields: [id_puntosproducto], references: [id_puntosproducto], onDelete: NoAction, onUpdate: NoAction, map: "fk_puntosproducto")
-}
-
-model vi_detalleredencion {
-  id                      String               @id @db.VarChar(50)
-  id_redencion            String               @db.VarChar(50)
-  id_recompensa           Int
-  id_producto             String               @db.VarChar(50)
-  puntosredencion         Int
-  cantidad                Int
-  subtotalpuntosredencion Int
-  estaactivo              Boolean              @default(true)
-  desactivadoen           DateTime?            @db.Timestamp(6)
-  creadoen                DateTime             @default(now()) @db.Timestamp(6)
-  actualizadoen           DateTime             @default(now()) @db.Timestamp(6)
-  usuariocreacion         String               @db.VarChar(50)
-  usuarioactualizacion    String?              @db.VarChar(50)
-  vi_producto             vi_producto          @relation(fields: [id_producto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_producto")
-  vi_recompensa_puntos    vi_recompensa_puntos @relation(fields: [id_recompensa], references: [id_recompensa], onDelete: NoAction, onUpdate: NoAction, map: "fk_recompensa")
-  vi_redencion            vi_redencion         @relation(fields: [id_redencion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_redencion")
-}
-
-model vi_puntosacumulados {
-  id                         String                       @id @db.VarChar(50)
-  id_pedido                  String                       @db.VarChar(50)
-  id_usuario                 String                       @db.VarChar(50)
-  fechatransaccion           DateTime                     @default(now()) @db.Timestamp(6)
-  cantidadpuntosganados      Int
-  estaactivo                 Boolean                      @default(true)
-  desactivadoen              DateTime?                    @db.Timestamp(6)
-  creadoen                   DateTime                     @default(now()) @db.Timestamp(6)
-  actualizadoen              DateTime                     @default(now()) @db.Timestamp(6)
-  usuariocreacion            String                       @db.VarChar(50)
-  usuarioactualizacion       String?                      @db.VarChar(50)
-  vi_detallepuntosacumulados vi_detallepuntosacumulados[]
-  vi_pedido                  vi_pedido                    @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
-  vi_usuario                 vi_usuario                   @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
-}
-
-model vi_redencion {
-  id                   String                @id @db.VarChar(50)
-  id_usuario           String                @db.VarChar(50)
-  puntoscanjeado       Int
-  fechageneracion      DateTime              @default(now()) @db.Timestamp(6)
-  fecharedencion       DateTime?             @db.Timestamp(6)
-  fechaexpiracion      DateTime?             @db.Timestamp(6)
-  codigo               String?               @db.VarChar(50)
-  estado               String?               @db.VarChar(20)
-  estaactivo           Boolean               @default(true)
-  desactivadoen        DateTime?             @db.Timestamp(6)
-  creadoen             DateTime              @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime              @default(now()) @db.Timestamp(6)
-  usuariocreacion      String                @db.VarChar(50)
-  usuarioactualizacion String?               @db.VarChar(50)
-  vi_detalleredencion  vi_detalleredencion[]
-  vi_usuario           vi_usuario            @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
 }
 
 enum PAYMENT_COLLECTION_STATUS_ENUM {

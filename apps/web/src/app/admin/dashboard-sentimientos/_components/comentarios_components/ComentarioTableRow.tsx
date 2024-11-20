@@ -45,18 +45,50 @@ export const ComentarioTableRow = ({
         </div>
 
         <div className="flex-1">
-          <Select value={id_sentimiento.toString()} onValueChange={handleSentimientoChange}>
-            <SelectTrigger className="min-w-[130px] max-w-[180px] text-xs md:text-base">
-              <SelectValue placeholder={sentimientoName} />
+          <Select 
+            value={id_sentimiento?.toString()} 
+            onValueChange={handleSentimientoChange}
+          >
+            <SelectTrigger
+              className={`
+                min-w-[30px] max-w-[180px] 
+                text-xs md:text-base 
+                flex items-center gap-2 
+                ${id_sentimiento ? '' : 'bg-white text-black'}
+              `}
+              style={id_sentimiento ? {
+                backgroundColor: sentimientos.find((s) => s.id.toString() === id_sentimiento.toString())?.colorfondo,
+                color: sentimientos.find((s) => s.id.toString() === id_sentimiento.toString())?.colortexto,
+              } : undefined}
+            >
+              <SelectValue 
+                placeholder={sentimientoName || "Selecciona un sentimiento"} 
+                className="flex items-center gap-2"
+              />
             </SelectTrigger>
+
             <SelectContent>
-              {sentimientos.map((sentimiento) => {
-                return (
-                  <SelectItem key={sentimiento.id} value={sentimiento.id.toString()} className="text-xs md:text-base">
-                    {sentimiento.nombre}
-                  </SelectItem>
-                );
-              })}
+              {sentimientos.map((sentimiento) => (
+                <SelectItem
+                  key={sentimiento.id}
+                  value={sentimiento.id.toString()}
+                  className="flex items-center gap- text-xs md:text-base hover:cursor-pointer"
+                >
+                  <div className="flex items-center gap-2 w-full p-1 rounded"
+                    style={{
+                      backgroundColor: sentimiento.colorfondo,
+                      color: sentimiento.colortexto,
+                    }}>
+                    <span
+                      className="h-4 w-4 rounded-full border flex-shrink-0"
+                      style={{
+                        backgroundColor: sentimiento.colortexto,
+                      }}
+                    />
+                    <span>{sentimiento.nombre}</span>
+                  </div>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
