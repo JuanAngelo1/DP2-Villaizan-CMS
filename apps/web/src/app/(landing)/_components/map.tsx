@@ -86,7 +86,7 @@ const MapComponent: React.FC = () => {
   }, [location, iceCreamShops]);
 
   return (
-    <section className="bg-gradient-to-b min-h-[500px] p-6" id="mapa">
+    <section className="bg-gradient-to-b min-h-[500px] p-6 mt-20" id="mapa">
       <div className="max-w-7xl mx-auto space-y-4">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold mb-2">🍦 Paletas Villaizan</h2>

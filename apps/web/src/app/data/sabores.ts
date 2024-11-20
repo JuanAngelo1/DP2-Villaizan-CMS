@@ -10,21 +10,21 @@ export interface Sabor {
 export const sabores: Sabor[] = [
   {
     id: 1,
-    name: "Amigo Berenjena",
-    image: "/sabores/amigoberenjena.png",
-    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
-  },
-  {
-    id: 2,
     name: "Maracumango",
     image: "/sabores/maracumango.png",
     description: "Un equilibrio perfecto entre dulzura y acidez que deleita el paladar.",
   },
   {
-    id: 3,
+    id: 2,
     name: "El Pinoñón",
     image: "/sabores/elpinon.png",
     description: "Un sabor robusto con toques de pino que evocan la frescura del bosque.",
+  },
+  {
+    id: 3,
+    name: "La Banana",
+    image: "/sabores/labanana.png",
+    description: "La suavidad y dulzura de la pera se combinan para crear una experiencia sublime.",
   },
   {
     id: 4,
@@ -34,14 +34,38 @@ export const sabores: Sabor[] = [
   },
   {
     id: 5,
-    name: "Niño Zanahoria",
-    image: "/sabores/ninozanahoria.png",
-    description: "Un sabor dulce y nutritivo que recuerda a la infancia y la frescura de las zanahorias.",
+    name: "San Sandía",
+    image: "/sabores/sansandia.png",
+    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
   },
   {
     id: 6,
+    name: "Niño Zanahoria",
+    image: "/sabores/ninozanahoria.png",
+    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
+  },
+  {
+    id: 7,
     name: "Señor Pera",
     image: "/sabores/senorpera.png",
-    description: "La suavidad y dulzura de la pera se combinan para crear una experiencia sublime.",
+    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
+  },
+  {
+    id: 8,
+    name: "El uvas",
+    image: "/sabores/eluvas.png",
+    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
+  },
+  {
+    id: 9,
+    name: "Paltoso",
+    image: "/sabores/paltoso.png",
+    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
+  },
+  {
+    id: 10,
+    name: "Kiwiwi",
+    image: "/sabores/kiwi.png",
+    description: "Este sabor combina notas de berenjena con especias exóticas para un gusto único.",
   },
 ];

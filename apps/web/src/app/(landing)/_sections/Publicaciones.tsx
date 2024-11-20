@@ -50,7 +50,7 @@ const Publicaciones: React.FC = () => {
   }, []);
 
   return (
-    <section className="bg-gray-100 px-4 py-24" id="publicaciones">
+    <section className="bg-gray-100 px-4 py-24 mt-20" id="publicaciones">
       <MaxWidthWrapper className="flex flex-col items-center">
         <div className="flex w-full flex-col items-center justify-between gap-4 text-center font-['Abhaya_Libre'] md:flex-row">
           <h1 className="text-4xl sm:text-5xl md:text-7xl">Publicaciones</h1>
