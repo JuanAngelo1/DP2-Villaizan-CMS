@@ -103,15 +103,24 @@ function SaboresPage() {
         <CircleButton Icon={ArrowDownWideNarrow} />
       </div>
 
-      <div className="absolute bottom-0 right-0 top-0 z-[200] flex flex-col p-5">
+      <div className="absolute bottom-0 right-0 top-0 z-[200] flex flex-col items-end p-5">
         <CircleButton Icon={ChevronUp} onClick={onPrevButtonClick} />
-        <div className="flex flex-1 flex-col items-center justify-center gap-3">
-          <CircleButton Icon={Newspaper} onClick={() => toggleMode(selectedSnap, "history")} />
-          <CircleButton Icon={HandHeart} onClick={() => toggleMode(selectedSnap, "benefits")} />
+        <div className="flex w-fit flex-1 flex-col items-end justify-center gap-3">
+          <CircleButton
+            Icon={Newspaper}
+            onClick={() => toggleMode(selectedSnap, "history")}
+            text="Historia"
+          />
+          <CircleButton
+            Icon={HandHeart}
+            onClick={() => toggleMode(selectedSnap, "benefits")}
+            text="Beneficios"
+          />
           <CircleButton
             Icon={Popsicle}
             iconClassname="rotate-90"
             onClick={() => toggleMode(selectedSnap, "products")}
+            text="Productos"
           />
         </div>
         <CircleButton Icon={ChevronDown} onClick={onNextButtonClick} />
@@ -142,7 +151,7 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
 
       <AnimatePresence mode="sync">
         {selectedMode === "history" && (
-          <motion.div className="w-[400px] text-xl">
+          <motion.div className="w-[700px] text-xl">
             <Typewriter
               onInit={(typewriter) => {
                 const segments = mockText.split(".");
@@ -249,19 +258,27 @@ function EmblaSlide({
 
 function CircleButton({
   Icon,
+  text = "",
   iconClassname,
   onClick,
 }: {
   Icon: any;
+  text?: string;
   iconClassname?: string;
   onClick?: () => void;
 }) {
   return (
     <div
-      className="flex h-[60px] w-[60px] cursor-pointer items-center justify-center rounded-full border-[4px] border-black p-3 ring-black transition-all hover:ring-2"
+      className={cn(
+        "flex aspect-square h-[60px] w-fit cursor-pointer items-center justify-center rounded-full border-[4px] border-black p-3 ring-black transition-all hover:ring-2",
+        text !== "" && "w-[170px] justify-start px-5"
+      )}
       onClick={onClick}
     >
-      <Icon className={cn("h-full w-full stroke-white stroke-[2px]", iconClassname)} />
+      <Icon className={cn("aspect-square h-full shrink-0 stroke-white stroke-[2px]", iconClassname)} />
+      {text != "" && (
+        <p className="ml-3 mr-1 w-full text-center font-['Abhaya_Libre'] text-xl text-white">{text}</p>
+      )}
     </div>
   );
 }

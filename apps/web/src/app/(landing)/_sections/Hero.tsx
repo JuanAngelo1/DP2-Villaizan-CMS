@@ -21,7 +21,7 @@ const Hero: React.FC = () => {
 
   return (
     <section
-      className="flex min-h-[700px] justify-center bg-gradient-to-b from-[#ae9c5280] to-transparent py-10 *:items-center lg:py-16"
+      className="flex min-h-[800px] justify-center bg-gradient-to-b from-[#ae9c5280] to-transparent py-10 *:items-center lg:py-16"
       style={{ height: "calc(100dvh - 68px)" }}
     >
       <MaxWidthWrapper className="justify-center xl:justify-between flex flex-col items-center gap-10 lg:gap-8 p-8 xl:flex-row">

@@ -1,19 +1,10 @@
 "use client";
 
-import AutoScroll from "embla-carousel-auto-scroll";
-import useEmblaCarousel, { EmblaViewportRefType } from "embla-carousel-react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { AspectRatio } from "@repo/ui/components/aspect-ratio";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@repo/ui/components/carousel";
 import { cn } from "@repo/ui/lib/utils";
+import AutoScroll from "embla-carousel-auto-scroll";
+import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
+import React from "react";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
 function EmblaContainer({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -55,7 +46,7 @@ const Nosotros: React.FC = () => {
   return (
     <section
       id="nosotros"
-      className="bg-red-500 px-4 py-16 font-['Abhaya_Libre'] text-white" //bg-[url('/nosotros/main-background.jpg')] bg-contain bg-fixed bg-center
+      className="bg-red-500 px-4 py-16 font-['Abhaya_Libre'] text-white mt-[200px]" //bg-[url('/nosotros/main-background.jpg')] bg-contain bg-fixed bg-center
       style={{
         background: "rgba(0,0,0,0.6) url('/nosotros/main-background.jpg')",
         backgroundSize: "cover",
@@ -147,13 +138,13 @@ const Nosotros: React.FC = () => {
               un entorno sostenible y responsable con el medio ambiente.
             </p>
           </div>
-          <Image
+          {/* <Image
             alt="Mision"
             height={1000}
             width={1000}
             className="h-[400px] max-w-[500px] w-auto rounded-lg object-cover shadow-lg"
             src="/publicaciones/imagen3.png"
-          ></Image>
+          ></Image> */}
         </div>
       </MaxWidthWrapper>
     </section>
