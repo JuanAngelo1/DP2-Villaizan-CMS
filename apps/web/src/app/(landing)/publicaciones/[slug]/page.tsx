@@ -20,7 +20,7 @@ import { cn } from "@repo/ui/lib/utils";
 import MaxWidthWrapper from "../../_components/MaxWidthWrapper";
 import CommentBox from "./_components/CommentBox";
 import FacebookLogo from "./_components/FacebookLogo";
-import InstagramLogo from "./_components/InstagramLogo";
+import WhatsappLogo from "./_components/WhatsappLogo";
 import LinkedinLogo from "./_components/LinkedinLogo";
 import XLogo from "./_components/XLogo";
 import "./postStyles.css";
@@ -44,7 +44,7 @@ const share_urls = [
   },
   {
     name: "whatsapp",
-    logo: InstagramLogo, // Cambiado a InstagramLogo para mantener consistencia; puedes cambiarlo por un logo de WhatsApp si lo tienes
+    logo: WhatsappLogo,
     href: "https://wa.me/?text=",
   },
 ];
