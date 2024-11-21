@@ -167,7 +167,7 @@ export type Sentimiento = {
 };
 
 export type Encuesta = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   status: string;
