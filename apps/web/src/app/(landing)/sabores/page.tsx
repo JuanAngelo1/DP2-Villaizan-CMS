@@ -86,7 +86,12 @@ function SaboresPage() {
   return (
     <div
       className="embla relative w-full overflow-hidden transition-colors duration-1000"
-      style={{ background: getCurrentBackgroundColor() }}
+      style={{
+        backgroundImage: "url(/sabores/sabores-background.jpg)",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}
       ref={emblaRef}
     >
       <EmblaContainer className="">
@@ -133,7 +138,7 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
   return (
     <div
       className={cn(
-        "m-auto flex max-w-7xl flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8 text-white",
+        "m-auto flex max-w-7xl flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8 text-black",
         selectedMode === "history" && "flex-row items-center",
         selectedMode === "benefits" && "flex-col gap-4"
       )}
@@ -144,7 +149,7 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
     >
       <motion.div className={cn("flex h-full flex-col items-center overflow-hidden p-24")} layout>
         <motion.img src={fruta.frutaImagen} className="z-50 max-h-full flex-grow object-contain" layout />
-        <motion.p className="shrink-0 text-6xl font-bold text-white" layout>
+        <motion.p className="shrink-0 text-6xl font-bold text-black" layout>
           {fruta.frutaNombre}
         </motion.p>
       </motion.div>
@@ -201,11 +206,11 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
           <ProductoItem />
           <ProductoItem />
           <ProductoItem />
-          <div className="col-span-3 flex cursor-pointer flex-col justify-between rounded-lg bg-red-800 p-4 text-lg transition-all hover:bg-red-900">
+          <div className="col-span-3 flex cursor-pointer flex-col justify-between rounded-lg bg-red-800 p-4 text-lg transition-all hover:bg-red-900 text-white">
             <p>Visita nuestra tienda para ver todos los productos.</p>
             <div className="flex flex-row items-center justify-between">
-              <p>Tienda</p>
-              <ChevronRight className="stroke-white" />
+              <p className="text-white">Tienda</p>
+              <ChevronRight className="stroke-black" />
             </div>
           </div>
         </div>
@@ -275,9 +280,9 @@ function CircleButton({
       )}
       onClick={onClick}
     >
-      <Icon className={cn("aspect-square h-full shrink-0 stroke-white stroke-[2px]", iconClassname)} />
+      <Icon className={cn("aspect-square h-full shrink-0 stroke-black stroke-[2px]", iconClassname)} />
       {text != "" && (
-        <p className="ml-3 mr-1 w-full text-center font-['Abhaya_Libre'] text-xl text-white">{text}</p>
+        <p className="ml-3 mr-1 w-full text-center font-['Abhaya_Libre'] text-xl text-black">{text}</p>
       )}
     </div>
   );
