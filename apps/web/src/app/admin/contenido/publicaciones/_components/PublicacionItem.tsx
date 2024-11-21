@@ -1,7 +1,8 @@
 // /apps/web/src/admin/contenido/_components/PublicacionItem.tsx
 import { formatDate } from "@web/utils/date";
-import { Ellipsis, Pencil } from "lucide-react";
+import { ArchiveIcon, ArchiveRestoreIcon, Ellipsis, Pencil } from "lucide-react";
 import React from "react";
+import { Button } from "@repo/ui/components/button";
 import { Card, CardContent } from "@repo/ui/components/card";
 import {
   DropdownMenu,
@@ -14,11 +15,12 @@ import {
 
 interface PublicacionItemProps {
   publicacion: any;
-  onEdit?: (id: string) => void;
-  onArchive?: (id: string) => void;
+  onEdit?: (id: number) => void;
+  onArchive?: (id: number) => Promise<void>;
+  onUnarchive?: (id: number) => Promise<void>;
 }
 
-const PublicacionItem: React.FC<PublicacionItemProps> = ({ publicacion, onEdit, onArchive }) => {
+const PublicacionItem: React.FC<PublicacionItemProps> = ({ publicacion, onEdit, onArchive, onUnarchive }) => {
   return (
     <Card className="mb-2 flex h-auto items-center justify-between rounded-md border p-4">
       <CardContent className="mb-0 flex h-auto flex-1 flex-row items-center justify-between p-0 text-sm *:h-auto">
@@ -32,14 +34,21 @@ const PublicacionItem: React.FC<PublicacionItemProps> = ({ publicacion, onEdit, 
           <DropdownMenuTrigger>
             <Ellipsis className="h-4 w-4" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="*:flex *:gap-2">
             {onEdit ? (
-              <DropdownMenuItem onClick={() => onEdit(publicacion.id)} className="flex gap-2">
+              <DropdownMenuItem onClick={() => onEdit(publicacion.id)}>
                 <Pencil className="h-4 w-4" /> Editar
               </DropdownMenuItem>
             ) : null}
             {onArchive ? (
-              <DropdownMenuItem onClick={() => onArchive(publicacion.id)}>Archivar</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onArchive(publicacion.id)}>
+                <ArchiveIcon className="h-4 w-4" /> Archivar
+              </DropdownMenuItem>
+            ) : null}
+            {onUnarchive ? (
+              <DropdownMenuItem onClick={() => onUnarchive(publicacion.id)}>
+                <ArchiveRestoreIcon className="h-4 w-4" /> Desarchivar
+              </DropdownMenuItem>
             ) : null}
           </DropdownMenuContent>
         </DropdownMenu>
