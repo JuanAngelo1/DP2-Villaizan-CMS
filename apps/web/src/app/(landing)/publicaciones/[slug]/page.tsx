@@ -1,13 +1,13 @@
 "use server";
 
+import { Metadata } from 'next';
 import { auth } from "@web/auth";
-import { Categoria, Comentario, ControlledError, Etiqueta, Response, VersionPublicacion } from "@web/types";
+import { Categoria, Comentario, Response, VersionPublicacion, Etiqueta } from "@web/types";
 import { formatDDMMAAAA_HHSS, formatDate } from "@web/utils/date";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
-import { AspectRatio } from "@repo/ui/components/aspect-ratio";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,8 +16,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@repo/ui/components/breadcrumb";
-import { Button } from "@repo/ui/components/button";
-import { Textarea } from "@repo/ui/components/textarea";
 import { cn } from "@repo/ui/lib/utils";
 import MaxWidthWrapper from "../../_components/MaxWidthWrapper";
 import CommentBox from "./_components/CommentBox";
@@ -27,6 +25,7 @@ import LinkedinLogo from "./_components/LinkedinLogo";
 import XLogo from "./_components/XLogo";
 import "./postStyles.css";
 
+// Definición de las URLs de compartir en redes sociales
 const share_urls = [
   {
     name: "facebook",
@@ -44,52 +43,108 @@ const share_urls = [
     href: "https://www.linkedin.com/shareArticle?url=",
   },
   {
-    name: "instagram",
-    logo: InstagramLogo,
+    name: "whatsapp",
+    logo: InstagramLogo, // Cambiado a InstagramLogo para mantener consistencia; puedes cambiarlo por un logo de WhatsApp si lo tienes
     href: "https://wa.me/?text=",
   },
 ];
 
-function getHeadingContents(htmlString: string): string[] {
-  const headingTags = ["h1", "h2", "h3"];
-
-  for (const tag of headingTags) {
-    const regex = new RegExp(`<${tag}[^>]*>(.*?)</${tag}>`, "gi");
-    const matches = Array.from(htmlString.matchAll(regex), (match) => {
-      const rawText = match[1].replace(/<[^>]*>/g, "").trim();
-      return rawText;
-    });
-
-    if (matches.length > 0) {
-      return matches;
-    }
-  }
-
-  return [];
+// Interfaz para los parámetros de la página
+interface PublicacionPageProps {
+  params: {
+    slug: string;
+  };
 }
 
-async function fetchPublicationData(slug: string) {
+// Función para obtener los datos de la publicación
+async function fetchPublicationData(slug: string): Promise<VersionPublicacion | null> {
   try {
     const response: Response<VersionPublicacion> = await axios.get(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/slug/${slug}`
     );
 
-    console.log("Publicacion data -> ", response.data.result);
+    console.log("Datos de la publicación -> ", response.data.result);
 
     if (response.data.status !== "Success") throw new Error(response.data.message);
 
     return response.data.result;
   } catch (error) {
-    console.log("Error fetching publication data -> ", error);
+    console.error("Error al obtener los datos de la publicación -> ", error);
     return null;
   }
 }
 
-export default async function PublicacionPage({ params }: { params: Promise<{ slug: string }> }) {
+// Función para extraer encabezados del contenido richtext
+function getHeadingContents(htmlString: string): string[] {
+  const headingTags = ["h1", "h2", "h3"];
+  const headings: string[] = [];
+
+  headingTags.forEach((tag) => {
+    const regex = new RegExp(`<${tag}[^>]*>(.*?)</${tag}>`, "gi");
+    let match;
+    while ((match = regex.exec(htmlString)) !== null) {
+      const rawText = match[1].replace(/<[^>]*>/g, "").trim();
+      if (rawText) headings.push(rawText);
+    }
+  });
+
+  return headings;
+}
+
+// Exportación de la función generateMetadata para metadatos dinámicos
+export async function generateMetadata({ params }: PublicacionPageProps): Promise<Metadata> {
+  const { slug } = params;
+  const publicacion = await fetchPublicationData(slug);
+
+  if (!publicacion) {
+    return {
+      title: 'Publicación no encontrada',
+      description: 'La publicación que buscas no existe.',
+      openGraph: {
+        title: 'Publicación no encontrada',
+        description: 'La publicación que buscas no existe.',
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/publicaciones/${slug}`,
+      },
+      twitter: {
+        card: 'summary',
+        title: 'Publicación no encontrada',
+        description: 'La publicación que buscas no existe.',
+      },
+    };
+  }
+
+  return {
+    title: publicacion.titulo,
+    description: publicacion.descripcion || 'Descripción de la publicación.',
+    openGraph: {
+      title: publicacion.titulo,
+      description: publicacion.descripcion || 'Descripción de la publicación.',
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/publicaciones/${slug}`,
+      images: publicacion.urlimagen
+        ? [
+            {
+              url: publicacion.urlimagen,
+              alt: publicacion.titulo,
+            },
+          ]
+        : [],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: publicacion.titulo,
+      description: publicacion.descripcion || 'Descripción de la publicación.',
+      images: publicacion.urlimagen ? [`${publicacion.urlimagen}`] : [],
+    },
+  };
+}
+
+// Componente principal de la página de publicación
+export default async function PublicacionPage({ params }: PublicacionPageProps) {
   const session = await auth();
   const user = session?.user;
 
-  const slug = (await params).slug;
+  const { slug } = params;
 
   const publicacion = await fetchPublicationData(slug);
   if (!publicacion) throw new Error("Publicación no encontrada");
@@ -107,7 +162,7 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
                 src={publicacion.urlimagen}
                 width={1000}
                 height={1000}
-                alt="Post Cover Image"
+                alt="Imagen de portada de la publicación"
                 className="h-full w-full rounded-xl object-cover"
               />
             </div>
@@ -116,7 +171,10 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
       )}
 
       <MaxWidthWrapper
-        className={cn("pb-16 pt-4 font-['Abhaya_Libre']", publicacion.urlimagen ? "mt-[85px]" : "mt-[40px]")}
+        className={cn(
+          "pb-16 pt-4 font-['Abhaya_Libre']",
+          publicacion.urlimagen ? "mt-[85px]" : "mt-[40px]"
+        )}
       >
         {!publicacion.urlimagen && <PublicationBreadcrumb publicacion={publicacion} className="" />}
         <div className={cn("flex flex-row gap-10", !publicacion.urlimagen && "pt-4")}>
@@ -143,9 +201,8 @@ export default async function PublicacionPage({ params }: { params: Promise<{ sl
                   const Logo = share_url.logo;
                   return (
                     <Logo
-                      key={idx}
                       className="cursor-pointer transition-colors hover:fill-red-800"
-                      href={`${share_url.href}${process.env.NEXT_PUBLIC_APP_URL}/publicaciones/${slug}`}
+                      href={`${share_url.href}${encodeURIComponent(`${process.env.NEXT_PUBLIC_APP_URL}/publicaciones/${slug}`)}`}
                     />
                   );
                 })}
