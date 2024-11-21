@@ -3,7 +3,7 @@ import { ControlledError, Encuesta, Response, ResponseModuloRedes } from "@web/t
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { buttonVariants } from "@repo/ui/components/button";
+import { Button, buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { toast } from "@repo/ui/hooks/use-toast";
@@ -13,11 +13,13 @@ import DialogDelete from "../../contenido/_components/general_components/DialogD
 import MainContent from "../../contenido/_components/general_components/MainContent";
 import SectionWrapper from "../../contenido/_components/general_components/SectionWrapper";
 import TopHeader from "../../contenido/_components/general_components/TopHeader";
+import DetalleEncuesta from "./DetalleEncuesta";
 import EncuestaTableRow from "./encuestas_components/EncuestaTableRow";
 import EncuestasTableHeader from "./encuestas_components/EncuestasTableHeader";
+import { ChevronLeft } from "lucide-react";
 
 const initEncuesta: Encuesta = {
-  id: 0,
+  id: "",
   title: "",
   description: "",
   status: "",
@@ -28,7 +30,7 @@ const initEncuesta: Encuesta = {
 function Encuestas() {
   const [isLoading, setIsLoading] = useState(true);
   const [encuestas, setEncuestas] = useState<Encuesta[]>([]);
-  const [currentEncuesta, setCurrentEncuesta] = useState<Encuesta>(initEncuesta);
+  const [currentEncuesta, setCurrentEncuesta] = useState<Encuesta | null>(null);
   const [isEditSheetOpen, setIsEditSheetOpen] = useState<boolean>(false);
   const [delEncuesta, setDelEncuesta] = useState<Encuesta | null>(null);
   const [search, setSearch] = useState<string>("");
@@ -96,6 +98,17 @@ function Encuestas() {
     return encuestas.filter((encuesta) => encuesta.title?.toLowerCase().includes(search.toLowerCase()));
   }, [encuestas, search]);
 
+  const handleSelectEncuesta = (encuesta: Encuesta) => {
+    console.log("Encuesta seleccionada:", encuesta);
+    console.log("Tipo de dato:", typeof encuesta);  
+    setCurrentEncuesta(encuesta); // Establece el objeto completo
+};
+
+
+  const handleBackToTable = () => {
+    setCurrentEncuesta(null); // Vuelve a la lista de encuestas
+  };
+
   const {
     page,
     entriesPerPage,
@@ -114,74 +127,99 @@ function Encuestas() {
   return (
     <>
       <SectionWrapper>
-        <TopHeader>
-          <Input
-            placeholder="Buscar..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 lg:w-fit"
-          />
-          <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
-            <p>Mostrando</p>
-            <Input
-              className="h-[30px] w-[40px] px-0 text-center"
-              value={entriesPerPage}
-              onChange={(e) => setEntriesPerPage(e.target.value)}
-            />
-            <p>por página</p>
-          </div>
-        </TopHeader>
-
-        <MainContent title="Encuestas" description="Administra las encuestas del sistema">
-          <EncuestasTableHeader />
-          {isLoading ? (
-            <section className="flex items-center gap-3 rounded-md border px-4 py-3 pr-8">
-              <div className="hidden flex-1 lg:block">
-                <Skeleton className="max-w-[200px] flex-1 rounded-3xl py-1 text-base font-normal text-transparent">
-                  .
-                </Skeleton>
-              </div>
-              <div className="flex-1">
-                <Skeleton className="max-w-[200px] flex-1 rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
-                  .
-                </Skeleton>
-              </div>
-              <div className="flex-1">
-                <Skeleton className="w-[180px] flex-1 rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
-                  .
-                </Skeleton>
-              </div>
-
-              <div className="h-[10px] w-6 shrink-0" />
-            </section>
-          ) : (
-            <>
-              <section className="h-full space-y-2 overflow-y-scroll">
-                {currentPageItems.map((encuesta) => (
-                  <EncuestaTableRow
-                    key={encuesta.id}
-                    encuesta={encuesta}
-                    openEditSheet={openEditSheet}
-                    setDelEncuesta={setDelEncuesta}
-                    setDeleteModalOpen={setDeleteModalOpen}
-                    onEdit={() => router.push(`/admin/dashboard-sentimientos/encuestas/${encuesta.id}`)}
-                  />
-                ))}
-              </section>
-
-              <ContentFooter
-                page={page}
-                totalPages={totalPages}
-                allFilteredItems={allFilteredItems}
-                indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
-                indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
-                prevPage={prevPage}
-                nextPage={nextPage}
-                itemName="comentarios"
+        {!currentEncuesta ? (
+          <>
+            <TopHeader>
+              <Input
+                placeholder="Buscar..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1 lg:w-fit"
               />
-            </>
-          )}
-        </MainContent>
+              <div className={cn(buttonVariants({ variant: "outline" }), "hover:bg-background gap-2")}>
+                <p>Mostrando</p>
+                <Input
+                  className="h-[30px] w-[40px] px-0 text-center"
+                  value={entriesPerPage}
+                  onChange={(e) => setEntriesPerPage(e.target.value)}
+                />
+                <p>por página</p>
+              </div>
+            </TopHeader>
+
+            <MainContent title="Encuestas" description="Administra las encuestas del sistema">
+              <EncuestasTableHeader />
+              {isLoading ? (
+                <section className="flex items-center gap-3 rounded-md border px-4 py-3 pr-8">
+                  <div className="hidden flex-1 lg:block">
+                    <Skeleton className="max-w-[200px] flex-1 rounded-3xl py-1 text-base font-normal text-transparent">
+                      .
+                    </Skeleton>
+                  </div>
+                  <div className="flex-1">
+                    <Skeleton className="max-w-[200px] flex-1 rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
+                      .
+                    </Skeleton>
+                  </div>
+                  <div className="flex-1">
+                    <Skeleton className="w-[180px] flex-1 rounded-3xl py-1 text-xs font-normal text-transparent md:text-base">
+                      .
+                    </Skeleton>
+                  </div>
+
+                  <div className="h-[10px] w-6 shrink-0" />
+                </section>
+              ) : (
+                <>
+                  <section className="h-full space-y-2 overflow-y-scroll">
+                    {currentPageItems.map((encuesta) => (
+                      <EncuestaTableRow
+                        key={encuesta.id}
+                        encuesta={encuesta}
+                        onViewDetails={handleSelectEncuesta} // Redirige a los detalles
+                        openEditSheet={openEditSheet}
+                        setDelEncuesta={setDelEncuesta}
+                        setDeleteModalOpen={setDeleteModalOpen}
+                      />
+                    ))}
+                  </section>
+
+                  <ContentFooter
+                    page={page}
+                    totalPages={totalPages}
+                    allFilteredItems={allFilteredItems}
+                    indexOfFirstItemOfCurrentPage={indexOfFirstItemOfCurrentPage}
+                    indexOfLastItemOfCurrentPage={indexOfLastItemOfCurrentPage}
+                    prevPage={prevPage}
+                    nextPage={nextPage}
+                    itemName="comentarios"
+                  />
+                </>
+              )}
+            </MainContent>
+          </>
+        ) : (
+          <MainContent
+            >
+            <div className="flex items-center gap-2"> 
+              {/* Botón con ChevronLeft a la izquierda */}
+              <Button 
+                variant="ghost" 
+                className="h-7 w-6" 
+                onClick={handleBackToTable}
+              >
+                <ChevronLeft className="h-5 w-5 shrink-0" />
+              </Button>
+
+              {/* Título a la derecha del ícono */}
+              <span className="text-xl font-semibold">Detalles de la Encuesta</span> <br />
+                {/* <span>{ `Información sobre la encuesta: ${currentEncuesta}`}</span> */}
+              </div>
+            <DetalleEncuesta id={currentEncuesta.id} encuesta={currentEncuesta}/>
+            
+
+          </MainContent>
+        )}
 
         <DialogDelete
           open={deleteModalOpen}
