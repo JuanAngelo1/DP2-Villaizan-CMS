@@ -167,10 +167,15 @@ export type Sentimiento = {
 };
 
 export type Encuesta = {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   status: string;
   start_date: Date;
   end_date: Date;
+};
+
+export type DateRange = {
+  start: Date | null;
+  end: Date | null;
 };

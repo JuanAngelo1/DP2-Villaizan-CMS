@@ -1,9 +1,8 @@
 import usePagination from "@web/hooks/usePagination";
-import { Comentario, ControlledError, Response, Sentimiento } from "@web/types";
+import { Comentario, ControlledError, DateRange, Response, Sentimiento } from "@web/types";
 import axios from "axios";
-import { ListFilter } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, buttonVariants } from "@repo/ui/components/button";
+import { buttonVariants } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { toast } from "@repo/ui/hooks/use-toast";
@@ -16,6 +15,7 @@ import TopHeader from "../../contenido/_components/general_components/TopHeader"
 import ComentarioTableRow from "./comentarios_components/ComentarioTableRow";
 import ComentariosFilters from "./comentarios_components/ComentariosFilters";
 import ComentariosTableHeader from "./comentarios_components/ComentariosTableHeader";
+import FechasFilters from "./comentarios_components/FechasFilters";
 import SheetComentario from "./comentarios_components/SheetComentario";
 
 const initComentario: Comentario = {
@@ -50,6 +50,11 @@ function Comentarios() {
   const [selectedSentimientos, setSelectedSentimientos] = useState<Sentimiento[]>([]);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+
+  const [dateRange, setDateRange] = useState<DateRange>({
+    start: new Date(new Date().setDate(new Date().getDate() - 7)), // 7 días atrás
+    end: new Date(),
+  });
 
   useEffect(() => {
     async function fetchData() {
@@ -154,14 +159,20 @@ function Comentarios() {
   };
 
   const filteredComentarios = useMemo(() => {
-    return comentarios.filter(
-      (comentario) =>
-        comentario.comentario?.toLowerCase().includes(search.toLowerCase()) ||
-        comentario.usuario.nombre.toLowerCase().includes(search.toLowerCase()) ||
-        comentario.usuario.apellido.toLowerCase().includes(search.toLowerCase()) ||
-        sentimientoMap[comentario.id_sentimiento].toLowerCase().includes(search.toLowerCase())
-    );
-  }, [comentarios, search, sentimientoMap]);
+    return comentarios.filter((comentario) => {
+      const fechaComentario = new Date(comentario.fechacreacion);
+
+      const inRange =
+        fechaComentario >= new Date(dateRange.start) && fechaComentario <= new Date(dateRange.end);
+      return (
+        inRange &&
+        (comentario.comentario?.toLowerCase().includes(search.toLowerCase()) ||
+          comentario.usuario.nombre.toLowerCase().includes(search.toLowerCase()) ||
+          comentario.usuario.apellido.toLowerCase().includes(search.toLowerCase()) ||
+          sentimientoMap[comentario.id_sentimiento].toLowerCase().includes(search.toLowerCase()))
+      );
+    });
+  }, [comentarios, search, sentimientoMap, dateRange]);
 
   const {
     page,
@@ -193,6 +204,8 @@ function Comentarios() {
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 lg:w-fit"
           />
+
+          <FechasFilters dateRange={dateRange} setDateRange={setDateRange} />
 
           <ComentariosFilters
             sentimientos={sentimientos}

@@ -7,24 +7,25 @@ import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/pop
 
 export const EncuestaTableRow = ({
   encuesta,
+  onViewDetails,
   openEditSheet,
   setDelEncuesta,
   setDeleteModalOpen,
-  onEdit,
 }: {
   encuesta: Encuesta;
+  onViewDetails: (encuesta: Encuesta) => void;
   openEditSheet: (encuesta: Encuesta) => void;
   setDelEncuesta: (encuesta: Encuesta) => void;
   setDeleteModalOpen: (open: boolean) => void;
-  onEdit: (id: number) => void;
 }) => {
-  const { id, title, description, status, start_date, end_date } = encuesta;
+  const { id, title, start_date, end_date } = encuesta;
+
   return (
     <>
       <section key={id} className="flex items-center gap-3 rounded-md border px-4 py-3">
         <div
           className="text-md flex-1 cursor-pointer font-semibold underline"
-          onClick={() => onEdit(encuesta.id)}
+          onClick={() => onViewDetails(encuesta)}
         >
           <p>{title}</p>
         </div>
@@ -42,7 +43,7 @@ export const EncuestaTableRow = ({
             <Ellipsis />
           </PopoverTrigger>
           <PopoverContent className="flex w-fit flex-col gap-0 p-1" side="left" align="start">
-            <Button variant={"ghost"} className="justify-start" onClick={() => onEdit(encuesta.id)}>
+            <Button variant={"ghost"} className="justify-start" onClick={() => openEditSheet(encuesta)}>
               <FilePenLine className="h-4 w-4" />
               <p>Editar</p>
             </Button>
