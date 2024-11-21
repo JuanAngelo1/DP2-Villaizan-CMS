@@ -112,6 +112,7 @@ export class UsuarioService {
         contrasena: 'google',
         usuariocreacion: '2A',
         id_crm: idCrm,
+        puntosacumulados:0,
         vi_rol: {
           connect: { id: rol.id }, 
         },
