@@ -174,3 +174,8 @@ export type Encuesta = {
   start_date: Date;
   end_date: Date;
 };
+
+export type DateRange = {
+  start: Date | null;
+  end: Date | null;
+};
