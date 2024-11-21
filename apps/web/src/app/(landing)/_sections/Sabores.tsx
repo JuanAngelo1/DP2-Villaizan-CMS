@@ -67,7 +67,7 @@ const Sabores: React.FC = () => {
         plugins={[
           AutoScroll({
             playOnInit: true,
-            speed: 2,
+            speed: 1,
             stopOnInteraction: false,
             startDelay: 0,
             stopOnMouseEnter: false,
