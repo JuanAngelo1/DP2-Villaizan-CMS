@@ -1,6 +1,6 @@
 "use client";
 
-import { ControlledError, Response } from "@web/types";
+import { ControlledError, DateRange, Response } from "@web/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
@@ -13,11 +13,6 @@ import SentimentLineChart from "./_components/SentimentLineChart";
 import SentimentPieChart from "./_components/SentimentPieChart";
 import StaticWordCloud from "./_components/StaticWordCloud";
 import StatsCard from "./_components/StatsCard";
-
-interface DateRange {
-  start: Date | null;
-  end: Date | null;
-}
 
 const DashboardSentimientos = () => {
   const [dateRange, setDateRange] = useState<DateRange>({ start: new Date(), end: new Date() });
@@ -33,7 +28,10 @@ const DashboardSentimientos = () => {
           fechaInicio: dateRange.start?.toISOString(),
           fechaFin: dateRange.end?.toISOString(),
         };
-        const responseCommentsCounter: Response<number> = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/contarEntreFechas`, requestData);
+        const responseCommentsCounter: Response<number> = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/contarEntreFechas`,
+          requestData
+        );
 
         if (responseCommentsCounter.data.status === "Error") {
           throw new ControlledError(responseCommentsCounter.data.message);
@@ -57,8 +55,6 @@ const DashboardSentimientos = () => {
 
     fetchData();
   }, [dateRange, selectedProduct]);
-
-
 
   return (
     <div className="w-full space-y-6 p-6">

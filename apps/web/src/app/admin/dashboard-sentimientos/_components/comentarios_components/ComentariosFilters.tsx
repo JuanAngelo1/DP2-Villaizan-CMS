@@ -1,5 +1,5 @@
 import { Sentimiento } from "@web/types";
-import { Check, ListFilter } from "lucide-react";
+import { Check, Laugh, LaughIcon, ListFilter } from "lucide-react";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
@@ -25,21 +25,23 @@ function ComentariosFilters({
 
   const allSentimientos = () => {
     setSelectedSentimientos(sentimientos);
-  }
+  };
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant={"outline"}>
-          <ListFilter className="h-5 w-5 shrink-0" />
-          <p>Filtros</p>
+          <LaughIcon className="h-5 w-5 shrink-0" />
+          <p>Sentimientos</p>
         </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="p-2 w-64" side="bottom" align="end">
+      <PopoverContent className="w-64 p-2" side="bottom" align="end">
         <section className="flex flex-row items-center justify-between px-2 py-1">
-          <h4 className="text-md font-medium">Filtros</h4>
-          <p className="cursor-pointer text-sm hover:underline" onClick={allSentimientos}>Todos</p>
+          <h4 className="text-md font-medium">Sentimientos</h4>
+          <p className="cursor-pointer text-sm hover:underline" onClick={allSentimientos}>
+            Todos
+          </p>
         </section>
         <div className="mt-1 flex flex-col gap-1">
           {sentimientos.map((sentimiento) => {
@@ -48,7 +50,7 @@ function ComentariosFilters({
             return (
               <div
                 className={cn(
-                  "flex flex-row items-center justify-between rounded-lg py-2 px-3 cursor-pointer",
+                  "flex cursor-pointer flex-row items-center justify-between rounded-lg px-3 py-2",
                   isSelected ? "bg-secondary" : "hover:bg-secondary/50"
                 )}
                 onClick={() => toggleSentimiento(sentimiento)}
