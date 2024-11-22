@@ -39,7 +39,7 @@ type Fruta = {
 
 function SaboresPage() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ axis: "y", loop: true }, [
-    Autoplay({ playOnInit: true, stopOnInteraction: true, delay: 4000 }),
+    Autoplay({ playOnInit: true, stopOnInteraction: true, delay: 2500 }),
   ]);
 
   const { selectedSnap, snapCount } = useSelectedSnapDisplay(emblaApi);
@@ -51,6 +51,14 @@ function SaboresPage() {
     if (selectedSnap === 1) return "#4B8936";
     if (selectedSnap === 2) return "#9918CB";
   };
+
+  const toggleAutoplay = () => {
+    const autoplay = emblaApi?.plugins()?.autoplay
+    if (!autoplay) return
+
+    const playOrStop = autoplay.isPlaying() ? autoplay.stop : autoplay.play
+    playOrStop()
+  }
 
   const toggleMode = (snap: number, mode: Modes) => {
     setSelectedMode((prev) => {
@@ -86,7 +94,12 @@ function SaboresPage() {
   return (
     <div
       className="embla relative w-full overflow-hidden transition-colors duration-1000"
-      style={{ background: getCurrentBackgroundColor() }}
+      style={{
+        backgroundImage: "url(/sabores/sabores-background.jpg)",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      }}
       ref={emblaRef}
     >
       <EmblaContainer className="">
@@ -98,9 +111,9 @@ function SaboresPage() {
           );
         })}
       </EmblaContainer>
-      <div className="absolute left-0 top-0 z-[200] flex h-full flex-col items-center justify-center gap-3 p-5">
-        <CircleButton Icon={CircleDotDashed} />
-        <CircleButton Icon={ArrowDownWideNarrow} />
+      <div className="absolute left-0 top-0 z-[200] flex h-full flex-col items-start justify-center gap-3 p-5">
+        <CircleButtonWithHiddenText Icon={CircleDotDashed} hiddenText="Ver todos"/>
+        <CircleButtonWithHiddenText Icon={ArrowDownWideNarrow} hiddenText="Desplazar" onClick={toggleAutoplay}/>
       </div>
 
       <div className="absolute bottom-0 right-0 top-0 z-[200] flex flex-col items-end p-5">
@@ -133,7 +146,7 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
   return (
     <div
       className={cn(
-        "m-auto flex max-w-7xl flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8 text-white",
+        "m-auto flex max-w-7xl flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8 text-black",
         selectedMode === "history" && "flex-row items-center",
         selectedMode === "benefits" && "flex-col gap-4"
       )}
@@ -144,7 +157,7 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
     >
       <motion.div className={cn("flex h-full flex-col items-center overflow-hidden p-24")} layout>
         <motion.img src={fruta.frutaImagen} className="z-50 max-h-full flex-grow object-contain" layout />
-        <motion.p className="shrink-0 text-6xl font-bold text-white" layout>
+        <motion.p className="shrink-0 text-6xl font-bold text-black" layout>
           {fruta.frutaNombre}
         </motion.p>
       </motion.div>
@@ -201,11 +214,11 @@ function Fruta({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
           <ProductoItem />
           <ProductoItem />
           <ProductoItem />
-          <div className="col-span-3 flex cursor-pointer flex-col justify-between rounded-lg bg-red-800 p-4 text-lg transition-all hover:bg-red-900">
+          <div className="col-span-3 flex cursor-pointer flex-col justify-between rounded-lg bg-red-800 p-4 text-lg text-white transition-all hover:bg-red-900">
             <p>Visita nuestra tienda para ver todos los productos.</p>
             <div className="flex flex-row items-center justify-between">
-              <p>Tienda</p>
-              <ChevronRight className="stroke-white" />
+              <p className="text-white">Tienda</p>
+              <ChevronRight className="stroke-black" />
             </div>
           </div>
         </div>
@@ -275,9 +288,38 @@ function CircleButton({
       )}
       onClick={onClick}
     >
-      <Icon className={cn("aspect-square h-full shrink-0 stroke-white stroke-[2px]", iconClassname)} />
+      <Icon className={cn("aspect-square h-full shrink-0 stroke-black stroke-[2px]", iconClassname)} />
       {text != "" && (
-        <p className="ml-3 mr-1 w-full text-center font-['Abhaya_Libre'] text-xl text-white">{text}</p>
+        <p className="ml-3 mr-1 w-full text-center font-['Abhaya_Libre'] text-xl text-black">{text}</p>
+      )}
+    </div>
+  );
+}
+
+function CircleButtonWithHiddenText({
+  Icon,
+  hiddenText = "",
+  iconClassname,
+  onClick,
+}: {
+  Icon: any;
+  hiddenText?: string;
+  iconClassname?: string;
+  onClick?: () => void;
+}) {
+  return (
+    <div
+      className={cn(
+        "group/circle flex aspect-square h-[60px] min-w-0 cursor-pointer items-center justify-center rounded-full border-[4px] border-black p-3 ring-black transition-all hover:aspect-auto hover:w-fit hover:ring-2"
+        // hiddenText !== "" && "w-[170px] justify-start px-5"
+      )}
+      onClick={onClick}
+    >
+      <Icon className={cn("aspect-square h-full shrink-0 stroke-black stroke-[2px]", iconClassname)} />
+      {hiddenText != "" && (
+        <p className="animate-in ml-3 mr-1 hidden w-full text-center font-['Abhaya_Libre'] text-xl text-black transition-all group-hover/circle:block">
+          {hiddenText}
+        </p>
       )}
     </div>
   );

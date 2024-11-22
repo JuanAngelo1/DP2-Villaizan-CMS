@@ -85,10 +85,10 @@ export class ComentarioService {
       );
 
     const nombreSentimiento = response.data.sentiment;
-
+    console.log(nombreSentimiento.nombre);
     const sentimiento = await this.prisma.vi_sentimiento.findFirst({
       where: {
-        nombre: 'Positivo',
+        nombre: nombreSentimiento.nombre,
       },
     });
 
