@@ -9,26 +9,29 @@ function NosotrosV2() {
     "w-[350px] h-[350px] md:w-[400px] md:h-[400px] lg:w-[500px] lg:h-[500px] xl:w-[600px] xl:h-[600px]";
 
   return (
-    <MaxWidthWrapper className="mt-20 flex flex-col items-center gap-6 font-['Abhaya_Libre'] lg:flex-row">
-      <section className={cn("BOX relative shrink-0 overflow-hidden", twStyle1)}>
+    <MaxWidthWrapper className="mt-20 flex flex-col items-center gap-6 font-['Abhaya_Libre'] lg:flex-row  py-6 overflow-hidden">
+      <section className={cn("BOX relative shrink-0 overflow-visible group/main", twStyle1)}>
         <div
-          className="absolute bottom-0 left-1/2 z-20 aspect-square w-[80%] -translate-x-1/2 rounded-full bg-transparent"
+          className="absolute bottom-0 left-1/2 z-20 aspect-square w-[80%] -translate-x-1/2 rounded-full bg-transparent group-hover/main:scale-110 transition-all"
           style={{
             boxShadow: "0 100px 0 40px #fff",
           }}
         />
 
-        <div className="CIRCLE absolute bottom-0 left-1/2 aspect-square w-[80%] -translate-x-1/2 overflow-hidden rounded-full bg-red-800">
+        <div className="CIRCLE absolute bottom-0 left-1/2 aspect-square w-[80%] -translate-x-1/2 overflow-hidden rounded-full ">
           <img
             src={"/man-with-crossed-arms.png"}
             alt="Villaizan"
-            className={cn("absolute bottom-0 left-1/2 -translate-x-1/2 object-cover", twStyle1)}
+            className={cn("absolute bottom-0 left-1/2 -translate-x-1/2 object-cover group-hover/main:scale-110 transition-all", twStyle1)}
           />
         </div>
+
+        <div className="CIRCLE BEHIND absolute bottom-0 left-1/2 aspect-square w-[80%] -translate-x-1/2 overflow-hidden rounded-full bg-red-800 group-hover/main:bg-red-700 transition-all group-hover/main:scale-110"/>
+
         <img
           src={"/man-with-crossed-arms.png"}
           alt="Villaizan"
-          className="absolute bottom-0 left-1/2 h-full -translate-x-1/2 border border-white object-cover"
+          className="absolute bottom-0 left-1/2 h-full -translate-x-1/2 object-cover group-hover/main:scale-110 transition-all"
         />
       </section>
       <section className="flex min-w-0 flex-col items-center lg:items-start">
