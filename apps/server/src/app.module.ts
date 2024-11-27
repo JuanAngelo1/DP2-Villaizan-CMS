@@ -31,6 +31,7 @@ import { PuntosVentaService } from './PuntosVenta/puntos-venta.service';
 import { SentimientosController } from './Sentimientos/sentimientos.controller';
 import { SentimientosModule } from './Sentimientos/sentimientos.module';
 import { SentimientosService } from './Sentimientos/sentimientos.service';
+import { VillaparadaModule } from './villaparada/villaparada.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { SentimientosService } from './Sentimientos/sentimientos.service';
     FrutasModule,
     PuntosVentaModule,
     SentimientosModule,
+    VillaparadaModule,
   ],
   controllers: [
     UsuarioController,
