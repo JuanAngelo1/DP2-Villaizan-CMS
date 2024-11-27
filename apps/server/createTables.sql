@@ -223,3 +223,16 @@ CREATE TABLE vi_puntosventa (
     nota TEXT
 );
 
+CREATE TABLE vi_villaparada (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    latitud FLOAT NOT NULL,
+    longitud FLOAT NOT NULL,
+    nota TEXT,
+	fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	estaactivo BOOLEAN DEFAULT TRUE,
+	id_fruta VARCHAR(100) NOT NULL,
+	CONSTRAINT fk_fruta FOREIGN KEY (id_fruta) REFERENCES vi_fruta(id)
+);
+
