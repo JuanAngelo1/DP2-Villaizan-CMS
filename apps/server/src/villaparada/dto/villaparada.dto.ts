@@ -3,5 +3,6 @@ export class VillaParadaDTO {
   latitud: number;
   longitud: number;
   nota: string;
+  direccion: string;
   id_fruta: string;
 }

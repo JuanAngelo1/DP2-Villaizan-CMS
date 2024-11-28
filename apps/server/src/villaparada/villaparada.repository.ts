@@ -23,6 +23,7 @@ export class VillaparadaRepository {
         longitud: data.longitud,
         nota: data.nota,
         estaactivo: true,
+        direccion: data.direccion,
         id_fruta: data.id_fruta,
       },
     });
@@ -38,6 +39,7 @@ export class VillaparadaRepository {
         latitud: data.latitud,
         longitud: data.longitud,
         nota: data.nota,
+        direccion: data.direccion,
         id_fruta: data.id_fruta,
         fechaultimamodificacion: new Date(),
       },

@@ -2127,7 +2127,6 @@ model vi_comentario {
 }
 
 model vi_contenidoeducativo {
-  id                   String    @id @db.VarChar(50)
   id_fruta             String?   @db.VarChar(50)
   titulo               String    @db.VarChar(200)
   contenidoinformacion String?
@@ -2140,6 +2139,7 @@ model vi_contenidoeducativo {
   actualizadoen        DateTime  @default(now()) @db.Timestamp(6)
   usuariocreacion      String    @db.VarChar(50)
   usuarioactualizacion String?   @db.VarChar(50)
+  id                   Int       @id @default(autoincrement())
   vi_fruta             vi_fruta? @relation(fields: [id_fruta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fruta")
 }
 
@@ -3080,6 +3080,7 @@ model vi_villaparada {
   fechaultimamodificacion DateTime @default(now()) @db.Timestamp(6)
   estaactivo              Boolean? @default(true)
   id_fruta                String   @db.VarChar(100)
+  direccion               String?  @db.VarChar(512)
   vi_fruta                vi_fruta @relation(fields: [id_fruta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_fruta")
 }
 
