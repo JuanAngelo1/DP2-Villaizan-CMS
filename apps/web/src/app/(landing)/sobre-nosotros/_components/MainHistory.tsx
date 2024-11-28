@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Separator } from "@repo/ui/components/separator";
+import { historia } from "@web/src/app/data/about_us";
 
 function MainHistory() {
   return (
@@ -20,15 +21,7 @@ function MainHistory() {
           <h2 className="w-fit text-center text-3xl font-semibold">Nuestra historia</h2>
           <Separator className="w-3/5 bg-black" orientation="horizontal" />
         </header>
-        <p className="text-center">
-          Paletas Villaizan nació a finales del 2015, en la ciudad de Chiclayo. Inspirados por el deseo de disfrutar
-          productos naturales y refrescantes, comenzamos congelando frutas y compartiendo nuestro amor por lo
-          auténtico. El nombre Villaizan, un homenaje al apellido de mis hijos, refleja nuestra esencia
-          familiar y nuestra pasión por crear momentos únicos. Desde nuestros inicios, nos hemos dedicado a
-          ofrecer paletas de la más alta calidad. Hemos colaborado con grandes marcas y hemos crecido,
-          manteniendo siempre nuestro compromiso con la frescura, el sabor, y los valores familiares que nos
-          impulsan día a día.
-        </p>
+        <p className="text-center">{historia}</p>
       </div>
     </section>
   );

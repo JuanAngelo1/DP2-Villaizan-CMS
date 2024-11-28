@@ -1,16 +1,12 @@
 "use client";
 
+import { HistoryItemType, historyItems } from "@web/src/app/data/about_us";
 import { AnimationControls, motion, useAnimation, useInView } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { cn } from "@repo/ui/lib/utils";
-import { HistoryItemType } from "../page";
 
-interface HistoryTimeLineProps {
-  historyItems: HistoryItemType[];
-}
-
-function HistoryTimeline({ historyItems }: HistoryTimeLineProps) {
+function HistoryTimeline() {
   return (
     <section className="relative mt-10 flex w-full flex-col pl-6 md:pl-0">
       {historyItems.map((item, idx) => {
