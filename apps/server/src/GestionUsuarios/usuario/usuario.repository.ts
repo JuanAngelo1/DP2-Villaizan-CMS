@@ -105,4 +105,18 @@ export class UsuarioRepository {
     });
     return user;
   }
+
+  async addPoints(id: string, points: number): Promise<vi_usuario> {
+    const user = await this.prisma.vi_usuario.update({
+      where: {
+        id,
+      },
+      data: {
+        puntosacumulados: {
+          increment: points,
+        },
+      },
+    });
+    return user;
+  }
 }

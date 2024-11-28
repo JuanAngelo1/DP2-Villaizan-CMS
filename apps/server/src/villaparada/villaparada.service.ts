@@ -2,10 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { VillaparadaRepository } from './villaparada.repository';
 import { VillaParadaDTO } from './dto/villaparada.dto';
+import { AgregarPuntosDTO } from './dto/agregarpuntos.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { UsuarioService } from 'src/GestionUsuarios/usuario/usuario.service';
 
 @Injectable()
 export class VillaparadaService {
-  constructor(private villaparadaRepository: VillaparadaRepository) {}
+  constructor(
+    private villaparadaRepository: VillaparadaRepository,
+    private usuarioService: UsuarioService,
+  ) {}
 
   async getAllVillaparadas() {
     try {
@@ -41,6 +47,28 @@ export class VillaparadaService {
     } catch (error) {
       console.error(error);
       throw error;
+    }
+  }
+
+  async sumarPuntos(data: AgregarPuntosDTO) {
+    try {
+      const result = await this.villaparadaRepository.sumarPuntos(data);
+
+      // Si el resultado tiene la propiedad success = false, significa que hubo un error de unicidad
+      if (result.success === false) {
+        return result; // Retorna el mensaje de error si es de unicidad
+      }
+
+      const usuario = await this.usuarioService.getUsuarioByID(data.id_usuario);
+      if (!usuario) {
+        throw new Error('No se encontró el usuario');
+      }
+
+      await this.usuarioService.addPoints(data.id_usuario, data.puntos);
+      return { success: true, data: result }; // Si no hubo error, devuelve el resultado
+    } catch (error) {
+      console.error(error);
+      throw error; // En caso de otros errores, se vuelve a lanzar
     }
   }
 }

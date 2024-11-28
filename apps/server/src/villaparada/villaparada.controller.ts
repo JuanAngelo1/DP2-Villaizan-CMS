@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { VillaparadaService } from './villaparada.service';
 import { VillaParadaDTO } from './dto/villaparada.dto';
+import { AgregarPuntosDTO } from './dto/agregarpuntos.dto';
 
 @Controller('villaparada')
 export class VillaparadaController {
@@ -89,6 +90,31 @@ export class VillaparadaController {
       return {
         status: 'Error',
         message: 'Internal Server Error',
+        result: [],
+      };
+    }
+  }
+
+  @Post('sumarpuntos')
+  async sumarPuntos(@Body() data: AgregarPuntosDTO) {
+    try {
+      const result = await this.villaparadaService.sumarPuntos(data);
+
+      if (result.success === false) {
+        return {
+          status: 'Success',
+          message: 'Ya se sumaron puntos a esta villaparada',
+        };
+      }
+      return {
+        status: 'Success',
+        message: `Se sumaron ${data.puntos} puntos a la villaparada`,
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        status: 'Error',
+        message: error.message,
         result: [],
       };
     }

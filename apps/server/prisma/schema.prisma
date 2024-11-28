@@ -3096,6 +3096,8 @@ model vi_villaparada_x_usuario {
   id_villaparada Int
   vi_usuario     vi_usuario     @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario")
   vi_villaparada vi_villaparada @relation(fields: [id_villaparada], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_villaparada")
+
+  @@unique([id_usuario, id_villaparada], map: "unique_usuario_villaparada")
 }
 
 enum PAYMENT_COLLECTION_STATUS_ENUM {

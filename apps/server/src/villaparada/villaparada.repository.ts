@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { vi_villaparada } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { VillaParadaDTO } from './dto/villaparada.dto';
+import { AgregarPuntosDTO } from './dto/agregarpuntos.dto';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class VillaparadaRepository {
@@ -56,5 +58,31 @@ export class VillaparadaRepository {
         fechaultimamodificacion: new Date(),
       },
     });
+  }
+
+  async sumarPuntos(data: AgregarPuntosDTO) {
+    try {
+      await this.prisma.vi_villaparada_x_usuario.create({
+        data: {
+          id_usuario: data.id_usuario,
+          id_villaparada: data.id_villaparada,
+          cantitadpuntos: data.puntos,
+          latitud: data.latitud,
+          longitud: data.longitud,
+        },
+      });
+      return { success: true };
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        // Si es el error de violación de restricción única
+        return {
+          success: false,
+        };
+      }
+      throw error; // Rethrow el error si no es el esperado
+    }
   }
 }
