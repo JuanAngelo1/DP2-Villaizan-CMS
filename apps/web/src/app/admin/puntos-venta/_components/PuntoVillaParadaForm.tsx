@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { Button } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/components/select";
 import { Search } from "lucide-react";
 
-export default function PuntoVentaFormVillaParada({ selectedPoint, onSave, onCancel, onMapUpdate }) {
+export default function PuntoVillaParadaForm({ selectedPoint, onSave, onCancel, onMapUpdate }) {
   const [nombre, setNombre] = useState(selectedPoint?.nombre || "");
   const [direccion, setDireccion] = useState(selectedPoint?.direccion || "");
   const [lat, setLat] = useState(selectedPoint?.lat || -12.086);
   const [lng, setLng] = useState(selectedPoint?.lng || -77.07);
   const [nota, setNota] = useState(selectedPoint?.nota || "");
-    const [frutas, setFrutas] = useState([]); // Lista de frutas obtenida del servidor
-  const [frutaSeleccionada, setFrutaSeleccionada] = useState(selectedPoint?.id_fruta || ""); // ID de la fruta seleccionada
+  const [frutas, setFrutas] = useState([]); // Lista de frutas obtenida del servidor
+const [frutaSeleccionada, setFrutaSeleccionada] = useState(selectedPoint?.id_fruta || ""); // ID de la fruta seleccionada
+
 
   useEffect(() => {
     if (selectedPoint) {
@@ -21,6 +23,22 @@ export default function PuntoVentaFormVillaParada({ selectedPoint, onSave, onCan
       setNombre(selectedPoint.nombre);
     }
   }, [selectedPoint]);
+
+    useEffect(() => {
+    const fetchFrutas = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/frutas`);
+        const data = await response.json();
+        if (data.status === "Success") {
+          setFrutas(data.result); // Guardamos la lista de frutas
+        }
+      } catch (error) {
+        console.error("Error al obtener frutas:", error);
+      }
+    };
+
+    fetchFrutas();
+  }, []);
 
   const handleAddressSearch = async () => {
     const geocodedPosition = await geocodeAddress(direccion);
@@ -33,7 +51,7 @@ export default function PuntoVentaFormVillaParada({ selectedPoint, onSave, onCan
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave({ id: selectedPoint?.id, nombre, direccion, lat, lng, nota });
+    onSave({ id: selectedPoint?.id, nombre, direccion, lat, lng, nota, id_fruta: frutaSeleccionada });
      setNombre("");
   };
 
@@ -48,6 +66,25 @@ export default function PuntoVentaFormVillaParada({ selectedPoint, onSave, onCan
           required
         />
       </div>
+
+            <div>
+  <label className="text-sm font-medium">Tipo de Fruta</label>
+  <Select
+    value={frutaSeleccionada}
+    onValueChange={(value) => setFrutaSeleccionada(value)} // Guarda el ID de la fruta seleccionada
+  >
+    <SelectTrigger className="w-full">
+      <SelectValue placeholder="Seleccione una fruta" />
+    </SelectTrigger>
+    <SelectContent>
+      {frutas.map((fruta) => (
+        <SelectItem key={fruta.id} value={fruta.id}>
+          {fruta.nombre} {/* Mostramos el nombre de la fruta */}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
 
       <div className="flex items-center gap-2">
         <div className="flex-1">

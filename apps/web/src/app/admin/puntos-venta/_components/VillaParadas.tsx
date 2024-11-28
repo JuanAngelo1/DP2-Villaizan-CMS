@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/ta
 import PuntoVentaForm from "./PuntoVentaForm";
 import PuntoVentaList from "./PuntoVentaList";
 import PuntoVentaModal from "./PuntoVentaModal";
+import PuntoVillaParadaForm from "./PuntoVillaParadaForm";
 
 // src/app/admin/puntos-venta/page.tsx
 
@@ -87,6 +88,7 @@ export default function VillaParadas() {
         latitud: updatedPoint.lat,
         longitud: updatedPoint.lng,
         nota: updatedPoint.nota,
+        id_fruta: updatedPoint.id_fruta,
       };
 
       let response: Response<PuntoVenta>;
@@ -126,8 +128,8 @@ export default function VillaParadas() {
   const confirmDeletePoint = async () => {
     if (currentEditPoint) {
       try {
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/eliminar/${currentEditPoint.id}`
+        const response = await axios.delete(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada/${currentEditPoint.id}`
         );
         if (response.data.status === "Error") throw new Error(response.data.message);
 
@@ -177,7 +179,7 @@ export default function VillaParadas() {
                       <h2 className="text-lg font-semibold">
                         {currentEditPoint ? "Editar Punto de Venta" : "Nuevo Punto de Venta"}
                       </h2>
-                      <PuntoVentaForm
+                      <PuntoVillaParadaForm
                         selectedPoint={{ ...currentEditPoint, ...markerPosition, direccion: address }}
                         onSave={handleSavePoint}
                         onCancel={() => setIsEditing(false)}
