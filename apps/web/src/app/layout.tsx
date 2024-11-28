@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Heladería Villaizan",
+  robots: {
+    follow: true,
+    index: false,
+  },
   description: "El papa de las paletas",
   keywords: ["heladería", "paletas", "Heladería Villaizan", "Villaizan", "Villaizan Helados", "Villaizan Heladería", "Villaizan Paletas"],
   openGraph: {

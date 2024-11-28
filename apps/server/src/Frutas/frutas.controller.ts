@@ -19,8 +19,30 @@ export class FrutasController {
 
     constructor(private readonly frutasService: FrutasService) {}
 
+
+    @Get("famosos")
+    async getProductos(
+      @Req() request: Request,
+      @Res() response: Response,
+    ): Promise<any> {
+      try {
+        const result = await this.frutasService.getPopularFruits();
+        return response.status(200).json({
+          status: 'Success',
+          message: 'Productos encontrados',
+          result: result,
+        });
+      } catch (err) {
+        return response.status(500).json({
+          status: 'Error',
+          message: 'Error al obtener los productos',
+          result: [],
+        });
+      }
+    }
+
     @Get()
-    async getFAQS(
+    async getFrutas(
       @Req() request: Request,
       @Res() response: Response,
     ): Promise<any> {
@@ -62,5 +84,7 @@ export class FrutasController {
           }
       
     }
+
+
 
 }

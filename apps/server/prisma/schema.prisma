@@ -1579,6 +1579,7 @@ model region {
   region_payment_providers     region_payment_providers[]
   shipping_option              shipping_option[]
 
+
   @@index([currency_code], map: "IDX_region_currency_code")
 }
 

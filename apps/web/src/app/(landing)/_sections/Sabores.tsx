@@ -20,42 +20,6 @@ import {
 } from "@repo/ui/components/carousel";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
-// app/(landing)/_components/Sabores.tsx
-
 // Asegúrate de tener un botón reutilizable
 
 const Sabores: React.FC = () => {
