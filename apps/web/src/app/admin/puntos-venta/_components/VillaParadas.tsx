@@ -93,12 +93,12 @@ export default function VillaParadas() {
 
       if (updatedPoint.id) {
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/actualizar/${updatedPoint.id}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada/${updatedPoint.id}`,
           newPoint
         );
       } else {
         // Creación con POST
-        response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/crear`, newPoint);
+        response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada`, newPoint);
       }
 
       if (response.data.status === "Error") throw new Error(response.data.message);
