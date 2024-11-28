@@ -8,14 +8,14 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Button } from "@repo/ui/components/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
-import PuntoVentaForm from "./_components/PuntoVentaForm";
-import PuntoVentaList from "./_components/PuntoVentaList";
-import PuntoVentaModal from "./_components/PuntoVentaModal";
-import VillaParadas from "./_components/VillaParadas";
+import PuntoVentaForm from "./PuntoVentaForm";
+import PuntoVentaList from "./PuntoVentaList";
+import PuntoVentaModal from "./PuntoVentaModal";
+import PuntoVillaParadaForm from "./PuntoVillaParadaForm";
 
 // src/app/admin/puntos-venta/page.tsx
 
-const PuntoVentaMap = dynamic(() => import("./_components/PuntoVentaMap"), { ssr: false });
+const PuntoVentaMap = dynamic(() => import("./PuntoVentaMap"), { ssr: false });
 
 const mockPuntosDeVenta = [
   {
@@ -41,7 +41,7 @@ const mockPuntosDeVenta = [
   },
 ];
 
-export default function PuntosVentaPage() {
+export default function VillaParadas() {
   const [puntos, setPuntos] = useState(mockPuntosDeVenta);
   const [currentEditPoint, setCurrentEditPoint] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -56,7 +56,7 @@ export default function PuntosVentaPage() {
   const fetchPuntos = async () => {
     try {
       const response: Response<PuntoVenta[]> = await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada`
       );
       if (response.data.status === "Error") throw new Error(response.data.message);
 
@@ -88,18 +88,19 @@ export default function PuntosVentaPage() {
         latitud: updatedPoint.lat,
         longitud: updatedPoint.lng,
         nota: updatedPoint.nota,
+        id_fruta: updatedPoint.id_fruta,
       };
 
       let response: Response<PuntoVenta>;
 
       if (updatedPoint.id) {
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/actualizar/${updatedPoint.id}`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada/${updatedPoint.id}`,
           newPoint
         );
       } else {
         // Creación con POST
-        response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/crear`, newPoint);
+        response = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada`, newPoint);
       }
 
       if (response.data.status === "Error") throw new Error(response.data.message);
@@ -127,8 +128,8 @@ export default function PuntosVentaPage() {
   const confirmDeletePoint = async () => {
     if (currentEditPoint) {
       try {
-        const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/puntosventa/eliminar/${currentEditPoint.id}`
+        const response = await axios.delete(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada/${currentEditPoint.id}`
         );
         if (response.data.status === "Error") throw new Error(response.data.message);
 
@@ -157,15 +158,6 @@ export default function PuntosVentaPage() {
     <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[2px] lg:p-[2px]">
       <main className="flex h-[95%] flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
         <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-2 lg:gap-[24px] lg:p-[32px]">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Gestión de Puntos de Venta</h1>
-          </div>
-          <Tabs defaultValue="puntos-de-venta" className="min-w-full">
-            <TabsList className="flex space-x-2">
-              <TabsTrigger value="puntos-de-venta">Puntos de Venta</TabsTrigger>
-              <TabsTrigger value="villaparadas">VillaParadas</TabsTrigger>
-            </TabsList>
-            <TabsContent value="puntos-de-venta">
               <div className="flex h-[95%] space-x-4">
                 <div className="z-0 w-full p-2 shadow">
                   <PuntoVentaMap
@@ -187,7 +179,7 @@ export default function PuntosVentaPage() {
                       <h2 className="text-lg font-semibold">
                         {currentEditPoint ? "Editar Punto de Venta" : "Nuevo Punto de Venta"}
                       </h2>
-                      <PuntoVentaForm
+                      <PuntoVillaParadaForm
                         selectedPoint={{ ...currentEditPoint, ...markerPosition, direccion: address }}
                         onSave={handleSavePoint}
                         onCancel={() => setIsEditing(false)}
@@ -202,11 +194,7 @@ export default function PuntosVentaPage() {
                 onClose={() => setModalOpen(false)}
                 onConfirm={confirmDeletePoint}
               />
-            </TabsContent>
-            <TabsContent defaultValue="villaparadas" className="min-w-full" value={"villaparadas"}>
-              <VillaParadas/>
-            </TabsContent>
-          </Tabs>
+           
         </div>
       </main>
     </div>

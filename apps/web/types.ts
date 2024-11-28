@@ -156,6 +156,7 @@ export type PuntoVenta = {
   lat: number;
   lng: number;
   nota?: string;
+  id_fruta?: string;
 };
 
 export type Sentimiento = {

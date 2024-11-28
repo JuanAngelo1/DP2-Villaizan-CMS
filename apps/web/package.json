@@ -51,6 +51,7 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.10",
     "react-leaflet": "^4.2.1",
+    "react-qr-reader": "3.0.0-beta-1",
     "reactjs-tiptap-editor": "^0.1.7",
     "sass": "^1.80.3",
     "typewriter-effect": "^2.21.0",
