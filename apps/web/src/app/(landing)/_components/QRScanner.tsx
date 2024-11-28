@@ -124,12 +124,6 @@ const QRScanner: React.FC = ({id_fruta, villaparada}) => {
       <div className="h-auto min-h-[40px] w-full text-center">
         {renderStatusMessage()}
       </div>
-
-      {scanCount > 0 && (
-        <div className="text-sm text-gray-500 w-full text-center">
-          Escaneos realizados: {scanCount}
-        </div>
-      )}
     </div>
   );
 };
