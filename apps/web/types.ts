@@ -179,3 +179,24 @@ export type DateRange = {
   start: Date | null;
   end: Date | null;
 };
+
+
+export type ContenidoEducativo = {
+  id_fruta: string;
+  titulo: string;
+  contenidoinformacion: string;
+  tipocontenido: 'informacion' | 'video' | 'imagen'; //!TODO
+  urlcontenido: string;
+  fechapublicacion: string;
+  estaactivo: boolean;
+}
+
+
+
+export type Fruta = {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  vi_contenidoeducativo: ContenidoEducativo[];
+  // vi_producto_fruta: Producto[];
+}
