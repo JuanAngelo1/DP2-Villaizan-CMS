@@ -236,3 +236,16 @@ CREATE TABLE vi_villaparada (
 	id_fruta VARCHAR(255) NOT NULL,
 	CONSTRAINT fk_fruta FOREIGN KEY (id_fruta) REFERENCES vi_fruta(id)
 );
+
+CREATE TABLE vi_villaparada_x_usuario (
+    id SERIAL PRIMARY KEY,
+    cantitadpuntos INT NOT NULL,
+    latitud FLOAT NOT NULL,
+    longitud FLOAT NOT NULL,
+	fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	estaactivo BOOLEAN DEFAULT TRUE,
+	id_usuario VARCHAR(255) NOT NULL,
+	id_villaparada INT NOT NULL,
+	CONSTRAINT fk_villaparada FOREIGN KEY (id_villaparada) REFERENCES vi_villaparada(id),
+	CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES vi_usuario(id)
+);

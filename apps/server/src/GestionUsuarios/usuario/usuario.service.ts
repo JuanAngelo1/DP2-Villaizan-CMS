@@ -30,8 +30,8 @@ export class UsuarioService {
       },
       include: {
         vi_rol: true,
-        vi_persona: true
-      }
+        vi_persona: true,
+      },
     });
   }
 
@@ -74,32 +74,31 @@ export class UsuarioService {
       },
     });
 
-    const apiUrl = 'https://heladeria2.od2.vtiger.com/restapi/vtap/api/addContact';
+    const apiUrl =
+      'https://heladeria2.od2.vtiger.com/restapi/vtap/api/addContact';
     const auth = {
       username: 'dep2.crm@gmail.com',
       password: '97FO4nsSpV6UneKW',
     };
 
-
     const response = await axios.post(
-        apiUrl,
-        {
-          Nombre: data.nombre,
-          Apellidos: data.apellido,
-          email: data.email,
-          Categoria: 'B2C',
+      apiUrl,
+      {
+        Nombre: data.nombre,
+        Apellidos: data.apellido,
+        email: data.email,
+        Categoria: 'B2C',
+      },
+      {
+        auth,
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          auth,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+      },
+    );
 
     idCrm = response.data.result.id; // Extraer el ID del CRM de la respuesta
     console.log('ID del CRM:', idCrm);
-    
 
     const usuario = await this.prisma.vi_usuario.create({
       data: {
@@ -112,9 +111,9 @@ export class UsuarioService {
         contrasena: 'google',
         usuariocreacion: '2A',
         id_crm: idCrm,
-        puntosacumulados:0,
+        puntosacumulados: 0,
         vi_rol: {
-          connect: { id: rol.id }, 
+          connect: { id: rol.id },
         },
         vi_persona: {
           connect: { id: generatedPersonaId },
@@ -128,13 +127,12 @@ export class UsuarioService {
       },
       include: {
         vi_rol: true,
-        vi_persona: true
+        vi_persona: true,
       },
     });
 
     return new_google_usuario;
-  
-}
+  }
 
   async findByEmailWithRole(email: string): Promise<any> {
     // Busca al usuario por su correo e incluye el rol en la consulta
@@ -142,7 +140,7 @@ export class UsuarioService {
       where: { correo: email },
       include: {
         vi_rol: true,
-        vi_persona: true
+        vi_persona: true,
       },
     });
 
@@ -207,14 +205,13 @@ export class UsuarioService {
   }
 
   async updatePersonaInfo(id: string, data: PersonaUpdateDTO): Promise<any> {
-
     const usuario = await this.prisma.vi_usuario.findUnique({
       where: {
         id,
-      }
+      },
     });
 
-    const persona= await this.prisma.vi_persona.update({
+    const persona = await this.prisma.vi_persona.update({
       where: {
         id: usuario.id_persona,
       },
@@ -227,12 +224,11 @@ export class UsuarioService {
       },
       include: {
         vi_persona: true,
-        vi_rol: true
-      }
+        vi_rol: true,
+      },
     });
 
     return user;
-
   }
 
   async deleteUsuario(id: string): Promise<void> {
@@ -256,6 +252,15 @@ export class UsuarioService {
       return this.usuarioRepository.updateRole(usuarioId, newRoleId);
     } catch (error) {
       throw new InternalServerErrorException('Error al listar etiquetas');
+    }
+  }
+
+  async addPoints(id: string, puntos: number): Promise<boolean> {
+    try {
+      await this.usuarioRepository.addPoints(id, puntos);
+      return true;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al sumar puntos');
     }
   }
 }

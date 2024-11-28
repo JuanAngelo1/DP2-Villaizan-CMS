@@ -4,9 +4,10 @@ import { VillaparadaService } from './villaparada.service';
 import { HttpModule } from '@nestjs/axios';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { VillaparadaRepository } from './villaparada.repository';
+import { UsuarioModule } from 'src/GestionUsuarios/usuario/usuario.module';
 
 @Module({
-  imports: [HttpModule, PrismaModule],
+  imports: [HttpModule, PrismaModule, UsuarioModule],
   controllers: [VillaparadaController],
   providers: [VillaparadaService, VillaparadaRepository],
 })
