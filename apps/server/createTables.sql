@@ -229,10 +229,10 @@ CREATE TABLE vi_villaparada (
     latitud FLOAT NOT NULL,
     longitud FLOAT NOT NULL,
     nota TEXT,
+    direccion VARCHAR(512) NOT NULL,
 	fechacreacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     fechaultimamodificacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	estaactivo BOOLEAN DEFAULT TRUE,
-	id_fruta VARCHAR(100) NOT NULL,
+	id_fruta VARCHAR(255) NOT NULL,
 	CONSTRAINT fk_fruta FOREIGN KEY (id_fruta) REFERENCES vi_fruta(id)
 );
-
