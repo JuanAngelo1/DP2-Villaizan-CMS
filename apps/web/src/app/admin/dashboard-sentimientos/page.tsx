@@ -1,6 +1,6 @@
 "use client";
 
-import { ControlledError, DateRange, Response } from "@web/types";
+import { Comentario, ControlledError, DateRange, Response } from "@web/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
@@ -15,29 +15,36 @@ import StaticWordCloud from "./_components/StaticWordCloud";
 import StatsCard from "./_components/StatsCard";
 
 const DashboardSentimientos = () => {
-  const [dateRange, setDateRange] = useState<DateRange>({ start: new Date(), end: new Date() });
+  const [dateRange, setDateRange] = useState<DateRange>({
+    start: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+    end: new Date(new Date()),
+  });
+
+  console.log(dateRange);
   const [selectedProduct, setSelectedProduct] = useState<string>("Paleta de Chocolate");
   const [commentsCounter, setCommentsCounter] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [wordCountDict, setWordCountDict] = useState<Record<string, number>>({}); // Diccionario para contar palabras
 
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        const requestData = {
-          fechaInicio: dateRange.start?.toISOString(),
-          fechaFin: dateRange.end?.toISOString(),
-        };
-        const responseCommentsCounter: Response<number> = await axios.post(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/contarEntreFechas`,
-          requestData
+        const fechaInicio = dateRange.start?.toISOString();
+        const fechaFin = dateRange.end?.toISOString();
+        const responseCommentsCounter: Response<Comentario[]> = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/comentario/listarEntreFechas/${fechaInicio}/${fechaFin}`
         );
 
         if (responseCommentsCounter.data.status === "Error") {
           throw new ControlledError(responseCommentsCounter.data.message);
         }
 
-        setCommentsCounter(responseCommentsCounter.data.result);
+        const comments: Comentario[] = responseCommentsCounter.data.result;
+        setCommentsCounter(comments.length);
+
+        const wordCount = createWordCountDict(comments);
+        setWordCountDict(wordCount);
       } catch (error) {
         if (error instanceof ControlledError) {
           toast({ title: "Error al obtener información del dashboard", description: error.message });
@@ -55,6 +62,24 @@ const DashboardSentimientos = () => {
 
     fetchData();
   }, [dateRange, selectedProduct]);
+
+  const createWordCountDict = (comments: Comentario[]): Record<string, number> => {
+    const wordCount: Record<string, number> = {};
+
+    comments.forEach((comment) => {
+      const words = comment.comentario.toLowerCase().split(/\s+/); // Dividir el texto en palabras
+      words.forEach((word) => {
+        // Eliminar caracteres no alfabéticos
+        const cleanedWord = word.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ]/g, "");
+
+        if (cleanedWord) {
+          wordCount[cleanedWord] = (wordCount[cleanedWord] || 0) + 1;
+        }
+      });
+    });
+
+    return wordCount;
+  };
 
   return (
     <div className="w-full space-y-6 p-6">
@@ -96,7 +121,7 @@ const DashboardSentimientos = () => {
                   <SentimentPieChart dateRange={dateRange} selectedProduct={selectedProduct} />
                 </div>
                 <div className="flex items-center justify-center rounded-lg bg-blue-100 p-4">
-                  <StaticWordCloud />
+                  <StaticWordCloud wordsData={wordCountDict} />
                 </div>
               </div>
             </div>

@@ -210,4 +210,32 @@ export class ComentarioController {
       );
     }
   }
+
+  @Get('listarEntreFechas/:fechaInicio/:fechaFin')
+  async listarComentariosEntreFechas(
+    @Param('fechaInicio') fechaInicio: string,
+    @Param('fechaFin') fechaFin: string,
+  ): Promise<any> {
+    try {
+      const result = await this.comentarioService.getComentariosBetweenDates(
+        new Date(fechaInicio),
+        new Date(fechaFin),
+      );
+      return {
+        status: 'Success',
+        message: 'Comentarios obtenidos entre fechas',
+        result: result,
+      };
+    } catch (err) {
+      console.log(err);
+      throw new HttpException(
+        {
+          status: 'Error',
+          message: 'Error al obtener los comentarios',
+          result: [],
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
