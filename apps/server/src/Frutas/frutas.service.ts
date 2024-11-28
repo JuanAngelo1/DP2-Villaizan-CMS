@@ -18,6 +18,7 @@ export class FrutasService {
         id: true,
         nombre: true,
         descripcion: true,
+
         vi_contenidoeducativo: {
           where: {
             estaactivo: true,
@@ -76,6 +77,20 @@ export class FrutasService {
             },
           },
         },
+
+        vi_villaparada: {
+          where:{
+            estaactivo: true,
+          },
+          select: {
+            id: true,
+            nombre: true,
+            latitud: true,
+            longitud: true,
+          },
+        },
+
+
       },
     });
   }
@@ -131,6 +146,17 @@ export class FrutasService {
                 },
               },
             },
+          },
+        },
+        vi_villaparada: {
+          where:{
+            estaactivo: true,
+          },
+          select: {
+            id: true,
+            nombre: true,
+            latitud: true,
+            longitud: true,
           },
         },
       },
