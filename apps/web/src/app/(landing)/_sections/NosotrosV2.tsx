@@ -11,7 +11,7 @@ function NosotrosV2() {
 
   return (
     <MaxWidthWrapper className="mt-20 flex flex-col items-center gap-6 overflow-hidden py-6 font-['Abhaya_Libre'] lg:flex-row">
-      <section className={cn("BOX group/main relative shrink-0 overflow-visible", twStyle1)}>
+      <section className={cn("BOX group/main relative shrink-0 overflow-visible", twStyle1)} id="nosotros">
         <div
           className="absolute bottom-0 left-1/2 z-20 aspect-square w-[80%] -translate-x-1/2 rounded-full bg-transparent transition-all group-hover/main:scale-110"
           style={{
@@ -41,13 +41,16 @@ function NosotrosV2() {
       <section className="flex min-w-0 flex-col items-center lg:items-start">
         <h1 className="text-3xl md:text-4xl lg:text-5xl">Sobre Paletas Villaizan</h1>
         <p className="text-md mt-2 max-w-[700px] text-center leading-6 lg:max-w-full lg:text-start lg:text-lg">
-          Todo comenzó en un cálido verano, cuando la familia Villaizan decidió capturar los sabores más
-          frescos de la temporada en un postre que uniera tradición y creatividad. Inspirados por las recetas
-          caseras de la abuela, empezaron a crear paletas llenas de colores y sabores auténticos, usando
-          frutas frescas y un toque de amor.
+          En noviembre de 2015, en la cálida ciudad de Chiclayo, nació Paletas Villaizan, una marca inspirada
+          en el deseo de disfrutar productos naturales y frescos en los días más calurosos. El nombre
+          Villaizan es un homenaje a nuestra familia y a nuestra hija, María Fe, quien ha sido nuestra mayor
+          inspiración para crecer y llevar este sueño a más personas. Desde nuestros inicios, nos hemos
+          comprometido a ofrecer productos de calidad excepcional, utilizando ingredientes auténticos. Nuestro
+          camino ha sido una mezcla de esfuerzo, creatividad y dedicación para compartir momentos dulces y
+          únicos con cada paleta.
         </p>
         <Link
-          href={'sobre-nosotros'}
+          href={"sobre-nosotros"}
           className={cn(
             buttonVariants(),
             "mt-4 bg-red-800 px-6 py-6 text-lg text-white hover:bg-red-900 lg:text-xl"

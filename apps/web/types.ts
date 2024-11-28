@@ -185,7 +185,7 @@ export type ContenidoEducativo = {
   id_fruta: string;
   titulo: string;
   contenidoinformacion: string;
-  tipocontenido: 'informacion' | 'video' | 'imagen'; //!TODO
+  tipocontenido: 'Informacion' | 'Video' | 'Imagen'; //!TODO
   urlcontenido: string;
   fechapublicacion: string;
   estaactivo: boolean;

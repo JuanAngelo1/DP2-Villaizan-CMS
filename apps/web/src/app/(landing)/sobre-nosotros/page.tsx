@@ -1,119 +1,45 @@
-"use client";
+"use server";
 
-import {
-  Baby,
-  Binoculars,
-  Check,
-  ChevronRight,
-  Map,
-  PackagePlus,
-  Popsicle,
-  Proportions,
-  Smile,
-  Store,
-  Sun,
-} from "lucide-react";
+import { Fruta, Response } from "@web/types";
+import axios from "axios";
+import { Check, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@repo/ui/components/button";
-import { Separator } from "@repo/ui/components/separator";
 import { cn } from "@repo/ui/lib/utils";
+import { productFeats } from "../../data/about_us";
 import MaxWidthWrapper from "../_components/MaxWidthWrapper";
 import HistoryTimeline from "./_components/HistoryTimeline";
 import MainHistory from "./_components/MainHistory";
 import Mision from "./_components/Mision";
 import NumberProof from "./_components/NumberProof";
-import Sabores from "./_components/Sabores";
+import Frutas from "./_components/Frutas";
 import Vision from "./_components/Vision";
 
-export interface NumberProofType {
-  label: string;
-  value: number;
-  textBefore?: string;
+
+async function getFrutas() {
+  try {
+    const response: Response<Fruta[]> = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/frutas`);
+
+    if (response.data.status !== "Success") throw new Error("Error al obtener las frutas");
+
+    return response.data.result;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
 
-export interface HistoryItemType {
-  title: string;
-  date: string;
-  content: string;
-  icon: any;
-  image: string;
-}
 
-const productFeats = ["Artesanía con amor", "Frescura garantizada", "Sabores únicos", "Opciones para todos"];
+async function AboutUsPage() {
+  const frutas = await getFrutas();
+  if (!frutas) throw new Error("Error al obtener las frutas");
 
-const numberProofs: NumberProofType[] = [
-  {
-    label: "Años de experiencia",
-    value: 5,
-  },
-  {
-    label: "Puntos de venta",
-    value: 200,
-    textBefore: "+ ",
-  },
-  {
-    label: "Variedad de sabores",
-    value: 30,
-    textBefore: "+ ",
-  },
-];
+  console.log(frutas)
 
-const historyItems: HistoryItemType[] = [
-  {
-    title: "Nuestro inicio",
-    date: "Noviembre 2015",
-    content:
-      "Paletas Villaizan comenzó en Chiclayo como un pequeño emprendimiento familiar, inspirado por el amor a las frutas naturales y la frescura. Nuestro nombre es un homenaje a los hijos que nos motivan día a día.",
-    icon: Sun,
-    image: "/nosotros/historia-main.jpg",
-  },
-  {
-    title: "La Llegada de María Fe",
-    date: "Marzo 2017",
-    content:
-      "El nacimiento de mi hija María Fe marcó un antes y un después en nuestra historia. Ella se convirtió en nuestra mayor inspiración para expandirnos y compartir Villaizan con más personas.",
-    icon: Baby,
-    image: "/image-principal.png",
-  },
-  {
-    title: "Expansión a Tarapoto",
-    date: "Enero 2020",
-    content:
-      "Después de varios años creciendo en Chiclayo, decidimos abrir nuestro primer local en Tarapoto. Siempre con la misma misión: ofrecer un producto de calidad y mantener nuestros valores familiares.",
-    icon: Map,
-    image: "/image-secundaria.png",
-  },
-  {
-    title: "Colaboración con Grandes Marcas",
-    date: "Junio 2020",
-    content:
-      "A lo largo del tiempo, hemos sido reconocidos por nuestra calidad, lo que nos permitió colaborar con una importante marca nacional, consolidando nuestra presencia en el mercado.",
-    icon: PackagePlus,
-    image: "/nosotros/aboutus7.jpg",
-  },
-  {
-    title: "El Lanzamiento de las MAFELETAS",
-    date: "Febrero 2024",
-    content:
-      "Para rendir homenaje a María Fe, lanzamos las MAFELETAS, un nuevo formato mini que lleva su nombre. Este producto refleja nuestra creatividad y nuestro compromiso con innovar mientras mantenemos la tradición.",
-    icon: Popsicle,
-    image: "/nosotros/aboutus3.jpg",
-  },
-  {
-    title: "Presentes y buscando crecer",
-    date: "Presente",
-    content:
-      "Hoy, seguimos creando paletas con amor y dedicación, manteniendo la calidad y frescura que nos caracteriza. Nuestro compromiso es seguir innovando y creciendo, para llevar nuestros productos a más personas y seguir compartiendo momentos de felicidad.",
-    icon: Smile,
-    image: "/nosotros/aboutus4.jpg",
-  },
-];
-
-function AboutUsPage() {
   return (
     <>
-      <div className="relative flex flex-row justify-between overflow-hidden bg-[#ffe47a80] py-6 font-['Abhaya_Libre'] xl:py-10 overflow-x-hidden">
+      <div className="relative flex flex-row justify-between overflow-hidden overflow-x-hidden bg-[#ffe47a80] py-6 font-['Abhaya_Libre'] xl:py-10">
         <MaxWidthWrapper className="flex flex-row justify-between">
           <section className="flex w-3/4 shrink-0 flex-col gap-2 lg:w-1/2">
             <h1 className="text-2xl font-bold text-red-800 md:text-4xl lg:text-5xl">
@@ -130,7 +56,7 @@ function AboutUsPage() {
               })}
             </ul>
             <Link
-              href="as"
+              href="https://heladosvillaizan.tech/"
               className={cn(
                 buttonVariants(),
                 "text-md z-[100] flex w-fit flex-row items-center gap-1 bg-red-800 py-5 font-semibold hover:bg-red-900 md:px-5 md:text-lg lg:hidden"
@@ -155,7 +81,7 @@ function AboutUsPage() {
               delicioso sabor que ofrecemos
             </h2>
             <Link
-              href="as"
+              href="https://heladosvillaizan.tech/"
               className={cn(
                 buttonVariants(),
                 "z-[100] flex flex-row items-center gap-1 bg-red-800 px-5 py-5 text-lg font-semibold hover:bg-red-900"
@@ -167,16 +93,16 @@ function AboutUsPage() {
           </section>
         </MaxWidthWrapper>
       </div>
-      <MaxWidthWrapper className="mt-4 font-['Abhaya_Libre'] overflow-x-hidden">
+      <MaxWidthWrapper className="mt-4 overflow-x-hidden font-['Abhaya_Libre']">
         <MainHistory />
-        <HistoryTimeline historyItems={historyItems} />
+        <HistoryTimeline />
 
-        <NumberProof numberProofs={numberProofs} />
+        <NumberProof />
 
         <Vision />
         <Mision />
 
-        <Sabores className="mt-5" />
+        <Frutas className="mt-10" frutas={frutas}/>
 
         <section className="h-[300px]"></section>
       </MaxWidthWrapper>
