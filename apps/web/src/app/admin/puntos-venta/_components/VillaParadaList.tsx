@@ -1,23 +1,21 @@
-// src/app/admin/puntos-venta/components/PuntoVentaList.tsx
 import { Button } from "@repo/ui/components/button";
 
-export default function PuntoVentaList({ puntos, onEdit, onDelete }) {
-  console.log("LLEGÓ:", puntos);
+export default function VillaParadaList({ villaParadas, onEdit, onDelete }) {
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold mb-3">Puntos de Venta</h2>
+      <h2 className="text-lg font-semibold mb-3">VillaParadas</h2>
       <ul className="space-y-3 max-h-[240px] overflow-y-auto border p-2">
-        {puntos.map((punto) => (
+        {villaParadas.map((parada) => (
           <li
-            key={punto.id}
+            key={parada.id}
             className="flex items-center justify-between p-2 border rounded-lg shadow-sm bg-white"
           >
-            <span className="font-sm flex-1">🏪 {punto.nombre}</span>
+            <span className="font-sm flex-1">🏠 {parada.nombre}</span>
             <div className="flex space-x-2">
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onEdit(punto)}
+                onClick={() => onEdit(parada)}
                 className="text-gray-700"
               >
                 Editar
@@ -25,7 +23,7 @@ export default function PuntoVentaList({ puntos, onEdit, onDelete }) {
               <Button
                 variant="destructive"
                 size="sm"
-                onClick={() => onDelete(punto)}
+                onClick={() => onDelete(parada)}
                 className="text-white bg-red-500 hover:bg-red-600"
               >
                 Eliminar
@@ -35,6 +33,5 @@ export default function PuntoVentaList({ puntos, onEdit, onDelete }) {
         ))}
       </ul>
     </div>
-
   );
 }
