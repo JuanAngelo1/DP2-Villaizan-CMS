@@ -85,4 +85,12 @@ export class VillaparadaRepository {
       throw error; // Rethrow el error si no es el esperado
     }
   }
+
+  async findById(id: number): Promise<vi_villaparada | null> {
+    return this.prisma.vi_villaparada.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
 }

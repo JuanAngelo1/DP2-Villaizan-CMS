@@ -52,11 +52,37 @@ export class VillaparadaService {
 
   async sumarPuntos(data: AgregarPuntosDTO) {
     try {
+      const villaparada = await this.villaparadaRepository.findById(
+        data.id_villaparada,
+      );
+      if (!villaparada) {
+        throw new Error('Villa parada no encontrada');
+      }
+
+      const distance = this.calculateDistance(
+        data.latitud,
+        data.longitud,
+        villaparada.latitud,
+        villaparada.longitud,
+      );
+
+      // Verifica si la distancia es menor a 20 metros
+      if (distance > 20) {
+        //console.log('Distancia:', distance);
+        return {
+          success: false,
+          message: 'La ubicación está fuera del rango permitido (20 metros)',
+        };
+      }
+
       const result = await this.villaparadaRepository.sumarPuntos(data);
 
       // Si el resultado tiene la propiedad success = false, significa que hubo un error de unicidad
       if (result.success === false) {
-        return result; // Retorna el mensaje de error si es de unicidad
+        return {
+          success: false,
+          message: 'Ya se sumaron puntos a esta villaparada',
+        };
       }
 
       const usuario = await this.usuarioService.getUsuarioByID(data.id_usuario);
@@ -70,5 +96,27 @@ export class VillaparadaService {
       console.error(error);
       throw error; // En caso de otros errores, se vuelve a lanzar
     }
+  }
+
+  private calculateDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number,
+  ): number {
+    const R = 6371e3; // Radio de la Tierra en metros
+    const toRadians = (angle: number) => (angle * Math.PI) / 180;
+
+    const φ1 = toRadians(lat1);
+    const φ2 = toRadians(lat2);
+    const Δφ = toRadians(lat2 - lat1);
+    const Δλ = toRadians(lon2 - lon1);
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Retorna la distancia en metros
   }
 }
