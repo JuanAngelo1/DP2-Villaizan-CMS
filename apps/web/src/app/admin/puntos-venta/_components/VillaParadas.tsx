@@ -8,10 +8,12 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Button } from "@repo/ui/components/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
-import PuntoVentaForm from "./PuntoVentaForm";
-import PuntoVentaList from "./PuntoVentaList";
 import PuntoVentaModal from "./PuntoVentaModal";
 import PuntoVillaParadaForm from "./PuntoVillaParadaForm";
+import PuntoVillaParadaList from "./PuntoVillaParadaList";
+import QRCodeGenerator from "./QRCodeGenerator";
+
+// src/app/admin/puntos-venta/page.tsx
 
 // src/app/admin/puntos-venta/page.tsx
 
@@ -48,6 +50,7 @@ export default function VillaParadas() {
   const [isEditing, setIsEditing] = useState(true);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [address, setAddress] = useState("");
+  const [isViewingQR, setIsViewingQR] = useState(false);
 
   useEffect(() => {
     fetchPuntos();
@@ -78,6 +81,7 @@ export default function VillaParadas() {
     setMarkerPosition({ lat: -12.086, lng: -77.07 });
     setAddress("");
     setIsEditing(true);
+    setIsViewingQR(false);
   };
 
   const handleSavePoint = async (updatedPoint: PuntoVenta) => {
@@ -105,9 +109,20 @@ export default function VillaParadas() {
 
       if (response.data.status === "Error") throw new Error(response.data.message);
 
-      await fetchPuntos();
+      const savedPointId = response.data.result?.id;
 
-      setIsEditing(false);
+    // Actualiza la lista completa
+    await fetchPuntos();
+
+    // Buscar el punto recién creado en la lista
+    const savedPoint = puntos.find((punto) => punto.id === savedPointId);
+    if (savedPoint) {
+      setCurrentEditPoint(savedPoint); // Selecciona el punto recién guardado
+      setIsViewingQR(true); // Muestra el QR
+      setIsEditing(false); // Oculta el formulario
+    } else {
+      console.warn("El punto creado no fue encontrado en la lista.");
+    }
     } catch (error) {
       console.error("Error al guardar el punto de venta:", error);
     }
@@ -118,6 +133,7 @@ export default function VillaParadas() {
     setMarkerPosition({ lat: punto.lat, lng: punto.lng });
     setAddress(punto.direccion || "");
     setIsEditing(true);
+    setIsViewingQR(false);
   };
 
   const handleDeletePoint = (punto: PuntoVenta) => {
@@ -153,48 +169,67 @@ export default function VillaParadas() {
     const reverseGeocodedAddress = await reverseGeocode(lat, lng);
     if (reverseGeocodedAddress) setAddress(reverseGeocodedAddress);
   };
-
+  const handleViewQR = (punto) => {
+    setCurrentEditPoint(punto);
+    setIsViewingQR(true); // Muestra el QR
+    setIsEditing(false); // Oculta el formulario
+  };
+  
   return (
-    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[2px] lg:p-[2px]">
-      <main className="flex h-[95%] flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
-        <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-2 lg:gap-[24px] lg:p-[32px]">
-              <div className="flex h-[95%] space-x-4">
-                <div className="z-0 w-full p-2 shadow">
-                  <PuntoVentaMap
-                    puntos={puntos}
-                    selectedPoint={markerPosition}
-                    onDragMarker={updateMarkerPosition}
+    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col">
+      <main className="flex h-[100%] flex-col overflow-y-hidden lg:flex-row">
+        <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col">
+          <div className="flex h-[90%]">
+            <div className="z-0 w-full p-2 shadow">
+              <PuntoVentaMap
+                puntos={puntos}
+                selectedPoint={markerPosition}
+                onDragMarker={updateMarkerPosition}
+              />
+            </div>
+            <div className="w-[30%] rounded border p-4 shadow">
+              <PuntoVillaParadaList
+                puntos={puntos}
+                onEdit={handleEditPoint}
+                onDelete={handleDeletePoint}
+                onViewQR={handleViewQR}
+              />
+              <div className="mt-4 w-full space-x-2 space-y-3">
+                <Button
+                  className="w-full gap-2 transition duration-300 ease-in-out hover:scale-105"
+                  onClick={handleAddPoint}
+                >
+                  <Plus className="h-4 w-4 shrink-0" />
+                  <p className="hidden sm:block">Agregar</p>
+                </Button>
+              </div>
+              {isEditing && (
+                <div className="mt-2 p-4 shadow">
+                  <h2 className="text-lg font-semibold">
+                    {currentEditPoint ? "Editar Punto de Venta" : "Nuevo Punto de Venta"}
+                  </h2>
+                  <PuntoVillaParadaForm
+                    selectedPoint={{ ...currentEditPoint, ...markerPosition, direccion: address }}
+                    onSave={handleSavePoint}
+                    onCancel={() => setIsEditing(false)}
+                    onMapUpdate={updateMarkerPosition}
                   />
                 </div>
-                <div className="w-[25%] rounded border p-4 shadow">
-                  <PuntoVentaList puntos={puntos} onEdit={handleEditPoint} onDelete={handleDeletePoint} />
-                  <div className="mt-4 w-full space-x-2 space-y-3">
-                    <Button className="w-full gap-2" onClick={handleAddPoint}>
-                      <Plus className="h-4 w-4 shrink-0" />
-                      <p className="hidden sm:block">Agregar</p>
-                    </Button>
-                  </div>
-                  {isEditing && (
-                    <div className="mt-2 p-4 shadow">
-                      <h2 className="text-lg font-semibold">
-                        {currentEditPoint ? "Editar Punto de Venta" : "Nuevo Punto de Venta"}
-                      </h2>
-                      <PuntoVillaParadaForm
-                        selectedPoint={{ ...currentEditPoint, ...markerPosition, direccion: address }}
-                        onSave={handleSavePoint}
-                        onCancel={() => setIsEditing(false)}
-                        onMapUpdate={updateMarkerPosition}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-              <PuntoVentaModal
-                isOpen={isModalOpen}
-                onClose={() => setModalOpen(false)}
-                onConfirm={confirmDeletePoint}
-              />
-           
+              )}
+              {isViewingQR && (
+  <div className="flex-grow flex flex-col items-center justify-center p-4 shadow">
+                  <h2 className="text-center text-lg font-semibold mb-1">QR de la VillaParada</h2>
+                  <span>{currentEditPoint?.nombre}</span>
+    <QRCodeGenerator villaparada={currentEditPoint?.id} id_fruta={currentEditPoint?.id_fruta} />
+  </div>
+)}
+            </div>
+          </div>
+          <PuntoVentaModal
+            isOpen={isModalOpen}
+            onClose={() => setModalOpen(false)}
+            onConfirm={confirmDeletePoint}
+          />
         </div>
       </main>
     </div>

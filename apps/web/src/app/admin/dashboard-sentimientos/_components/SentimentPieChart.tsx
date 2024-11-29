@@ -23,12 +23,12 @@ interface SentimentPieChartProps {
 
 // Datos iniciales con productos y sentimientos
 const chartData = [
-  { name: "Bueno", value: 275, producto: "Paleta de Chocolate" },
-  { name: "Neutro", value: 200, producto: "Paleta de Chocolate" },
-  { name: "Malo", value: 287, producto: "Paleta de Chocolate" },
-  { name: "Bueno", value: 300, producto: "Cono" },
-  { name: "Neutro", value: 180, producto: "Cono" },
-  { name: "Malo", value: 320, producto: "Cono" },
+  { name: "Bueno", value: 15, producto: "Paleta de Chocolate" },
+  { name: "Neutro", value: 5, producto: "Paleta de Chocolate" },
+  { name: "Malo", value: 7, producto: "Paleta de Chocolate" },
+  { name: "Bueno", value: 10, producto: "Cono" },
+  { name: "Neutro", value: 50, producto: "Cono" },
+  { name: "Malo", value: 3, producto: "Cono" },
 ];
 
 // Configuración de colores consistentes

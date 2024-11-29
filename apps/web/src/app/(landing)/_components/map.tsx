@@ -1,6 +1,6 @@
 "use client";
 
-import { PuntoVenta, Response } from "@web/types";
+import { ControlledError, PuntoVenta, Response, ResponseModuloRedes } from "@web/types";
 import axios from "axios";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";

@@ -106,7 +106,7 @@ export default function PuntosVentaPage() {
 
       await fetchPuntos();
 
-      setIsEditing(false);
+      setIsEditing(true);
     } catch (error) {
       console.error("Error al guardar el punto de venta:", error);
     }
@@ -154,10 +154,10 @@ export default function PuntosVentaPage() {
   };
 
   return (
-    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-6 lg:gap-[2px] lg:p-[2px]">
-      <main className="flex h-[95%] flex-col gap-2 overflow-y-hidden lg:flex-row lg:gap-6">
-        <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col gap-2 p-2 lg:gap-[24px] lg:p-[32px]">
-          <div className="flex items-center justify-between">
+    <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col">
+      <main className="flex h-[100%] flex-col overflow-y-hidden lg:flex-row">
+        <div className="bg-primary-foreground flex h-full min-h-[600px] w-full flex-1 flex-col">
+          <div className="flex items-center justify-between m-2">
             <h1 className="text-2xl font-bold">Gestión de Puntos de Venta</h1>
           </div>
           <Tabs defaultValue="puntos-de-venta" className="min-w-full">
@@ -166,7 +166,7 @@ export default function PuntosVentaPage() {
               <TabsTrigger value="villaparadas">VillaParadas</TabsTrigger>
             </TabsList>
             <TabsContent value="puntos-de-venta">
-              <div className="flex h-[95%] space-x-4">
+              <div className="flex h-[85%] mb-2 ">
                 <div className="z-0 w-full p-2 shadow">
                   <PuntoVentaMap
                     puntos={puntos}
@@ -174,12 +174,12 @@ export default function PuntosVentaPage() {
                     onDragMarker={updateMarkerPosition}
                   />
                 </div>
-                <div className="w-[25%] rounded border p-4 shadow">
+                <div className="w-[30%] rounded border p-4 shadow">
                   <PuntoVentaList puntos={puntos} onEdit={handleEditPoint} onDelete={handleDeletePoint} />
                   <div className="mt-4 w-full space-x-2 space-y-3">
                     <Button className="w-full gap-2" onClick={handleAddPoint}>
                       <Plus className="h-4 w-4 shrink-0" />
-                      <p className="hidden sm:block">Agregar</p>
+                      <p className="hidden sm:block  transition duration-300 ease-in-out hover:scale-105">Agregar</p>
                     </Button>
                   </div>
                   {isEditing && (
@@ -203,7 +203,7 @@ export default function PuntosVentaPage() {
                 onConfirm={confirmDeletePoint}
               />
             </TabsContent>
-            <TabsContent defaultValue="villaparadas" className="min-w-full" value={"villaparadas"}>
+            <TabsContent defaultValue="villaparadas" value={"villaparadas"}>
               <VillaParadas/>
             </TabsContent>
           </Tabs>

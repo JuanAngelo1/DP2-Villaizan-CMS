@@ -11,7 +11,7 @@ export default function PuntoVillaParadaForm({ selectedPoint, onSave, onCancel, 
   const [lng, setLng] = useState(selectedPoint?.lng || -77.07);
   const [nota, setNota] = useState(selectedPoint?.nota || "");
   const [frutas, setFrutas] = useState([]); // Lista de frutas obtenida del servidor
-const [frutaSeleccionada, setFrutaSeleccionada] = useState(selectedPoint?.id_fruta || ""); // ID de la fruta seleccionada
+  const [frutaSeleccionada, setFrutaSeleccionada] = useState(selectedPoint?.id_fruta || ""); // ID de la fruta seleccionada
 
 
   useEffect(() => {
@@ -77,14 +77,14 @@ const [frutaSeleccionada, setFrutaSeleccionada] = useState(selectedPoint?.id_fru
       <SelectValue placeholder="Seleccione una fruta" />
     </SelectTrigger>
     <SelectContent>
-      {frutas.map((fruta) => (
-        <SelectItem key={fruta.id} value={fruta.id}>
-          {fruta.nombre} {/* Mostramos el nombre de la fruta */}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
+          {frutas.map((fruta) => (
+            <SelectItem key={fruta.id} value={fruta.id}>
+              {fruta.nombre} {/* Mostramos el nombre de la fruta */}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
 
       <div className="flex items-center gap-2">
         <div className="flex-1">

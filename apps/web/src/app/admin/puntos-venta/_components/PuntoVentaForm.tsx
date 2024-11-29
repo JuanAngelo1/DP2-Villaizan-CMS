@@ -32,7 +32,9 @@ export default function PuntoVentaForm({ selectedPoint, onSave, onCancel, onMapU
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave({ id: selectedPoint?.id, nombre, direccion, lat, lng, nota });
-     setNombre("");
+    setNombre("");
+    setDireccion("");
+    setNota("");
   };
 
   return (
