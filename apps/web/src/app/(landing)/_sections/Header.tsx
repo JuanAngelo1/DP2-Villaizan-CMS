@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   const { data: session, status } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
   useEffect(() => {
     if (checkIfAuthenticated(session, status)) {
       setIsAuthenticated(true);
@@ -30,13 +30,13 @@ const Header: React.FC = () => {
       setIsAuthenticated(false);
     }
   }, [session, status]);
-  
+
 
   return (
-    <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 text-white bg-red-800 font-['Abhaya_Libre'] shadow-xl">
+    <header className="fixed z-50 h-[68px] w-full border-b-2 border-b-rose-800 bg-red-800 font-['Abhaya_Libre'] text-white shadow-xl">
       <MaxWidthWrapper className="flex h-full items-center justify-between">
         {/* Logo */}
-        <div className="absolute bottom-0 left-0 right-0 top-0 mr-4 flex flex-1 items-center justify-end md:mr-0 md:justify-center">
+        <div className="absolute bottom-0 left-1/2 top-0 mr-4 flex flex-1 -translate-x-1/2 items-center justify-end md:mr-0 md:justify-center">
           <Link id="logo" href="/" className="md:translate-y-5">
             <Image
               src="/VillaizanLogoV.png"

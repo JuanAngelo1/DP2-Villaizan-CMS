@@ -112,6 +112,7 @@ export type Persona = {
   sexo: string | null;
   edad: number | null;
   estado: string;
+  puntosacumulados: number;
   estaactivo: boolean;
   desactivadoen: Date | null;
   creadoen: Date;
@@ -211,10 +212,20 @@ export type ProductoFruta = {
   vi_producto: Producto;
 };
 
+export type Villaparada = {
+  id: number;
+  nombre: string;
+  latitud: number;
+  longitud: number;
+  direccion: string;
+  isUnlocked: boolean | undefined;
+}
+
 export type Fruta = {
   id: string;
   nombre: string;
   descripcion: string;
   vi_contenidoeducativo: ContenidoEducativo[];
   vi_producto_fruta: ProductoFruta[];
+  vi_villaparada: Villaparada[];
 };

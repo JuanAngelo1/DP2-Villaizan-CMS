@@ -39,7 +39,7 @@ function Frutas({ frutas }: { frutas: Fruta[] }) {
               <CarouselItem key={fruta.id} className="h-full basis-auto">
                 <Link
                   className="group/item relative flex aspect-square h-full p-3 transition-all hover:p-0"
-                  href={"/sabores"}
+                  href={"/sabores?inicial=" + fruta.nombre}
                 >
                   <Image
                     src={imagen}

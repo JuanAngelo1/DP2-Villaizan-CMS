@@ -12,21 +12,39 @@ import {
   ChevronRight,
   ChevronUp,
   CircleDotDashed,
-  HandHeart,
   Newspaper,
   Popsicle,
+  Swords,
 } from "lucide-react";
+import { User } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import Typewriter from "typewriter-effect";
+import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { cn } from "@repo/ui/lib/utils";
 import "./../allView.css";
+import PointClaimDialog from "./PointClaimDialog";
 
 type Modes = "history" | "benefits" | "products" | null;
 
-function MainCarousel({ frutas }: { frutas: Fruta[] }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ axis: "y", loop: true }, [
+
+
+function MainCarousel({ frutas, user }: { frutas: Fruta[]; user: User | undefined }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const inicial = searchParams.get("inicial");
+  const villaparada = searchParams.get("villaparada");
+  const id_fruta = searchParams.get("id_fruta");
+
+  let startingIdx = 0;
+  if (inicial) {
+    startingIdx = frutas.findIndex((fruta) => fruta.nombre === inicial);
+    if (startingIdx === -1) startingIdx = 0;
+  }
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ axis: "y", loop: true, startIndex: startingIdx }, [
     Autoplay({ playOnInit: true, stopOnInteraction: true, delay: 2500 }),
   ]);
 
@@ -56,22 +74,23 @@ function MainCarousel({ frutas }: { frutas: Fruta[] }) {
     });
   };
 
+  const updateRadius = () => {
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.offsetWidth;
+      const containerHeight = containerRef.current.offsetHeight;
+      setRadius(Math.min(containerWidth, containerHeight) / 2); // Adjust for padding or item size
+    }
+  };
+
+  const [isOnGeneralView, setIsOnGeneralView] = useState(false);
   const [selectedMode, setSelectedMode] = useState<Modes[]>(frutas.map((fruta) => null));
 
-  const containerRef = useRef(null); // Ref for the container
+  const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
   const [radius, setRadius] = useState(0);
   const angleStep = 360 / frutas.length;
 
   useEffect(() => {
     // Calculate radius dynamically
-    const updateRadius = () => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const containerHeight = containerRef.current.offsetHeight;
-        setRadius(Math.min(containerWidth, containerHeight) / 2); // Adjust for padding or item size
-      }
-    };
-
     updateRadius(); // Initial calculation
     window.addEventListener("resize", updateRadius); // Recalculate on resize
 
@@ -80,7 +99,8 @@ function MainCarousel({ frutas }: { frutas: Fruta[] }) {
 
   return (
     <>
-      {/* <div
+      <PointClaimDialog villaparada={villaparada} id_fruta={id_fruta} user={user}/>
+      <div
         className="embla relative w-full overflow-hidden transition-colors duration-1000"
         style={{
           backgroundImage: "url(/sabores/sabores-background.jpg)",
@@ -94,20 +114,29 @@ function MainCarousel({ frutas }: { frutas: Fruta[] }) {
           {frutas.map((fruta, index) => {
             return (
               <EmblaSlide className="relative flex" key={fruta.id}>
-                <FrutaDisplay fruta={fruta} selectedMode={selectedMode[index]} />
+                <FrutaDisplay fruta={fruta} selectedMode={selectedMode[index]} user={user} />
               </EmblaSlide>
             );
           })}
         </EmblaContainer>
         <div className="absolute left-0 top-0 z-[200] flex h-full flex-col items-start justify-center gap-3 p-5">
-          <CircleButtonWithHiddenText Icon={CircleDotDashed} hiddenText="Ver todos" />
+          <CircleButtonWithHiddenText
+            Icon={CircleDotDashed}
+            hiddenText="Ver todos"
+            onClick={() => {
+              setIsOnGeneralView(true);
+              setTimeout(() => {
+                updateRadius();
+              }, 200);
+            }}
+          />
           <CircleButtonWithHiddenText
             Icon={ArrowDownWideNarrow}
             hiddenText="Desplazar"
             onClick={toggleAutoplay}
           />
         </div>
-  
+
         <div className="absolute bottom-0 right-0 top-0 z-[200] flex flex-col items-end p-5">
           <CircleButton Icon={ChevronUp} onClick={onPrevButtonClick} />
           <div className="flex w-fit flex-1 flex-col items-end justify-center gap-3">
@@ -116,11 +145,7 @@ function MainCarousel({ frutas }: { frutas: Fruta[] }) {
               onClick={() => toggleMode(selectedSnap, "history")}
               text="Historia"
             />
-            <CircleButton
-              Icon={HandHeart}
-              onClick={() => toggleMode(selectedSnap, "benefits")}
-              text="Beneficios"
-            />
+            <CircleButton Icon={Swords} onClick={() => toggleMode(selectedSnap, "benefits")} text="Poderes" />
             <CircleButton
               Icon={Popsicle}
               iconClassname="rotate-90"
@@ -130,48 +155,84 @@ function MainCarousel({ frutas }: { frutas: Fruta[] }) {
           </div>
           <CircleButton Icon={ChevronDown} onClick={onNextButtonClick} />
         </div>
-      </div> */}
-
-      <div ref={containerRef} className="carousel-container">
-        <div ref={containerRef} className="circle">
-          {frutas.map((fruta, index) => {
-            const angle = angleStep * index;
-            const x = radius * Math.cos((angle * Math.PI) / 180);
-            const y = radius * Math.sin((angle * Math.PI) / 180);
-
-            const contenido_educativo = fruta.vi_contenidoeducativo.filter(
-              (contenido) => contenido.tipocontenido === "Imagen"
-            );
-            let imagen;
-
-            if (contenido_educativo.length === 0) imagen = "/sabores/missing.png";
-            else imagen = contenido_educativo[0].urlcontenido;
-
-            return (
-              <div
-                key={index}
-                className="circle-item"
-                style={{
-                  transform: `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${angle}deg)`,
-                }}
-              >
-                <Image
-                  src={imagen}
-                  alt={fruta.nombre}
-                  width={1000}
-                  height={1000}
-                  className="h-full w-full rounded-full object-cover"
-                />
-              </div>
-            );
-          })}
-        </div>
       </div>
+
+      {isOnGeneralView && (
+        <div
+          className="absolute left-0 right-0 top-0 mt-[68px] flex items-center justify-center overflow-hidden"
+          style={{
+            height: "calc(100vh - 68px)",
+            backgroundImage: "url(/sabores/sabores-background.jpg)",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <p className="text-center text-xl font-semibold">Selecciona una fruta</p>
+            <p className="text-muted-foreground text-center">
+              Selecciona alguna de nuestras frutas y enterate <br /> todo sobre ellas. No olvides pasar por
+              sus Villaparadas!
+            </p>
+          </div>
+          <div
+            ref={containerRef}
+            className="carousel-container my-auto"
+            style={{ height: "calc(100vh - 368px)" }}
+          >
+            <div ref={containerRef} className="circle">
+              {frutas.map((fruta, index) => {
+                const angle = angleStep * index;
+                const x = radius * Math.cos((angle * Math.PI) / 180);
+                const y = radius * Math.sin((angle * Math.PI) / 180);
+
+                const contenido_educativo = fruta.vi_contenidoeducativo.filter(
+                  (contenido) => contenido.tipocontenido === "Imagen"
+                );
+                let imagen;
+
+                if (contenido_educativo.length === 0) imagen = "/sabores/missing.png";
+                else imagen = contenido_educativo[0].urlcontenido;
+
+                return (
+                  <div
+                    key={index}
+                    className="circle-item group/circle z-[100] overflow-visible bg-red-800 transition-all hover:scale-150 hover:bg-red-700"
+                    style={{
+                      transform: `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${angle}deg)`,
+                    }}
+                    onClick={() => {
+                      setIsOnGeneralView(false);
+                      emblaApi?.scrollTo(index);
+                    }}
+                  >
+                    <Image
+                      src={imagen}
+                      alt={fruta.nombre}
+                      width={1000}
+                      height={1000}
+                      className="h-full w-full object-contain transition-all group-hover/circle:scale-125"
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
 
-function FrutaDisplay({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Modes }) {
+function FrutaDisplay({
+  fruta,
+  selectedMode,
+  user,
+}: {
+  fruta: Fruta;
+  selectedMode: Modes;
+  user: User | undefined;
+}) {
   const contenido_educativo = fruta.vi_contenidoeducativo.filter(
     (contenido) => contenido.tipocontenido === "Imagen"
   );
@@ -198,6 +259,51 @@ function FrutaDisplay({ fruta, selectedMode }: { fruta: Fruta; selectedMode: Mod
         maxHeight: "calc(100vh - 68px)",
       }}
     >
+      <div className="flex w-full flex-row gap-6">
+        {fruta.vi_villaparada.map((villaparada) => {
+          const isUnlocked = villaparada.isUnlocked !== undefined ? villaparada.isUnlocked : false;
+
+          const unlockedText = "Usted reclamo esta Villaparada por 20 puntos.";
+          const lockedText = "No ha reclamado esta Villaparada. Ve ahora!";
+
+          return (
+            <Popover key={villaparada.id}>
+              <PopoverTrigger asChild>
+                <div className="relative aspect-square h-24 cursor-pointer overflow-hidden rounded-full">
+                  {isUnlocked === false && (
+                    <>
+                      <div className="absolute bottom-0 left-0 right-0 top-0 rounded-full bg-black opacity-55" />
+                      <div className="absolute bottom-0 left-0 right-0 top-0 rounded-full p-6">
+                        <Image
+                          src={"/sabores/lock.png"}
+                          width={1000}
+                          height={1000}
+                          alt="lock"
+                          className="h-full w-full opacity-100"
+                        />
+                      </div>
+                    </>
+                  )}
+                  <Image src={"/VillaParadaIcon.png"} height={1000} width={1000} alt="VillaparadaLogo" />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-[400px] p-4">
+                <div>
+                  <p className="text-sm text-red-800">Villaparada</p>
+                  <p className="line-clamp-2">{villaparada.direccion}</p>
+                  <div className="mt-2 flex flex-row items-center gap-2 border-l-4 border-[#FACC15] bg-[#FEFCE8] px-3 py-2 text-sm">
+                    {user
+                      ? isUnlocked === true
+                        ? unlockedText
+                        : lockedText
+                      : "Inicie sesión para reclamar esta Villaparada."}
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          );
+        })}
+      </div>
       <motion.div className={cn("flex h-full flex-col items-center overflow-hidden p-24")} layout>
         <Image
           height={1000}

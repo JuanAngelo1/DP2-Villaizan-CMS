@@ -9,7 +9,79 @@ import { vi_producto_fruta } from '@prisma/client';
 export class FrutasService {
   constructor(private prisma: PrismaService) {}
 
-  async getAllFrutas() {
+  async getAllFrutasNoVillaparadas() {
+    return this.prisma.vi_fruta.findMany({
+      where: {
+        estaactivo: true,
+      },
+      select: {
+        id: true,
+        nombre: true,
+        descripcion: true,
+
+        vi_contenidoeducativo: {
+          where: {
+            estaactivo: true,
+          },
+          select: {
+            titulo: true,
+            tipocontenido: true,
+            contenidoinformacion: true,
+            urlcontenido: true,
+          },
+        },
+
+        vi_producto_fruta: {
+          where: {
+            estaactivo: true,
+          },
+          select: {
+            vi_producto: {
+              select: {
+                id: true,
+                nombre: true,
+                urlimagen: true,
+                precioecommerce: true,
+                descripcion: true,
+
+                vi_promocion: {
+                  where: {
+                    estaactivo: true,
+                    fechainicio: { lte: new Date() },
+                    fechafin: { gte: new Date() },
+                  },
+                  select: {
+                    id: true,
+                    titulo: true,
+                    porcentajedescuento: true,
+                  },
+                },
+
+                // Añadir los combos por producto
+                vi_combo_x_producto: {
+                  select: {
+                    vi_combo: {
+                      select: {
+                        id: true,
+                        titulo: true,
+                        descripcion: true,
+                        precio: true,
+                        fechainicio: true,
+                        fechafin: true,
+                      },
+                    },
+                    cantidad: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async getAllFrutasNoUser() {
     return this.prisma.vi_fruta.findMany({
       where: {
         estaactivo: true,
@@ -87,10 +159,107 @@ export class FrutasService {
             nombre: true,
             latitud: true,
             longitud: true,
+            direccion: true,
+            nota: true,
+          },
+        },
+      },
+    });
+  }
+
+
+  async getAllFrutasByUser(userId: string) {
+    return this.prisma.vi_fruta.findMany({
+      where: {
+        estaactivo: true,
+      },
+      select: {
+        id: true,
+        nombre: true,
+        descripcion: true,
+
+        vi_contenidoeducativo: {
+          where: {
+            estaactivo: true,
+          },
+          select: {
+            titulo: true,
+            tipocontenido: true,
+            contenidoinformacion: true,
+            urlcontenido: true,
           },
         },
 
+        vi_producto_fruta: {
+          where: {
+            estaactivo: true,
+          },
+          select: {
+            vi_producto: {
+              select: {
+                id: true,
+                nombre: true,
+                urlimagen: true,
+                precioecommerce: true,
+                descripcion: true,
 
+                vi_promocion: {
+                  where: {
+                    estaactivo: true,
+                    fechainicio: { lte: new Date() },
+                    fechafin: { gte: new Date() },
+                  },
+                  select: {
+                    id: true,
+                    titulo: true,
+                    porcentajedescuento: true,
+                  },
+                },
+
+                // Añadir los combos por producto
+                vi_combo_x_producto: {
+                  select: {
+                    vi_combo: {
+                      select: {
+                        id: true,
+                        titulo: true,
+                        descripcion: true,
+                        precio: true,
+                        fechainicio: true,
+                        fechafin: true,
+                      },
+                    },
+                    cantidad: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+
+        vi_villaparada: {
+          where:{
+            estaactivo: true,
+          },
+          select: {
+            id: true,
+            nombre: true,
+            latitud: true,
+            longitud: true,
+            direccion: true,
+            nota: true,
+            vi_villaparada_x_usuario: {
+              where: {
+                id_usuario: userId,
+                estaactivo: true,
+              },
+              select: {
+                id: true,
+                cantitadpuntos: true,
+              },
+            }
+          },
+        },
       },
     });
   }

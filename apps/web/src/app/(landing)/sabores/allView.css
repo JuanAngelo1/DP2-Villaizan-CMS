@@ -6,18 +6,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  border: 1px solid #f9a826;
+  overflow: visible;
 }
 
 .circle {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   border-radius: 50%;
-  animation: rotate-circle 40s linear infinite;
+  animation: rotate-circle 120s linear infinite;
   transform-origin: center;
-  border: 1px solid black;
 }
 
 .circle-item {
@@ -27,7 +25,6 @@
   transform-origin: center;
   width: 150px;
   height: 150px;
-  background-color: #f9a826;
   border-radius: 50%;
   text-align: center;
   line-height: 50px;
