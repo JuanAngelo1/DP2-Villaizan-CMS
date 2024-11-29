@@ -1,6 +1,7 @@
 "use client";
 
-import { LayoutDashboard, LogOut, MapPin, Newspaper, Sun, User, ChartColumnBig } from "lucide-react";
+import { ChartColumnBig, LayoutDashboard, LogOut, MapPin, Newspaper, Sun, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button, buttonVariants } from "@repo/ui/components/button";
@@ -26,7 +27,7 @@ const sidebarItems: sidebarItem[] = [
     path: "/admin/puntos-venta",
     icon: MapPin,
   },
-   {
+  {
     path: "/admin/dashboard-sentimientos",
     icon: ChartColumnBig,
   },
@@ -39,7 +40,15 @@ function Sidebar() {
   return (
     <div className="fixed flex w-full items-center justify-between border bg-red-700 px-2 py-2 lg:h-screen lg:w-[67px] lg:flex-col lg:rounded-br-xl lg:rounded-tr-xl lg:py-3">
       <div className="flex items-center gap-4 lg:flex-col">
-        <img src={"VillaizanLogoV.png"} alt="Logo" className="w-[35px]" />
+        <Link href={'/'} className="w-fit h-fit">
+          <Image
+            src={"/VillaizanLogoV.png"}
+            alt="Logo"
+            className="aspect-square w-[35px]"
+            height={1000}
+            width={1000}
+          />
+        </Link>
         <div className="flex items-center gap-1 lg:flex-col">
           {sidebarItems.map((item, idx) => {
             const ItemIcon = item.icon;
@@ -57,9 +66,9 @@ function Sidebar() {
       </div>
 
       <div className="flex items-center gap-1 lg:flex-col">
-        <Button variant="ghost" className={buttonStyle[1]}>
+        {/* <Button variant="ghost" className={buttonStyle[1]}>
           <Sun className={iconStyle} />
-        </Button>
+        </Button> */}
         <Button variant={"ghost"} className={buttonStyle[1]} onClick={handleSignOut}>
           <LogOut className={iconStyle} />
         </Button>
