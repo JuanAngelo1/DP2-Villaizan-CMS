@@ -47,9 +47,9 @@ function LoginPage() {
       </p>
       <Separator orientation="horizontal" className="mt-7 w-[460px]" />
       <div className="mt-7 flex w-[400px] flex-col gap-2">
-        {/* <ErrorMessage message={code} />
+        <ErrorMessage message={code} />
 
-        <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} type="email" />
+        {/* <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} type="email" />
         <Input placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} type="password" />
         <Button
           isLoading={isLoading}
