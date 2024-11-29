@@ -39,7 +39,7 @@ function Frutas({ frutas }: { frutas: Fruta[] }) {
               <CarouselItem key={fruta.id} className="h-full basis-auto">
                 <Link
                   className="group/item relative flex aspect-square h-full p-3 transition-all hover:p-0"
-                  href={"/sabores?inicial=" + fruta.nombre}
+                  href={"/sabores?id_fruta=" + fruta.id}
                 >
                   <Image
                     src={imagen}
@@ -48,7 +48,7 @@ function Frutas({ frutas }: { frutas: Fruta[] }) {
                     width={1000}
                     className="z-10 h-full w-full object-contain"
                   />
-                  <circle className="absolute bottom-[15%] left-[15%] right-[15%] top-[15%] rounded-full bg-red-800 transition-all group-hover/item:bottom-[10%] group-hover/item:left-[10%] group-hover/item:right-[10%] group-hover/item:top-[10%] group-hover/item:bg-red-700 group-hover/item:shadow-xl" />
+                  <div className="absolute bottom-[15%] left-[15%] right-[15%] top-[15%] rounded-full bg-red-800 transition-all group-hover/item:bottom-[10%] group-hover/item:left-[10%] group-hover/item:right-[10%] group-hover/item:top-[10%] group-hover/item:bg-red-700 group-hover/item:shadow-xl" />
                 </Link>
               </CarouselItem>
             );

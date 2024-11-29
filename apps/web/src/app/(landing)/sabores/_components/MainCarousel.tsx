@@ -29,23 +29,20 @@ import PointClaimDialog from "./PointClaimDialog";
 
 type Modes = "history" | "benefits" | "products" | null;
 
-
-
 function MainCarousel({ frutas, user }: { frutas: Fruta[]; user: User | undefined }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const inicial = searchParams.get("inicial");
   const villaparada = searchParams.get("villaparada");
   const id_fruta = searchParams.get("id_fruta");
 
   let startingIdx = 0;
-  if (inicial) {
-    startingIdx = frutas.findIndex((fruta) => fruta.nombre === inicial);
+  if (id_fruta) {
+    startingIdx = frutas.findIndex((fruta) => fruta.id === id_fruta);
     if (startingIdx === -1) startingIdx = 0;
   }
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ axis: "y", loop: true, startIndex: startingIdx }, [
-    Autoplay({ playOnInit: true, stopOnInteraction: true, delay: 2500 }),
+    Autoplay({ playOnInit: id_fruta === null ? true : false, stopOnInteraction: true, delay: 2500 }),
   ]);
 
   const { selectedSnap, snapCount } = useSelectedSnapDisplay(emblaApi);
@@ -99,7 +96,7 @@ function MainCarousel({ frutas, user }: { frutas: Fruta[]; user: User | undefine
 
   return (
     <>
-      <PointClaimDialog villaparada={villaparada} id_fruta={id_fruta} user={user}/>
+      <PointClaimDialog villaparada={villaparada} id_fruta={id_fruta} user={user} />
       <div
         className="embla relative w-full overflow-hidden transition-colors duration-1000"
         style={{
@@ -250,7 +247,7 @@ function FrutaDisplay({
   return (
     <div
       className={cn(
-        "m-auto flex max-w-7xl flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8 text-black",
+        "relative m-auto flex max-w-7xl flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8 text-black",
         selectedMode === "history" && "flex-row items-center",
         selectedMode === "benefits" && "flex-col gap-4"
       )}
@@ -259,7 +256,7 @@ function FrutaDisplay({
         maxHeight: "calc(100vh - 68px)",
       }}
     >
-      <div className="flex w-full flex-row gap-6">
+      <div className="flex w-full flex-row gap-6 absolute top-10 left-0">
         {fruta.vi_villaparada.map((villaparada) => {
           const isUnlocked = villaparada.isUnlocked !== undefined ? villaparada.isUnlocked : false;
 

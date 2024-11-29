@@ -57,7 +57,7 @@ export const historyItems: HistoryItemType[] = [
     content:
       "En Chiclayo, nace Paletas Villaizan como un pequeño emprendimiento familiar, inspirado por el amor a lo natural y la frescura. El calor nos provocaba un rico bocado helado, pero al mismo tiempo queríamos algo natural que apoyara nuestra salud. Comenzamos con frutas congeladas que luego tomaron forma de deliciosas paletas.",
     icon: Sun,
-    image: "/nosotros/historia-main.jpg",
+    image: "/nosotros/aboutus7.jpg",
   },
   {
     title: "La Llegada de María Fe",

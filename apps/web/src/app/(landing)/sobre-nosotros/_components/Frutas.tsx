@@ -33,7 +33,7 @@ function FrutaDisplay({ fruta }: { fruta: Fruta }) {
   else imagen = contenido_educativo[0].urlcontenido;
 
   return (
-    <Link className="group/item relative flex aspect-square p-3 transition-all hover:p-0" href={"/sabores"}>
+    <Link className="group/item relative flex aspect-square p-3 transition-all hover:p-0" href={`/sabores?id_fruta=${fruta.id}`}>
       <Image
         src={imagen}
         alt={fruta.nombre}

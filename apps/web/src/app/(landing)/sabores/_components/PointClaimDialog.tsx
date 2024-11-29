@@ -1,6 +1,6 @@
 "use client";
 
-import { Response } from "@web/types";
+import { ControlledError, Response } from "@web/types";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { User } from "next-auth";
@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@repo/ui/components/dialog";
+import { useToast } from "@repo/ui/hooks/use-toast";
 
 function PointClaimDialog({
   villaparada,
@@ -24,6 +25,8 @@ function PointClaimDialog({
   id_fruta: string | null;
   user: User | undefined;
 }) {
+  const { toast } = useToast();
+
   const getCurrentLocation = (): Promise<{ latitude: number; longitude: number }> => {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
@@ -53,7 +56,7 @@ function PointClaimDialog({
     async function getLocation() {
       if (villaparada && id_fruta) {
         const current_url = window.location.href;
-        if (!user) router.push(`/login/callbackUrl=${current_url}`);
+        if (!user) router.push(`/login?callbackUrl=${current_url}`);
 
         try {
           setIsLoadingLocation(true);
@@ -73,21 +76,30 @@ function PointClaimDialog({
   async function claimPoints() {
     if (!user || !location || !villaparada || !id_fruta) return;
     try {
+      setIsClaiming(true);
+
       const response: Response<any> = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/villaparada/sumarpuntos`,
         {
-          id_usuario: user?.db_info.id,
-          id_villaparada: villaparada,
+          id_usuario: user.db_info.id,
+          id_villaparada: parseInt(villaparada),
           puntos: 20,
           latitud: location.latitude,
           longitud: location.longitude,
         }
       );
 
-      console.log(response)
-    } catch (error) {
-      console.log(error);
-      setError("Error al reclamar los puntos. Intenta de nuevo luego.");
+      if (response.data.status !== "Success") throw new Error(response.data.message);
+
+      window.location.replace(`/sabores?id_fruta=${id_fruta}`);
+
+      console.log(response);
+    } catch (error: any) {
+      setIsOpen(false);
+      toast({
+        title: "Error al reclamar los puntos",
+        description: error.message,
+      });
     }
   }
 
@@ -109,9 +121,14 @@ function PointClaimDialog({
             <DialogTitle className="text-start text-red-800">Reclamar Villaparada </DialogTitle>
 
             <div>
-              <p className="mt-1 text-start">Usted está por reclamar la Villaparada X por 20 puntos</p>
+              <p className="mt-1 text-start">Usted está por reclamar esta Villaparada por 20 puntos</p>
             </div>
-            <Button size={"lg"} className="mt-5 bg-red-800 hover:bg-red-900" disabled={isClaiming} isLoading={isClaiming} onClick={claimPoints}>
+            <Button
+              className="mt-5 bg-red-800 hover:bg-red-900"
+              disabled={isClaiming}
+              isLoading={isClaiming}
+              onClick={claimPoints}
+            >
               Reclamar
             </Button>
           </div>
