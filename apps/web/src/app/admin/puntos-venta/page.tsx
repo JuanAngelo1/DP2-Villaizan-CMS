@@ -66,7 +66,7 @@ export default function PuntosVentaPage() {
         lng: punto.longitud,
       }));
 
-      setPuntos(puntos);
+       setPuntos([...puntos].reverse());
     } catch (error) {
       console.warn("Usando datos mockeados debido a un error en la API:", error);
       setPuntos(mockPuntosDeVenta);
