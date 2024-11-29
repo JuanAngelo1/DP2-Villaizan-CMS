@@ -97,6 +97,7 @@ export type Usuario = {
   apellido: string;
   correo: string;
   imagenperfil: string;
+  puntosacumulados: number;
   id_rol: string;
   vi_rol?: Rol;
   id_persona: string;
@@ -112,7 +113,6 @@ export type Persona = {
   sexo: string | null;
   edad: number | null;
   estado: string;
-  puntosacumulados: number;
   estaactivo: boolean;
   desactivadoen: Date | null;
   creadoen: Date;

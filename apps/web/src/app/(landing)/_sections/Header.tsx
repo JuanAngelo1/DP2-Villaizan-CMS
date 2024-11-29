@@ -68,13 +68,19 @@ const Header: React.FC = () => {
           ) : session ? (
             <Popover>
               <PopoverTrigger>
-                <Image
-                  width={20}
-                  height={20}
-                  src={session.user.db_info.imagenperfil || "/default-profile.png"}
-                  className="h-full w-fit rounded-full border"
-                  alt="PFP"
-                />
+                <div className="flex flex-row items-center gap-2">
+                  <div className="flex flex-col">
+                    <p className="text-end text-lg leading-5">{`${session.user.db_info.nombre} ${session.user.db_info.apellido}`}</p>
+                    <p className="leading-3">{`${session.user.db_info.puntosacumulados} puntos disponibles`}</p>
+                  </div>
+                  <Image
+                    width={20}
+                    height={20}
+                    src={session.user.db_info.imagenperfil || "/default-profile.png"}
+                    className="h-full w-fit rounded-full border"
+                    alt="PFP"
+                  />
+                </div>
               </PopoverTrigger>
               <PopoverContent
                 className="flex w-fit min-w-0 max-w-[200px] flex-col gap-1 overflow-hidden p-1"
