@@ -68,6 +68,8 @@ export class UsuarioService {
       },
     });
 
+
+
     await this.prisma.vi_persona.create({
       data: {
         id: generatedPersonaId,
@@ -76,12 +78,20 @@ export class UsuarioService {
       },
     });
 
+    if(data.apellido==''){
+      data.apellido='-';
+      console.log(data.apellido);
+    }
+ 
+
     const apiUrl =
       'https://heladeria2.od2.vtiger.com/restapi/vtap/api/addContact';
     const auth = {
       username: 'dep2.crm@gmail.com',
       password: '97FO4nsSpV6UneKW',
     };
+
+
 
     const response = await axios.post(
       apiUrl,
@@ -137,6 +147,8 @@ export class UsuarioService {
   }
 
   async findByEmailWithRole(email: string): Promise<any> {
+
+    console.log("Email", email);
     // Busca al usuario por su correo e incluye el rol en la consulta
     const usuario = await this.prisma.vi_usuario.findUnique({
       where: { correo: email },
