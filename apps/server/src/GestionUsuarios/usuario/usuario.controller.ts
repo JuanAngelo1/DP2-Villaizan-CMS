@@ -47,37 +47,6 @@ export class UsuarioController {
     }
   }
 
-  @Post()
-  async createUsuario(
-    @Body() data: UsuarioDto,
-    @Res() response: Response,
-  ): Promise<any> {
-    try {
-      const existingUser = await this.usuarioService.findByEmail(data.correo);
-      if (existingUser) {
-        return response.status(400).json({
-          status: 'Error',
-          message: 'Este correo ya tiene una cuenta asociada',
-          result: [],
-        });
-      }
-
-      const result = await this.usuarioService.createUsuario(data);
-      return response.status(201).json({
-        status: 'Success',
-        message: 'Usuario creado exitosamente',
-        result: result,
-      });
-    } catch (err) {
-      console.log(err);
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al crear el usuario',
-        result: [],
-      });
-    }
-  }
-
   @Post('loginGoogle')
   async verifyCreateGoogleUser(
     @Body() data: GoogleUserDto,
@@ -110,6 +79,40 @@ export class UsuarioController {
       });
     }
   }
+
+
+  @Post()
+  async createUsuario(
+    @Body() data: UsuarioDto,
+    @Res() response: Response,
+  ): Promise<any> {
+    try {
+      const existingUser = await this.usuarioService.findByEmail(data.correo);
+      if (existingUser) {
+        return response.status(400).json({
+          status: 'Error',
+          message: 'Este correo ya tiene una cuenta asociada',
+          result: [],
+        });
+      }
+
+      const result = await this.usuarioService.createUsuario(data);
+      return response.status(201).json({
+        status: 'Success',
+        message: 'Usuario creado exitosamente',
+        result: result,
+      });
+    } catch (err) {
+      console.log(err);
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Error al crear el usuario',
+        result: [],
+      });
+    }
+  }
+
+  
 
   @Get(':id')
   async getUsuarioByID(
