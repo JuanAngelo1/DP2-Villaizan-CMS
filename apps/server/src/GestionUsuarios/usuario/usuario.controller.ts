@@ -52,6 +52,7 @@ export class UsuarioController {
     @Body() data: GoogleUserDto,
     @Res() response: Response,
   ): Promise<any> {
+    console.log(data.email);
     try {
       const existingUser = await this.usuarioService.findByEmailWithRole(
         data.email,
