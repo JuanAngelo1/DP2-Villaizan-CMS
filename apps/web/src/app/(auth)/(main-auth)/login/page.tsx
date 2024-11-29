@@ -43,12 +43,11 @@ function LoginPage() {
     <div className="flex h-screen flex-col items-center justify-center">
       <LogoBackHome />
       <p className="text-muted-foreground mt-3 text-sm">
-        Ingresa tus credenciales para acceder en el sistema
+        Accede al sistema mediante tus credenciales de Google
       </p>
       <Separator orientation="horizontal" className="mt-7 w-[460px]" />
       <div className="mt-7 flex w-[400px] flex-col gap-2">
-        {/* {error === "CredentialsSignin" && <ErrorMessage message={error} />} */}
-        <ErrorMessage message={code} />
+        {/* <ErrorMessage message={code} />
 
         <Input placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} type="email" />
         <Input placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} type="password" />
@@ -71,7 +70,7 @@ function LoginPage() {
           <Separator orientation="horizontal" className="flex-1" />
           <p className="text-muted-foreground text-sm">o</p>
           <Separator orientation="horizontal" className="flex-1" />
-        </div>
+        </div> */}
         <Button className="mt-2" variant={"outline"} onClick={() => onLoginGoogle()}>
           <img src="google-logo.svg" className="h-5 w-5" />
           <p className="text-sm">Inicia sesión con Google</p>
