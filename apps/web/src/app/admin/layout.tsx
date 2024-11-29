@@ -17,7 +17,7 @@ async function AdminLayout({ children }: { children: React.ReactNode }) {
   if (user.db_info.vi_persona?.sexo === null || user.db_info.vi_persona?.edad === null) {
     redirect("/ultimo-paso");
   }
-  
+
   return (
     <div className="bg-primary-foreground flex h-screen flex-col lg:flex-row">
       <Sidebar />

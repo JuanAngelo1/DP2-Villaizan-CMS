@@ -15,10 +15,6 @@ type sidebarItem = {
 const iconStyle = "shrink-0 w-[19px] h-[19px] stroke-white";
 const sidebarItems: sidebarItem[] = [
   {
-    path: "/admin",
-    icon: LayoutDashboard,
-  },
-  {
     path: "/admin/contenido",
     icon: Newspaper,
   },
