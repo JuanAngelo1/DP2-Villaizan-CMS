@@ -102,7 +102,7 @@ export class VillaparadaController {
 
       if (result.success === false) {
         return {
-          status: 'Success',
+          status: 'Error',
           message: 'Ya se sumaron puntos a esta villaparada',
         };
       }
