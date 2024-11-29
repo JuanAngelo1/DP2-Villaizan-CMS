@@ -18,6 +18,8 @@ import Image from "next/image";
 import { MultiSelect } from "@repo/ui/components/multi-select";
 import RichTextEditor from "@web/src/app/_components/RichTextEditor";
 import { type Editor } from 'reactjs-tiptap-editor';
+import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
+import { ImageIcon } from "lucide-react";
 
 interface VersionPublicacion {
   id: number;
@@ -40,6 +42,7 @@ function NuevoVersionPage() {
   const { idPublicacion, idVersionPublicacion } = useParams();
   const router = useRouter();
   const [version, setVersion] = useState<VersionPublicacion | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -212,19 +215,38 @@ function NuevoVersionPage() {
                   />
                 </div>
                 {/* Imagen de portada */}
-                {version.urlimagen && (
-                  <div className="flex flex-col gap-2">
-                    <Label>Imagen de portada</Label>
-                    <AspectRatio ratio={16 / 9} >
-                      <Image
-                        src={version.urlimagen}
-                        alt="Imagen de portada"
-                        fill
-                        className="rounded-md object-cover"
-                      />
-                    </AspectRatio>
-                  </div>  
-                )}
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-row w-full items-center justify-start gap-2">
+                    <Label className="flex flex-row gap-1">Imagen de portada <p className='text-red-500'>*</p></Label>
+                    <Popover>
+                      <PopoverTrigger asChild className="flex flex-row items-center gap-2">
+                        <Button variant={"default"}>
+                          Cambiar imagen <ImageIcon className="h-4 w-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="flex flex-col gap-2">
+                        <Label>Enlace de imagen</Label>
+                        <Input
+                          id="urlimagen"
+                          placeholder="Ej. https://www.example.com/imagen.jpg"
+                          defaultValue={version.urlimagen}
+                          onChange={(e) => setImageUrl(e.target.value)}
+                        />
+                        <Button variant={"secondary"} onClick={() => {if(imageUrl) setVersion({ ...version, urlimagen: imageUrl })}}>
+                          Cambiar imagen
+                        </Button>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <AspectRatio ratio={16 / 9} >
+                    <Image
+                      src={version.urlimagen}
+                      alt="Imagen de portada"
+                      fill
+                      className="rounded-md object-cover"
+                    />
+                  </AspectRatio>
+                </div>  
                 {/* Texto Enriquecido */}
                 <div>
                   <Label className="flex flex-row gap-1" htmlFor="richtext">
