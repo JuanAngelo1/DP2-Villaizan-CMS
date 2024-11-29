@@ -114,7 +114,7 @@ export class VillaparadaController {
       console.error(error);
       return {
         status: 'Error',
-        message: error.message,
+        message: 'Ha ocurrido un error',
         result: [],
       };
     }
