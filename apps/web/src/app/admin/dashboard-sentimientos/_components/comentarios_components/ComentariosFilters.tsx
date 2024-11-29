@@ -54,6 +54,7 @@ function ComentariosFilters({
                   isSelected ? "bg-secondary" : "hover:bg-secondary/50"
                 )}
                 onClick={() => toggleSentimiento(sentimiento)}
+                key={sentimiento.id}
               >
                 <Badge className="w-fit gap-1" style={{ background: sentimiento.colorfondo }}>
                   <div className="h-3 w-3 rounded-full" style={{ backgroundColor: sentimiento.colortexto }} />

@@ -52,7 +52,7 @@ function Comentarios() {
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
 
   const [dateRange, setDateRange] = useState<DateRange>({
-    start: new Date(new Date().setDate(new Date().getDate() - 7)), // 7 días atrás
+    start: new Date(new Date().setMonth(new Date().getMonth() - 1)), // 7 días atrás
     end: new Date(),
   });
 

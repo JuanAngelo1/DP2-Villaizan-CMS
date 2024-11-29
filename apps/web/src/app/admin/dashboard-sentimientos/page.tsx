@@ -20,7 +20,6 @@ const DashboardSentimientos = () => {
     end: new Date(new Date()),
   });
 
-  console.log(dateRange);
   const [selectedProduct, setSelectedProduct] = useState<string>("Paleta de Chocolate");
   const [commentsCounter, setCommentsCounter] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -40,7 +39,11 @@ const DashboardSentimientos = () => {
           throw new ControlledError(responseCommentsCounter.data.message);
         }
 
+        if (!Array.isArray(responseCommentsCounter.data.result)) {
+          throw new Error("La API no devolvió un array de comentarios");
+        }
         const comments: Comentario[] = responseCommentsCounter.data.result;
+
         setCommentsCounter(comments.length);
 
         const wordCount = createWordCountDict(comments);
@@ -103,7 +106,7 @@ const DashboardSentimientos = () => {
 
               <div className="space-y-4">
                 <StatsCard title="Encuestas respondidas" value="252" />
-                <StatsCard title="Comentarios recibidos" value={commentsCounter.toString()} />
+                <StatsCard title="Comentarios recibidos" value={commentsCounter} />
                 <StatsCard title="Satisfacción general" value="55%" />
               </div>
             </div>

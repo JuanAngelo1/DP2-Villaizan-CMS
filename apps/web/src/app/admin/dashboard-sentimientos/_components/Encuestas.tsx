@@ -1,6 +1,7 @@
 import usePagination from "@web/hooks/usePagination";
 import { ControlledError, Encuesta, Response, ResponseModuloRedes } from "@web/types";
 import axios from "axios";
+import { ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Button, buttonVariants } from "@repo/ui/components/button";
@@ -16,7 +17,6 @@ import TopHeader from "../../contenido/_components/general_components/TopHeader"
 import DetalleEncuesta from "./DetalleEncuesta";
 import EncuestaTableRow from "./encuestas_components/EncuestaTableRow";
 import EncuestasTableHeader from "./encuestas_components/EncuestasTableHeader";
-import { ChevronLeft } from "lucide-react";
 
 const initEncuesta: Encuesta = {
   id: "",
@@ -42,7 +42,6 @@ function Encuestas() {
     async function fetchData() {
       try {
         setIsLoading(true);
-        console.log(`${process.env.NEXT_PUBLIC_REDES_SOCIALES_SERVER_URL}/encuestas/listar`);
         const response: ResponseModuloRedes<Encuesta[]> = await axios.get(
           `${process.env.NEXT_PUBLIC_REDES_SOCIALES_SERVER_URL}/encuestas/listar`
         );
@@ -99,11 +98,8 @@ function Encuestas() {
   }, [encuestas, search]);
 
   const handleSelectEncuesta = (encuesta: Encuesta) => {
-    console.log("Encuesta seleccionada:", encuesta);
-    console.log("Tipo de dato:", typeof encuesta);  
     setCurrentEncuesta(encuesta); // Establece el objeto completo
-};
-
+  };
 
   const handleBackToTable = () => {
     setCurrentEncuesta(null); // Vuelve a la lista de encuestas
@@ -199,25 +195,17 @@ function Encuestas() {
             </MainContent>
           </>
         ) : (
-          <MainContent
-            >
-            <div className="flex items-center gap-2"> 
+          <MainContent>
+            <div className="flex items-center gap-2">
               {/* Botón con ChevronLeft a la izquierda */}
-              <Button 
-                variant="ghost" 
-                className="h-7 w-6" 
-                onClick={handleBackToTable}
-              >
+              <Button variant="ghost" className="h-7 w-6" onClick={handleBackToTable}>
                 <ChevronLeft className="h-5 w-5 shrink-0" />
               </Button>
-
               {/* Título a la derecha del ícono */}
               <span className="text-xl font-semibold">Detalles de la Encuesta</span> <br />
-                {/* <span>{ `Información sobre la encuesta: ${currentEncuesta}`}</span> */}
-              </div>
-            <DetalleEncuesta id={currentEncuesta.id} encuesta={currentEncuesta}/>
-            
-
+              {/* <span>{ `Información sobre la encuesta: ${currentEncuesta}`}</span> */}
+            </div>
+            <DetalleEncuesta id={currentEncuesta.id} encuesta={currentEncuesta} />
           </MainContent>
         )}
 
