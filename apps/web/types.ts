@@ -181,23 +181,40 @@ export type DateRange = {
   end: Date | null;
 };
 
-
 export type ContenidoEducativo = {
   id_fruta: string;
   titulo: string;
   contenidoinformacion: string;
-  tipocontenido: 'Informacion' | 'Video' | 'Imagen'; //!TODO
+  tipocontenido: "Información" | "Video" | "Imagen";
   urlcontenido: string;
   fechapublicacion: string;
   estaactivo: boolean;
-}
+};
 
+export type Promocion = {
+  id: string;
+  titulo: string;
+  porcentajedescuento: string;
+};
 
+export type Producto = {
+  id: string;
+  nombre: string;
+  urlimagen: string;
+  precioecommerce: string;
+  descripcion: string;
+  vi_promocion: Promocion | null;
+  vi_combo_x_producto: any[];
+};
+
+export type ProductoFruta = {
+  vi_producto: Producto;
+};
 
 export type Fruta = {
   id: string;
   nombre: string;
   descripcion: string;
   vi_contenidoeducativo: ContenidoEducativo[];
-  // vi_producto_fruta: Producto[];
-}
+  vi_producto_fruta: ProductoFruta[];
+};

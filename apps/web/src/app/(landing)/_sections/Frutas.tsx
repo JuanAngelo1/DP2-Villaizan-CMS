@@ -33,7 +33,7 @@ function Frutas({ frutas }: { frutas: Fruta[] }) {
             );
             let imagen;
 
-            if (contenido_educativo.length === 0) imagen = "/missing.png";
+            if (contenido_educativo.length === 0) imagen = "/sabores/missing.png";
             else imagen = contenido_educativo[0].urlcontenido;
             return (
               <CarouselItem key={fruta.id} className="h-full basis-auto">

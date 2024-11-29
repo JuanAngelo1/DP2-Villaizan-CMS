@@ -29,7 +29,7 @@ function FrutaDisplay({ fruta }: { fruta: Fruta }) {
   );
   let imagen;
 
-  if (contenido_educativo.length === 0) imagen = "/missing.png";
+  if (contenido_educativo.length === 0) imagen = "/sabores/missing.png";
   else imagen = contenido_educativo[0].urlcontenido;
 
   return (
