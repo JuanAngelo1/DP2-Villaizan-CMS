@@ -47,6 +47,41 @@ export class UsuarioController {
     }
   }
 
+  @Post('loginGoogle')
+  async verifyCreateGoogleUser(
+    @Body() data: GoogleUserDto,
+    @Res() response: Response,
+  ): Promise<any> {
+    console.log(data.email);
+    try {
+      const existingUser = await this.usuarioService.findByEmailWithRole(
+        data.email,
+      );
+      if (existingUser) {
+        return response.status(201).json({
+          status: 'Success',
+          message: 'Usuario autenticado con Google',
+          result: existingUser,
+        });
+      }
+
+      const result = await this.usuarioService.createUserGoogle(data);
+      return response.status(201).json({
+        status: 'Success',
+        message: 'Usuario creado exitosamente',
+        result: result,
+      });
+    } catch (err) {
+      console.log(err);
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Error al crear el usuario',
+        result: [],
+      });
+    }
+  }
+
+
   @Post()
   async createUsuario(
     @Body() data: UsuarioDto,
@@ -78,38 +113,7 @@ export class UsuarioController {
     }
   }
 
-  @Post('loginGoogle')
-  async verifyCreateGoogleUser(
-    @Body() data: GoogleUserDto,
-    @Res() response: Response,
-  ): Promise<any> {
-    try {
-      const existingUser = await this.usuarioService.findByEmailWithRole(
-        data.email,
-      );
-      if (existingUser) {
-        return response.status(201).json({
-          status: 'Success',
-          message: 'Usuario autenticado con Google',
-          result: existingUser,
-        });
-      }
-
-      const result = await this.usuarioService.createUserGoogle(data);
-      return response.status(201).json({
-        status: 'Success',
-        message: 'Usuario creado exitosamente',
-        result: result,
-      });
-    } catch (err) {
-      console.log(err);
-      return response.status(500).json({
-        status: 'Error',
-        message: 'Error al crear el usuario',
-        result: [],
-      });
-    }
-  }
+  
 
   @Get(':id')
   async getUsuarioByID(

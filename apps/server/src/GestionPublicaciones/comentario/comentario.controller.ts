@@ -217,7 +217,7 @@ export class ComentarioController {
     @Param('fechaFin') fechaFin: string,
   ): Promise<any> {
     try {
-      const result = await this.comentarioService.getComentariosBetweenDates(
+      const result = await this.comentarioService.countComentariosBetweenDates(
         new Date(fechaInicio),
         new Date(fechaFin),
       );

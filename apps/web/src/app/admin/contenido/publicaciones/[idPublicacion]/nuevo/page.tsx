@@ -1,25 +1,26 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import RichTextEditor from "@web/src/app/_components/RichTextEditor";
 import TextEditor from "@web/src/app/_components/TextEditor";
 import { Categoria, Etiqueta, Response } from "@web/types";
 import axios from "axios";
-import { AsteriskIcon } from "lucide-react";
+import { AsteriskIcon, ImageIcon } from "lucide-react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { type Editor } from "reactjs-tiptap-editor";
+import { AspectRatio } from "@repo/ui/components/aspect-ratio";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import DateTimePicker from "@repo/ui/components/date-time-picker";
 import { Input } from "@repo/ui/components/input";
 import { Label } from "@repo/ui/components/label";
+import { MultiSelect } from "@repo/ui/components/multi-select";
+import { Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components/popover";
 import { Separator } from "@repo/ui/components/separator";
 import { Skeleton } from "@repo/ui/components/skeleton";
 import { useToast } from "@repo/ui/hooks/use-toast";
-import { MultiSelect } from "@repo/ui/components/multi-select";
 import MainContent from "../../../_components/general_components/MainContent";
-import Image from "next/image";
-import { AspectRatio } from "@repo/ui/components/aspect-ratio";
-import RichTextEditor from "@web/src/app/_components/RichTextEditor";
-import { type Editor } from 'reactjs-tiptap-editor';
 
 interface VersionPublicacion {
   titulo: string;
@@ -59,7 +60,7 @@ function NuevoVersionPage() {
   });
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [etiquetas, setEtiquetas] = useState<Etiqueta[]>([]);
-  const [imagen, setImagen] = useState<Imagen>({ file: null });
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const editorRef = useRef<{ editor: Editor | null }>(null);
 
@@ -70,7 +71,9 @@ function NuevoVersionPage() {
         if (responseEtiquetas.data.status == "Error") {
           throw new Error(responseEtiquetas.data.message);
         }
-        const responseCategorias: Response<Categoria[]> = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/categoria`);
+        const responseCategorias: Response<Categoria[]> = await axios.get(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/categoria`
+        );
         if (responseCategorias.data.status == "Error") {
           throw new Error(responseCategorias.data.message);
         }
@@ -83,49 +86,36 @@ function NuevoVersionPage() {
           variant: "destructive",
         });
       }
-    }
+    };
 
     fetchEtiquetasCategorias();
   }, []);
 
   const handleSave = async () => {
     setLoading(true);
-    let imagenUploaded = true;
     try {
       // Logica para guardar y obtener la url de la imagen de portada
       // para categorias y etiquetas, se envia un array de ids
       let updatedVersion = { ...version };
-      if (imagen.file) {
-        const formData = new FormData();
-        formData.append("file", imagen.file);
-        const responseImagen: Response<string> = await axios.post(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/archivos`,
-          formData,
-        );
-        console.log("ResponseImagen", responseImagen);
-        if (responseImagen.data.status == "Error") {
-          imagenUploaded = false;
-        } else {
-          imagenUploaded = true;
-          updatedVersion.urlimagen = responseImagen.data.result;
-        }
+      if (updatedVersion.urlimagen === null || updatedVersion.urlimagen === "") {
+        throw new Error("La imagen de portada es requerida");
       }
 
       // logica para botener la informacion de richtext
       if (editorRef.current?.editor) {
         updatedVersion.richtext = editorRef.current.editor.getHTML();
       }
-    
+
       const response: Response<VersionPublicacionReponse> = await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/publicaciones/crearVersion/${idPublicacion}`,
-        updatedVersion,
+        updatedVersion
       );
       if (response.data.status == "Error") {
         throw new Error(response.data.message);
       }
       toast({
         title: "Versión creada",
-        description: `La versión de la publicación se creó ${imagenUploaded ? "con éxito" : "sin imagen de portada"}.`,
+        description: `La versión de la publicación se creó con éxito`,
       });
       router.push(`/admin/contenido/publicaciones/${idPublicacion}/${response.data.result.id}`);
     } catch (error: any) {
@@ -180,41 +170,47 @@ function NuevoVersionPage() {
             />
           </div>
           {/* Imagen */}
-          <div>
-            <Label className="flex flex-row gap-1" htmlFor="imagen">
-              Imagen de portada <p className="text-red-500">*</p>
-            </Label>
-            <div className="flex flex-row w-full items-center justify-between gap-2">
-              <Input
-                id="imagen"
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setImagen({ file: e.target.files[0] });
-                  }
-                }}
-              />
-              {imagen.file && (
-                <Button variant={"ghost"} onClick={() => setImagen({ file: null })}>
-                  Eliminar imagen
-                </Button>
-              )}
+          <div className="flex flex-col gap-2">
+            <div className="flex w-full flex-row items-center justify-start gap-2">
+              <Label className="flex flex-row gap-1">
+                Imagen de portada <p className="text-red-500">*</p>
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild className="flex flex-row items-center gap-2">
+                  <Button variant={"default"}>
+                    Cambiar imagen <ImageIcon className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="flex flex-col gap-2">
+                  <Label>Enlace de imagen</Label>
+                  <Input
+                    id="urlimagen"
+                    placeholder="Ej. https://www.example.com/imagen.jpg"
+                    defaultValue={version.urlimagen}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                  />
+                  <Button
+                    variant={"secondary"}
+                    onClick={() => {
+                      if (imageUrl) setVersion({ ...version, urlimagen: imageUrl });
+                    }}
+                  >
+                    Cambiar imagen
+                  </Button>
+                </PopoverContent>
+              </Popover>
             </div>
-          </div>
-          {/* Imagen Previsualización */}
-          {imagen.file && (
-            <div className="flex flex-col gap-2">
-              <AspectRatio ratio={16 / 9} >
+            {version.urlimagen && (
+              <AspectRatio ratio={16 / 9}>
                 <Image
-                  src={URL.createObjectURL(imagen.file)}
+                  src={version.urlimagen || ""}
                   alt="Imagen de portada"
                   fill
                   className="rounded-md object-cover"
                 />
               </AspectRatio>
-            </div>
-          )}
+            )}
+          </div>
           {/* Texto Enriquecido */}
           <div className="w-full">
             <Label className="flex flex-row gap-1">
@@ -233,21 +229,27 @@ function NuevoVersionPage() {
             <div className="flex flex-col">
               <Label>Categorías</Label>
               <MultiSelect
-                options={categorias.map((categoria) => ({ value: categoria.id, label: categoria.nombre })) || []}
-                onValueChange={(values) => setVersion({ ...version, categorias: values.map((value) => Number(value)) })}
+                options={
+                  categorias.map((categoria) => ({ value: categoria.id, label: categoria.nombre })) || []
+                }
+                onValueChange={(values) =>
+                  setVersion({ ...version, categorias: values.map((value) => Number(value)) })
+                }
                 placeholder="Selecciona categorias"
                 variant="inverted"
                 animation={2}
                 maxCount={3}
               />
             </div>
-            
+
             {/* Etiquetas */}
             <div className="flex flex-col">
               <Label>Etiquetas</Label>
               <MultiSelect
                 options={etiquetas.map((etiqueta) => ({ value: etiqueta.id, label: etiqueta.nombre })) || []}
-                onValueChange={(values) => setVersion({ ...version, etiquetas: values.map((value) => Number(value)) })}
+                onValueChange={(values) =>
+                  setVersion({ ...version, etiquetas: values.map((value) => Number(value)) })
+                }
                 placeholder="Selecciona etiquetas"
                 variant="inverted"
                 animation={2}

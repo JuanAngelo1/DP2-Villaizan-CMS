@@ -42,6 +42,8 @@ export class UsuarioService {
       },
     });
 
+    console.log("Llego aqui?");
+    
     if (!user) {
       return this.createUserGoogle(data);
     } else {

@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
       <MaxWidthWrapper className="flex flex-col gap-4">
         <div className="flex flex-col">
           <div className="mb-5 flex flex-col items-center justify-between gap-3 sm:mb-3 sm:gap-0 md:flex-row">
-            <h2 className="text-2xl font-semibold">Heladería Villaizan</h2>
+            <h2 className="text-2xl font-semibold">Paletas Villaizan</h2>
 
             <div className="flex flex-col items-center gap-1 sm:flex-row sm:gap-6">
               <SocialLink
@@ -26,13 +26,13 @@ const Footer: React.FC = () => {
             </div>
           </div>
           <p className="text-inherit md:max-w-[400px]">
-            Disfruta de los mejores helados artesanales con una variedad de sabores únicos. ¡Endulza tu día
+            Disfruta de las mejores paletas artesanales con una variedad de sabores únicos. ¡Endulza tu día
             con nosotros!
           </p>
         </div>
         <Separator className="bg-white" />
         <p className="text-center text-sm text-inherit">
-          &copy; {new Date().getFullYear()} Heladería Villaizan. Todos los derechos reservados.
+          &copy; {new Date().getFullYear()} Paletas Villaizan. Todos los derechos reservados.
         </p>
       </MaxWidthWrapper>
     </footer>
