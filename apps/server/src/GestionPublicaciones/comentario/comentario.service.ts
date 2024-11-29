@@ -79,16 +79,16 @@ export class ComentarioService {
     });
 
     const response = await firstValueFrom(
-      this.httpService.post('http://127.0.0.1:8080/clasificar-sentimiento', {
-        comentario: data.comentario,
-      }),
-    );
+      this.httpService.post('http://flask.heladosvillaizan.tech/clasificar-sentimiento', {
+          comentario: data.comentario,
+        }),
+      );
 
     const nombreSentimiento = response.data.sentiment;
-    console.log(nombreSentimiento.nombre);
+    console.log(nombreSentimiento);
     const sentimiento = await this.prisma.vi_sentimiento.findFirst({
       where: {
-        nombre: nombreSentimiento.nombre,
+        nombre: nombreSentimiento,
       },
     });
 
@@ -174,22 +174,6 @@ export class ComentarioService {
           gte: fechaInicio,
           lte: fechaFin,
         },
-        estaactivo: true,
-      },
-    });
-  }
-
-  async getComentariosBetweenDates(
-    fechaInicio: Date,
-    fechaFin: Date,
-  ): Promise<vi_comentario[]> {
-    return this.prisma.vi_comentario.findMany({
-      where: {
-        fechacreacion: {
-          gte: fechaInicio,
-          lte: fechaFin,
-        },
-        estadoaprobacion: true,
         estaactivo: true,
       },
     });
