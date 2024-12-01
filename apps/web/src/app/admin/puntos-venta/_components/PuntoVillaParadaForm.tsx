@@ -58,7 +58,7 @@ export default function PuntoVillaParadaForm({ selectedPoint, onSave, onCancel, 
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
       <div>
-        <label className="text-sm font-medium">Nombre del Punto</label>
+        <label className="text-sm font-medium">Nombre de la VillaParada</label>
         <Input
           type="text"
           value={nombre}

@@ -47,7 +47,7 @@ export default function VillaParadas() {
   const [puntos, setPuntos] = useState(mockPuntosDeVenta);
   const [currentEditPoint, setCurrentEditPoint] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [address, setAddress] = useState("");
   const [isViewingQR, setIsViewingQR] = useState(false);
@@ -206,7 +206,7 @@ export default function VillaParadas() {
               {isEditing && (
                 <div className="mt-2 p-4 shadow">
                   <h2 className="text-lg font-semibold">
-                    {currentEditPoint ? "Editar Punto de Venta" : "Nuevo Punto de Venta"}
+                    {currentEditPoint ? "Editar VillaParada" : "Nueva VillaParada"}
                   </h2>
                   <PuntoVillaParadaForm
                     selectedPoint={{ ...currentEditPoint, ...markerPosition, direccion: address }}

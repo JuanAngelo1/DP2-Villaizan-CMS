@@ -45,7 +45,7 @@ export default function PuntosVentaPage() {
   const [puntos, setPuntos] = useState(mockPuntosDeVenta);
   const [currentEditPoint, setCurrentEditPoint] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [markerPosition, setMarkerPosition] = useState(null);
   const [address, setAddress] = useState("");
 
@@ -106,7 +106,7 @@ export default function PuntosVentaPage() {
 
       await fetchPuntos();
 
-      setIsEditing(true);
+      setIsEditing(false);
     } catch (error) {
       console.error("Error al guardar el punto de venta:", error);
     }
