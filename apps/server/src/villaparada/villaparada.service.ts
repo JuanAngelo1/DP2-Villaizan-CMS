@@ -67,7 +67,7 @@ export class VillaparadaService {
       );
 
       // Verifica si la distancia es menor a 20 metros
-      if (distance > 20) {
+      if (distance > 1000) {
         //console.log('Distancia:', distance);
         return {
           success: false,
