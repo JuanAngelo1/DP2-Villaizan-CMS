@@ -108,7 +108,7 @@ function PointClaimDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent>
+      <DialogContent className="z-[1000]">
         {error !== null ? (
           <DialogTitle className="text-start text-red-800">{error}</DialogTitle>
         ) : isLoadingLocation ? (
