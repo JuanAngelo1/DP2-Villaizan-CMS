@@ -23,13 +23,13 @@ async function getFrutas() {
     return response.data.result;
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 }
 
 export default async function Page() {
   const frutas = await getFrutas();
-  if (!frutas) throw new Error("Error al obtener las frutas");
+  // if (!frutas) throw new Error("Error al obtener las frutas");
 
   return (
     <>
