@@ -14,7 +14,7 @@ async function getFrutasNoUser() {
     return response.data.result;
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 }
 
@@ -27,7 +27,7 @@ async function getFrutasByUser(userId: string) {
     return response.data.result;
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 }
 
@@ -41,7 +41,7 @@ async function SaboresPage() {
   else frutas = await getFrutasByUser(user.db_info.id);
 
 
-  if (!frutas) throw new Error("Error al obtener las frutas");
+  // if (!frutas) throw new Error("Error al obtener las frutas");
 
   return (
     <>
