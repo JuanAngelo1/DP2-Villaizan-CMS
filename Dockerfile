@@ -11,7 +11,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN npm install -g pnpm
 
 # Install dependencies in the monorepo root
-RUN pnpm install --no-frozen-lockfile --filter=!eslint-config
+RUN pnpm install
 
 # Copy the rest of the repo
 COPY . .
