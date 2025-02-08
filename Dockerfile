@@ -4,22 +4,22 @@ FROM node:18
 # Set working directory
 WORKDIR /app
 
-# Copy only package.json and pnpm-lock.yaml first
+# Copy only package.json and pnpm-lock.yaml first to leverage Docker caching
 COPY package.json pnpm-lock.yaml ./
 
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# **Force a clean install**
-RUN pnpm store prune && rm -rf node_modules pnpm-lock.yaml && pnpm install --no-frozen-lockfile
+# Install dependencies in the monorepo root
+RUN pnpm install --no-frozen-lockfile --filter=!eslint-config
 
-# Copy the rest of the project files
+# Copy the rest of the repo
 COPY . .
 
 # Build the project
 RUN turbo run build
 
-# Expose ports (modify as needed)
+# Expose ports (adjust based on your frontend/backend configuration)
 EXPOSE 3000 4000
 
 # Start the application
