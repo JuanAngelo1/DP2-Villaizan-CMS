@@ -8,3 +8,9 @@ cmds = [
   "echo \"$NPMRC_CONTENT\" > /app/.npmrc", # Create .npmrc from environment variable
   "pnpm install"
 ]
+
+[phases.build]
+cmds = [
+  "turbo run generate", # Generate Prisma types
+  "turbo run build" # Build the project
+]
