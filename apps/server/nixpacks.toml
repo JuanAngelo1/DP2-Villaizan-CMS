@@ -13,3 +13,6 @@ cmds = [
   "pnpm run generate", # Generate Prisma types
   "pnpm run build" # Build the project
 ]
+
+[start]
+cmd = "pnpm run start"
