@@ -5,6 +5,7 @@ cmds = [
   "npm install -g corepack", 
   "corepack enable", 
   "corepack prepare pnpm@9.1.0 --activate",
+  "echo \"$NPMRC_CONTENT\" > /app/.npmrc", # Create .npmrc from environment variable
   "pnpm install"
 ]
 
