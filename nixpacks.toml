@@ -14,3 +14,6 @@ cmds = [
   "turbo run generate", # Generate Prisma types
   "turbo run build" # Build the project
 ]
+
+[start]
+cmd = "turbo run start"
