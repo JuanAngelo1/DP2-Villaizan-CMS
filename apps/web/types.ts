@@ -105,6 +105,15 @@ export type Usuario = {
   creadoen: Date;
 };
 
+export type ClientUser = {
+  id: Usuario['id'],
+  nombre: Usuario['nombre'],
+  apellido: Usuario['apellido'],
+  correo: Usuario['correo'],
+  imagenperfil: Usuario['imagenperfil'],
+  puntosacumulados: Usuario['puntosacumulados'],
+}
+
 export type Persona = {
   id: string;
   tipodocumento: string | null;

@@ -2,7 +2,7 @@ import axios, { Axios } from "axios";
 import NextAuth, { AuthError, CredentialsSignin, DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
-import { Response, Usuario } from "./types";
+import { ClientUser, Response, Usuario } from "./types";
 
 class CustomError extends CredentialsSignin {
   code: string;
@@ -76,7 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account, profile }) {
       try {
         if (user && account?.provider === "google") {
-          const response: Response<Usuario> = await axios.post(
+          const response: Response<ClientUser> = await axios.post(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/loginGoogle`,
             {
               email: user.email,
@@ -105,7 +105,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.sub = user?.db_info?.id || token.sub;
           const user_id = token.sub;
 
-          const response: Response<Usuario> = await axios.get(
+          const response: Response<ClientUser> = await axios.get(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/usuarios/${user_id}`
           );
 
@@ -124,7 +124,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
     },
     async session({ token, session }) {
-      // console.log("Token db_info: ", token.db_info);
+      console.log("Token db_info: ", token.db_info);
       //@ts-ignore
       session.user.id = token.db_info.id;
       //@ts-ignore

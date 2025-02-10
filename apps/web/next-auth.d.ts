@@ -1,5 +1,6 @@
 import { DefaultSession } from 'next-auth'
-import { Usuario } from './types'
+import { Usuario, ClientUser } from './types'
+
 
 declare module "next-auth" {
   interface Session {
@@ -7,6 +8,6 @@ declare module "next-auth" {
   }
 
   interface User {
-    db_info: Usuario
+    db_info: ClientUser
   }
 }

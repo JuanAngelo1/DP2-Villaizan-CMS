@@ -1,15 +1,13 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { vi_usuario } from '@prisma/client';
-import { UsuarioDto } from './dto/usuario.dto';
-import { v4 as uuidv4 } from 'uuid';
 import * as bcrypt from 'bcrypt';
-import { UsuarioRepository } from './usuario.repository';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
 import { GoogleUserDto } from './dto/google-user.dto';
 import { PersonaUpdateDTO } from './dto/persona.dto';
-import axios from 'axios';
-import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import { UsuarioDto } from './dto/usuario.dto';
+import { UsuarioRepository } from './usuario.repository';
+import { ClientUser } from 'prisma/prisma.types';
 
 @Injectable()
 export class UsuarioService {
@@ -23,16 +21,23 @@ export class UsuarioService {
     return this.usuarioRepository.findAll();
   }
 
-  async getUsuarioByID(id: string): Promise<vi_usuario> {
-    return this.prisma.vi_usuario.findUnique({
+  async getUsuarioByID(id: string): Promise<ClientUser> {
+    const usuario = await this.prisma.vi_usuario.findUnique({
       where: {
         id,
       },
-      include: {
-        vi_rol: true,
-        vi_persona: true,
-      },
+      select: {
+        id: true,
+        nombre: true,
+        apellido: true,
+        correo: true,
+        imagenperfil: true,
+        puntosacumulados: true,
+        contrasena: false
+      }
     });
+
+    return usuario;
   }
 
   async verifyGoogleUser(data: GoogleUserDto): Promise<any> {
@@ -112,16 +117,17 @@ export class UsuarioService {
     return new_google_usuario;
   }
 
-  async findByEmailWithRole(email: string): Promise<any> {
-
-    console.log("Email", email);
-    // Busca al usuario por su correo e incluye el rol en la consulta
+  async findByEmailWithRole(email: string): Promise<ClientUser | null> {
     const usuario = await this.prisma.vi_usuario.findUnique({
       where: { correo: email },
-      include: {
-        vi_rol: true,
-        vi_persona: true,
-      },
+      select: {
+        id: true,
+        nombre: true,
+        apellido: true,
+        correo: true,
+        imagenperfil: true,
+        puntosacumulados: true
+      }
     });
 
     if (!usuario) {
@@ -131,7 +137,7 @@ export class UsuarioService {
     return usuario;
   }
 
-  async createUsuario(data: UsuarioDto): Promise<vi_usuario> {
+  async createUsuario(data: UsuarioDto): Promise<ClientUser> {
     const generatedId = `us-${uuidv4().split('-')[0]}`;
     const generatedPersonaId = `per-${uuidv4().split('-')[0]}`;
     const hashedPassword = await bcrypt.hash(data.contrasena, 10);
@@ -159,7 +165,7 @@ export class UsuarioService {
       });
     }
 
-    return this.prisma.vi_usuario.create({
+    const newUser = await this.prisma.vi_usuario.create({
       data: {
         id: generatedId,
         nombre: data.nombre,
@@ -173,6 +179,15 @@ export class UsuarioService {
         id_rol: rol.id,
       },
     });
+
+    return {
+      id: newUser.id,
+      nombre: newUser.nombre,
+      apellido: newUser.apellido,
+      correo: newUser.correo,
+      imagenperfil: newUser.imagenperfil,
+      puntosacumulados: newUser.puntosacumulados,
+    }
   }
 
   async updateUsuario(id: string, data: vi_usuario): Promise<vi_usuario> {
