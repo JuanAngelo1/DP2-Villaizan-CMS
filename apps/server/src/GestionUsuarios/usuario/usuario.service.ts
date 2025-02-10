@@ -59,16 +59,11 @@ export class UsuarioService {
     const generatedId = `us-${uuidv4().split('-')[0]}`;
     const generatedPersonaId = `per-${uuidv4().split('-')[0]}`;
 
-    let rol;
-    let idCrm;
-
-    rol = await this.prisma.vi_rol.findFirst({
+    const rol = await this.prisma.vi_rol.findFirst({
       where: {
         nombre: 'Cliente',
       },
     });
-
-
 
     await this.prisma.vi_persona.create({
       data: {
@@ -82,37 +77,8 @@ export class UsuarioService {
       data.apellido='-';
       console.log(data.apellido);
     }
- 
 
-    const apiUrl =
-      'https://heladeria2.od2.vtiger.com/restapi/vtap/api/addContact';
-    const auth = {
-      username: 'dep2.crm@gmail.com',
-      password: '97FO4nsSpV6UneKW',
-    };
-
-
-
-    const response = await axios.post(
-      apiUrl,
-      {
-        Nombre: data.nombre,
-        Apellidos: data.apellido,
-        email: data.email,
-        Categoria: 'B2C',
-      },
-      {
-        auth,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
-
-    idCrm = response.data.result.id; // Extraer el ID del CRM de la respuesta
-    console.log('ID del CRM:', idCrm);
-
-    const usuario = await this.prisma.vi_usuario.create({
+    await this.prisma.vi_usuario.create({
       data: {
         id: generatedId,
         nombre: data.nombre,
@@ -122,7 +88,7 @@ export class UsuarioService {
         imagenperfil: data.imagenperfil,
         contrasena: 'google',
         usuariocreacion: '2A',
-        id_crm: idCrm,
+        id_crm: '',
         puntosacumulados: 0,
         vi_rol: {
           connect: { id: rol.id },

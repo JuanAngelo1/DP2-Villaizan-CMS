@@ -607,18 +607,6 @@ model vi_pedido_metodopago {
   vi_pedido            vi_pedido?     @relation(fields: [id_pedido], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pedido")
 }
 
-model vi_permiso {
-  id                   String           @id @db.VarChar(50)
-  nombre               String           @db.VarChar(255)
-  estaactivo           Boolean          @default(true)
-  desactivadoen        DateTime?        @db.Timestamp(6)
-  creadoen             DateTime         @default(now()) @db.Timestamp(6)
-  actualizadoen        DateTime         @default(now()) @db.Timestamp(6)
-  usuariocreacion      String           @db.VarChar(50)
-  usuarioactualizacion String?          @db.VarChar(50)
-  vi_rol_permiso       vi_rol_permiso[]
-}
-
 model vi_persona {
   id                   String       @id @db.VarChar(50)
   tipodocumento        String?      @db.VarChar(5)
@@ -936,6 +924,18 @@ model vi_rol {
   usuarioactualizacion String?          @db.VarChar(50)
   vi_rol_permiso       vi_rol_permiso[]
   vi_usuario           vi_usuario[]
+}
+
+model vi_permiso {
+  id                   String           @id @db.VarChar(50)
+  nombre               String           @db.VarChar(255)
+  estaactivo           Boolean          @default(true)
+  desactivadoen        DateTime?        @db.Timestamp(6)
+  creadoen             DateTime         @default(now()) @db.Timestamp(6)
+  actualizadoen        DateTime         @default(now()) @db.Timestamp(6)
+  usuariocreacion      String           @db.VarChar(50)
+  usuarioactualizacion String?          @db.VarChar(50)
+  vi_rol_permiso       vi_rol_permiso[]
 }
 
 model vi_rol_permiso {
