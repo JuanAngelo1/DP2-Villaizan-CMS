@@ -33,8 +33,12 @@ export class UsuarioService {
         correo: true,
         imagenperfil: true,
         puntosacumulados: true,
-        contrasena: false
-      }
+        id_rol: true,
+        vi_rol: true,
+        id_persona: true,
+        vi_persona: true,
+        creadoen: true,
+      },
     });
 
     return usuario;
@@ -47,8 +51,8 @@ export class UsuarioService {
       },
     });
 
-    console.log("Llego aqui?");
-    
+    console.log('Llego aqui?');
+
     if (!user) {
       return this.createUserGoogle(data);
     } else {
@@ -78,8 +82,8 @@ export class UsuarioService {
       },
     });
 
-    if(data.apellido==''){
-      data.apellido='-';
+    if (data.apellido == '') {
+      data.apellido = '-';
       console.log(data.apellido);
     }
 
@@ -126,8 +130,8 @@ export class UsuarioService {
         apellido: true,
         correo: true,
         imagenperfil: true,
-        puntosacumulados: true
-      }
+        puntosacumulados: true,
+      },
     });
 
     if (!usuario) {
@@ -187,7 +191,7 @@ export class UsuarioService {
       correo: newUser.correo,
       imagenperfil: newUser.imagenperfil,
       puntosacumulados: newUser.puntosacumulados,
-    }
+    };
   }
 
   async updateUsuario(id: string, data: vi_usuario): Promise<vi_usuario> {

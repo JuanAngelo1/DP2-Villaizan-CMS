@@ -29,7 +29,6 @@ async function getFrutas() {
 
 export default async function Page() {
   const frutas = await getFrutas();
-  // if (!frutas) throw new Error("Error al obtener las frutas");
 
   return (
     <>

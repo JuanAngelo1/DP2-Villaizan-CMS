@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@web/auth";
+import { getUserSession } from "@web/actions/userActions";
 import { redirect } from "next/navigation";
 import React from "react";
 import LandingContent from "./_components/LandingContent";
@@ -8,18 +8,15 @@ import Header from "./_sections/Header";
 import "./landing.css";
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-  const user = session?.user;
+  const user = await getUserSession();
 
-  console.log(user)
-
-  // if (user && (user.db_info.vi_persona?.sexo === null || user.db_info.vi_persona?.edad === null)) {
-  //   redirect("/ultimo-paso");
-  // }
+  if (user && (user.vi_persona.sexo === null || user.vi_persona.edad === null)) {
+    redirect("/ultimo-paso");
+  }
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <Header />
+      <Header user={user}/>
       <LandingContent>{children}</LandingContent>
     </div>
   );

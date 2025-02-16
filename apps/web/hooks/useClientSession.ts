@@ -30,4 +30,4 @@ function useClientSession() {
 
   return { user, status };
 }
-export default useSession;
+export default useClientSession;
